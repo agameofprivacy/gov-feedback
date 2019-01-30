@@ -1,0 +1,17 @@
+.searchbox {
+    background: white;
+    padding: .5em .75em;
+    color: rgb(50,50,50);
+
+    @media screen and (min-width: $break-large) {
+        font-size: 32px;
+    }
+
+    @media screen and (min-width: $break-medium) {
+        font-size: 24px;
+    }
+
+    @media screen and (max-width: $break-small) {
+        font-size: 18px;
+    }
+}

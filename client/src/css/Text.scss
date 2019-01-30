@@ -1,0 +1,23 @@
+.text {
+
+    &--hero {
+        font-size: 4em;
+    
+        @media screen and (min-width: $break-large) {
+            font-size: 4em;
+        }
+
+        @media screen and (max-width: $break-small) {
+            font-size: 2em;
+        }
+
+    }
+
+    &--bold {
+        font-weight: 700;
+    }
+
+    &--lightest {
+        color: white;
+    }
+}

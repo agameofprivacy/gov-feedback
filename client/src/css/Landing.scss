@@ -1,0 +1,48 @@
+.landing {
+    display: flex;
+    flex-direction: column;
+    height: 95vh;
+    background: linear-gradient(#2F2F2F, #505050);
+    padding-left: 15%;
+    padding-right: 15%;
+    padding-top: (env(safe-area-inset-top) + 15vh);
+
+    &__logo {
+        display: block;
+        height: 131px;
+        width: 240px;
+    }
+
+    @media screen and (min-width: $break-large) {
+        padding-left: 15%;
+        padding-right: 15%;
+        padding-top: 15vh;
+
+        &__logo {
+            height: 131px;
+            width: 240px;
+        }
+    }
+
+    @media screen and (max-width: $break-medium) {
+        padding-left: 10%;
+        padding-right: 10%;
+        padding-top: 10vh;
+
+        &__logo {
+            height: 109px;
+            width: 200px;
+        }
+    }
+
+    @media screen and (max-width: $break-small) {
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 30px;
+
+        &__logo {
+            height: 87px;
+            width: 160px;
+        }
+    }
+}

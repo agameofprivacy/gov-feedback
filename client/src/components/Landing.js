@@ -12,10 +12,10 @@ class Landing extends Component {
     render() {
         const { query } = this.state;
         return (
-            <div class="landing">
-                <img class="landing__logo" src={logo} />
+            <div className="landing">
+                <img className="landing__logo" src={logo} alt="政府機關回饋平台 logo" />
                 <AgencyPrompt />
-                <SearchBox />
+                <SearchBox query={query} />
             </div>
         );
     }

@@ -9,8 +9,8 @@ class AgencyPrompt extends Component {
     render() {
         const { agency } = this.state;
         return (
-            <p class="text text--lightest text--hero">
-            想對<span class="block m-b-025 m-t-025 text--bold">{agency}</span>說什麼？</p>
+            <p className="text text--lightest text--hero">
+            想對<span className="block m-b-025 m-t-025 text--bold">{agency}</span>說什麼？</p>
         );
     }
 }

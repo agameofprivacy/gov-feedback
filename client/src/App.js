@@ -69,7 +69,7 @@ class App extends Component {
   deleteFromDB = idTodelete => {
     let objIdToDelete = null;
     this.state.data.forEach(dat => {
-      if (dat.id == idTodelete) {
+      if (dat.id === idTodelete) {
         objIdToDelete = dat._id;
       }
     });
@@ -87,7 +87,7 @@ class App extends Component {
   updateDB = (idToUpdate, updateToApply) => {
     let objIdToUpdate = null;
     this.state.data.forEach(dat => {
-      if (dat.id == idToUpdate) {
+      if (dat.id === idToUpdate) {
         objIdToUpdate = dat._id;
       }
     });
@@ -110,8 +110,8 @@ class App extends Component {
         <ul>
           {data.length <= 0
             ? "NO DB ENTRIES YET"
-            : data.map(dat => (
-                <li style={{ padding: "10px" }} key={data.message}>
+            : data.map((dat, index) => (
+                <li style={{ padding: "10px" }} key={index}>
                   <span style={{ color: "gray" }}> id: </span> {dat.id} <br />
                   <span style={{ color: "gray" }}> data: </span>
                   {dat.message}

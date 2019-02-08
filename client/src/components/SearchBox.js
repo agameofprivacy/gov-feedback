@@ -10,7 +10,7 @@ class SearchBox extends Component {
         const {query} = this.state;
 
         return (
-            <input class="searchbox" onChange={e => this.setState({query: e.target.value})} value={query} placeholder="搜尋機關或議題" />
+            <input className="searchbox" onChange={e => this.setState({query: e.target.value})} value={query} placeholder="搜尋機關或議題" />
         )
     }
 }

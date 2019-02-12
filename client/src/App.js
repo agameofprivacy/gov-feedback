@@ -19,18 +19,18 @@ class App extends Component {
   // then we incorporate a polling logic so that we can easily see if our db has 
   // changed and implement those changes into our UI
   componentDidMount() {
-    this.getDataFromDb();
-    if (!this.state.intervalIsSet) {
-      let interval = setInterval(this.getDataFromDb, 1000);
-      this.setState({ intervalIsSet: interval });
-    }
+    this.getDataFromDb("");
+    // if (!this.state.intervalIsSet) {
+    //   let interval = setInterval(this.getDataFromDb, 1000);
+    //   this.setState({ intervalIsSet: interval });
+    // }
   }
 
   // never let a process live forever 
   // always kill a process everytime we are done using it
   componentWillUnmount() {
     if (this.state.intervalIsSet) {
-      clearInterval(this.state.intervalIsSet);
+      // clearInterval(this.state.intervalIsSet);
       this.setState({ intervalIsSet: null });
     }
   }
@@ -42,10 +42,29 @@ class App extends Component {
 
   // our first get method that uses our backend api to 
   // fetch data from our data base
-  getDataFromDb = () => {
-    fetch("http://localhost:3001/api/getData")
-      .then(data => data.json())
-      .then(res => this.setState({ data: res.data }));
+    
+  getDataFromDb = (name) => {
+    fetch('http://localhost:3001/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `query organizations($name: String){
+          organizations(name: $name){
+            name
+          }
+        }`,
+        variables: { name },
+      })
+    })
+      .then(r => r.json())
+      .then(data => console.log('data returned:', data));
+    
+    // fetch("http://localhost:3001/api/getData")
+    //   .then(data => data.json())
+    //   .then(res => this.setState({ data: res.data }));
   };
 
   // our put method that uses our backend api
@@ -104,9 +123,10 @@ class App extends Component {
   // see them render into our screen
   render() {
     const { data } = this.state;
+
     return (
       <div>
-        <Landing />
+        <Landing queryDB={this.getDataFromDb} />
         <ul>
           {data.length <= 0
             ? "NO DB ENTRIES YET"

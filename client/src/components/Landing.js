@@ -15,7 +15,7 @@ class Landing extends Component {
             <div className="landing">
                 <img className="landing__logo" src={logo} alt="政府機關回饋平台 logo" />
                 <AgencyPrompt />
-                <SearchBox query={query} />
+                <SearchBox query={query} queryDB={this.props.queryDB} />
             </div>
         );
     }

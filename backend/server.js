@@ -131,9 +131,9 @@ const Organization = require("./models/Organization");
 // const logger = require("morgan");
 // const Data = require("./data");
 
-// const API_PORT = 3001;
+const API_PORT = 3001;
 // const app = express();
-// const router = express.Router();
+const router = express.Router();
 
 // var credentials = require('./credentials');
 
@@ -146,12 +146,12 @@ const Organization = require("./models/Organization");
 //   { useNewUrlParser: true }
 // );
 
-// let db = mongoose.connection;
+let db = mongoose.connection;
 
-// db.once("open", () => console.log("connected to the database"));
+db.once("open", () => console.log("connected to the database"));
 
-// // checks if connection with the database is successful
-// db.on("error", console.error.bind(console, "MongoDB connection error:"));
+// checks if connection with the database is successful
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // // (optional) only made for logging and
 // // bodyParser, parses the request body to be a readable json format
@@ -159,14 +159,14 @@ const Organization = require("./models/Organization");
 // app.use(bodyParser.json());
 // app.use(logger("dev"));
 
-// // this is our get method
-// // this method fetches all available data in our database
-// router.get("/getData", (req, res) => {
-//   Data.find((err, data) => {
-//     if (err) return res.json({ success: false, error: err });
-//     return res.json({ success: true, data: data });
-//   });
-// });
+// this is our get method
+// this method fetches all available data in our database
+router.get("/getData", (req, res) => {
+  Organization.find((err, organizations) => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true, organizations: organizations });
+  });
+});
 
 // // this is our update method
 // // this method overwrites existing data in our database
@@ -213,4 +213,4 @@ const Organization = require("./models/Organization");
 // app.use("/api", router);
 
 // // launch our backend into a port
-// app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

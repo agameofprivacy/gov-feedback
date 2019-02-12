@@ -6,6 +6,6 @@ export default `
     }
 
     type Query {
-        organizations: [Organization!]!
+        organizations(name: String): [Organization]!
     }
 `;

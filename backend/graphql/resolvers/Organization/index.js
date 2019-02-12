@@ -2,12 +2,13 @@ import Organization from "../../../models/Organization";
 
 export default {
     Query: {
-        organizations: () => {
+        organizations: (root, args) => {
             return new Promise((resolve, reject) => {
-                Organization.find({})
+                console.log(args);
+                Organization.find(args)
                 .populate("parent")
                 .sort({'name': 1})
-                .limit(100)
+                .limit(10)
                 .exec((err, res) => {
                     err ? reject(err) : resolve(res);
                 });

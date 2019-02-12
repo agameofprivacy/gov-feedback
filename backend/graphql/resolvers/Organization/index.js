@@ -5,7 +5,9 @@ export default {
         organizations: () => {
             return new Promise((resolve, reject) => {
                 Organization.find({})
-                .populate()
+                .populate("parent")
+                .sort({'name': 1})
+                .limit(100)
                 .exec((err, res) => {
                     err ? reject(err) : resolve(res);
                 });

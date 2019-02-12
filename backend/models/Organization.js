@@ -12,36 +12,52 @@ const OrganizationSchema = new Schema({
   name: {
       type: String,
       required: true,
-      unique: true,
   },
   other_names: [
     {
-        type: Schema.Types.ObjectId,
-        ref: "OtherName",
-        required: false
+      label: {
+        type: String,
+        required: false,
+      },
+      name: {
+        type: String,
+        required: true,
+      }
     }
   ],
   identifiers: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "Identifier",
-      required: true
+      scheme: {
+        type: String,
+        required: true,
+      },
+      identifier: {
+        type: String,
+        required: true,
+      }
     }
   ],
   parent: {
       type: Schema.Types.ObjectId,
-      ref: "Parent",
+      ref: "Organization",
       required: false
   },
   contact_details: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "ContactDetail",
-      required: false,
+      kind: {
+        type: String,
+        required: true,
+      },
+      value: {
+        type: String,
+        required: true,
+      },
+      label: {
+        type: String,
+        required: false,
+      }
     }
   ]
 });
 
-const Organization = mongoose.model("Organization", OrganizationSchema);
-
-export default Organization;
+module.exports = mongoose.model("Organization", OrganizationSchema);

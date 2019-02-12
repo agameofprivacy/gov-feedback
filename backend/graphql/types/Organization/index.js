@@ -1,6 +1,8 @@
 export default `
     type Organization {
-        name: String!
+        name: String!,
+        parent: Organization,
+        contact_details: [ContactDetail]!,
     }
 
     type Query {

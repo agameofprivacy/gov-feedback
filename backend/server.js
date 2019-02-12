@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 import schema from "./graphql/";
+import organizations from "../backend/source_data.json";
 
 const app = express();
 const PORT = process.env.PORT || "4000";
@@ -12,7 +13,6 @@ var credentials = require('./credentials');
 
 // this is our MongoDB database
 const dbRoute = credentials.dbRoute;
-;
 
 // Connect to MongoDB with Mongoose.
 mongoose
@@ -20,7 +20,9 @@ mongoose
     dbRoute,
     {
       useCreateIndex: true,
-      useNewUrlParser: true
+      useNewUrlParser: true,
+      server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
+      replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
     }
   )
   .then(() => console.log("MongoDB connected"))
@@ -37,6 +39,91 @@ app.use(
 );
 
 app.listen(PORT, () => console.log(`SERVER running on PORT ${PORT}`));
+
+// model imports
+const Organization = require("./models/Organization");
+
+// organizations.forEach(function(org){
+  
+//   var other_names = [];
+//   org.other_names.forEach(function(other_name){
+//     var other_name_obj = {
+//       name: other_name.name
+//     };
+//     if (other_name.hasOwnProperty("label")){
+//       other_name_obj["label"] = other_name.label;
+//     }
+//     other_names.push(other_name_obj)
+//   })
+
+//   var identifiers = [];
+//   org.identifiers.forEach(function(identifier){
+//     identifiers.push({
+//       scheme: identifier.scheme,
+//       identifier: identifier.identifier,
+//     });
+//   })
+
+//   // if (org.parent_id !== "" && org.parent !== "") {
+//   //   var parent_obj = new Parent({
+//   //     name: org.parent,
+//   //   })
+  
+//   //   parent_obj.identifier = new Identifier({
+//   //     scheme: "OID",
+//   //     identifier: org.parent_id,
+//   //   })
+//   //   parent_obj.save(err => {
+//   //     if (err) console.log(err);
+//   //   })
+
+//   // }
+
+//   var contact_details = [];
+//   org.contact_details.forEach(function(contact_detail){
+//     var contact_detail_obj = {
+//       kind: contact_detail.type,
+//       value: contact_detail.value
+//     }
+//     if (typeof contact_detail.label !== "undefined" && contact_detail.label !== "") {
+//       contact_detail_obj["label"] = contact_detail.label;
+//     }
+//     contact_details.push(contact_detail_obj);
+//   })
+
+
+//   let organization = new Organization({
+//     name: org.name,
+//     other_names: other_names,
+//     identifiers: identifiers,
+//     // parent: parent_obj,
+//     contact_details: contact_details
+//   })
+
+//   organization.save(err => {
+//     if (err) console.log(err);
+//   })
+
+// })
+
+// save parent organization reference
+// organizations.forEach(function(org){
+//   if (org.hasOwnProperty("parent_id")) {
+//     Organization.findOne({ "identifiers.identifier": org.parent_id.identifier }, function(err, obj){
+//       if (!err){
+//         Organization.findOne({ "identifiers.identifier": org.identifiers[0].identifier}, function(err, thisOrg){
+//           thisOrg.parent = obj._id;
+//           thisOrg.save(function(err){
+//             if (err) console.log(err);
+//             console.log(`saved ${thisOrg.name}`);
+//           })
+//         })
+//       } 
+//     });
+//   }
+// })
+
+
 
 // const mongoose = require("mongoose");
 // const express = require("express");

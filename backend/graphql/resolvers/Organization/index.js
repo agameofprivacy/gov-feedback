@@ -5,7 +5,7 @@ export default {
         organizations: (root, args) => {
             return new Promise((resolve, reject) => {
                 console.log(args);
-                Organization.find(args)
+                Organization.find({name: new RegExp(args.name, "gi")})
                 .populate("parent")
                 .sort({'name': 1})
                 .limit(10)

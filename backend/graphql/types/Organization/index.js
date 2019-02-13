@@ -6,6 +6,7 @@ export default `
     }
 
     type Query {
-        organizations(name: String): [Organization]!
+        organizations(name: String): [Organization]!,
+        randomOrganizations(count: Int): [Organization]!
     }
 `;

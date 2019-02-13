@@ -6,6 +6,7 @@ const cors = require("cors");
 
 import schema from "./graphql/";
 import organizations from "../backend/source_data.json";
+import updated_organizations from "../backend/updated_data.json";
 
 const app = express();
 const PORT = process.env.PORT || "4000";
@@ -56,6 +57,8 @@ const Organization = require("./models/Organization");
 //     other_names.push(other_name_obj)
 //   })
 
+
+
 //   var identifiers = [];
 //   org.identifiers.forEach(function(identifier){
 //     identifiers.push({
@@ -91,14 +94,23 @@ const Organization = require("./models/Organization");
 //     contact_details.push(contact_detail_obj);
 //   })
 
+//   var updated_org = updated_organizations.find(obj => {
+//     return obj.identifiers[0].identifier === org.identifiers[0].identifier;
+//   })
+
+  
 
 //   let organization = new Organization({
 //     name: org.name,
 //     other_names: other_names,
 //     identifiers: identifiers,
 //     // parent: parent_obj,
-//     contact_details: contact_details
+//     contact_details: contact_details,
+//     level: updated_org.level,
+//     hierarchy: updated_org.hierarchy
 //   })
+
+//   console.log(organization);
 
 //   organization.save(err => {
 //     if (err) console.log(err);
@@ -106,7 +118,7 @@ const Organization = require("./models/Organization");
 
 // })
 
-// save parent organization reference
+// // save parent organization reference
 // organizations.forEach(function(org){
 //   if (org.hasOwnProperty("parent_id")) {
 //     Organization.findOne({ "identifiers.identifier": org.parent_id.identifier }, function(err, obj){

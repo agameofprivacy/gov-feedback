@@ -12,6 +12,7 @@ const OrganizationSchema = new Schema({
   name: {
       type: String,
       required: true,
+      text: true,
   },
   other_names: [
     {
@@ -57,7 +58,15 @@ const OrganizationSchema = new Schema({
         required: false,
       }
     }
-  ]
+  ],
+  level: {
+    type: Number,
+    required: true,
+  },
+  hierarchy: {
+    type: String,
+    required: true,
+  }
 });
 
 module.exports = mongoose.model("Organization", OrganizationSchema);

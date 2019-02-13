@@ -6,35 +6,44 @@ import Landing from "./components/Landing";
 class App extends Component {
   // initialize our state 
   state = {
-    data: [],
+    searchResults: null,
     id: 0,
     message: null,
     intervalIsSet: false,
     idToDelete: null,
     idToUpdate: null,
-    objectToUpdate: null
+    objectToUpdate: null,
+    randomOrgs: ["政府機關"],
+    randomIndex: 0,
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
   // then we incorporate a polling logic so that we can easily see if our db has 
   // changed and implement those changes into our UI
   componentDidMount() {
-    this.getDataFromDb("");
+    this.getRandomOrgs(25);
+    var intervalId = setInterval(this.timer, 1800);
+    this.setState({intervalId: intervalId});
+  }
     // if (!this.state.intervalIsSet) {
     //   let interval = setInterval(this.getDataFromDb, 1000);
     //   this.setState({ intervalIsSet: interval });
     // }
-  }
 
   // never let a process live forever 
   // always kill a process everytime we are done using it
   componentWillUnmount() {
-    if (this.state.intervalIsSet) {
-      // clearInterval(this.state.intervalIsSet);
-      this.setState({ intervalIsSet: null });
-    }
+    clearInterval(this.state.intervalId);
   }
 
+  timer = () => {
+    // setState method is used to update the state
+    if (typeof this.state.randomIndex == "undefined") {
+      this.setState({ randomIndex: Math.floor(Math.random() * (this.state.randomOrgs.length - 0) ) + 0 });  
+    } else {
+      this.setState({ randomIndex: this.state.randomIndex < this.state.randomOrgs.length - 1 ? this.state.randomIndex + 1 : 0 });
+    }    
+ } 
   // just a note, here, in the front end, we use the id key of our data object 
   // in order to identify which we want to Update or delete.
   // for our back end, we use the object id assigned by MongoDB to modify 
@@ -60,12 +69,31 @@ class App extends Component {
       })
     })
       .then(r => r.json())
-      .then(data => console.log('data returned:', data));
+      .then(searchResults => this.setState({searchResults: searchResults}));
     
-    // fetch("http://localhost:3001/api/getData")
-    //   .then(data => data.json())
-    //   .then(res => this.setState({ data: res.data }));
   };
+
+  getRandomOrgs = (count) => {
+    fetch('http://localhost:3001/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json",
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `query randomOrganizations($count: Int){
+          randomOrganizations(count: $count){
+            name
+          }
+        }`,
+        variables: { count },
+      })
+    })
+    .then(r => r.json())
+    .then(samples => {
+      this.setState({randomOrgs: samples.data.randomOrganizations})
+    });
+  }
 
   // our put method that uses our backend api
   // to create new query into our data base
@@ -122,65 +150,9 @@ class App extends Component {
   // it is easy to understand their functions when you 
   // see them render into our screen
   render() {
-    const { data } = this.state;
-
     return (
       <div>
-        <Landing queryDB={this.getDataFromDb} />
-        <ul>
-          {data.length <= 0
-            ? "NO DB ENTRIES YET"
-            : data.map((dat, index) => (
-                <li style={{ padding: "10px" }} key={index}>
-                  <span style={{ color: "gray" }}> id: </span> {dat.id} <br />
-                  <span style={{ color: "gray" }}> data: </span>
-                  {dat.message}
-                </li>
-              ))}
-        </ul>
-        <div style={{ padding: "10px" }}>
-          <input
-            type="text"
-            onChange={e => this.setState({ message: e.target.value })}
-            placeholder="add something in the database"
-            style={{ width: "200px" }}
-          />
-          <button onClick={() => this.putDataToDB(this.state.message)}>
-            ADD
-          </button>
-        </div>
-        <div style={{ padding: "10px" }}>
-          <input
-            type="text"
-            style={{ width: "200px" }}
-            onChange={e => this.setState({ idToDelete: e.target.value })}
-            placeholder="put id of item to delete here"
-          />
-          <button onClick={() => this.deleteFromDB(this.state.idToDelete)}>
-            DELETE
-          </button>
-        </div>
-        <div style={{ padding: "10px" }}>
-          <input
-            type="text"
-            style={{ width: "200px" }}
-            onChange={e => this.setState({ idToUpdate: e.target.value })}
-            placeholder="id of item to update here"
-          />
-          <input
-            type="text"
-            style={{ width: "200px" }}
-            onChange={e => this.setState({ updateToApply: e.target.value })}
-            placeholder="put new value of the item here"
-          />
-          <button
-            onClick={() =>
-              this.updateDB(this.state.idToUpdate, this.state.updateToApply)
-            }
-          >
-            UPDATE
-          </button>
-        </div>
+        <Landing queryDB={this.getDataFromDb} randomOrgs={this.state.randomOrgs} randomIndex={this.state.randomIndex} searchResults={this.state.searchResults} />
       </div>
     );
   }

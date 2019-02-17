@@ -3,6 +3,7 @@ export default `
         name: String!,
         parent: Organization,
         contact_details: [ContactDetail]!,
+        identifiers: [Identifier]!,
     }
 
     type Query {

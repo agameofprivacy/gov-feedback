@@ -4,7 +4,17 @@
     color: rgb(50,50,50);
     width: 100%;
     border: none;
-    box-sizing: border-box;
+    box-sizing: border-box;    
+
+    &--dark {
+        background-color: #1E1E1E;
+        border: 1px solid #767676;
+        color: rgb(220,220,220);
+        
+        &:focus {
+            color: white;
+        }
+    }
 
     @media screen and (min-width: $break-large) {
         font-size: 32px;

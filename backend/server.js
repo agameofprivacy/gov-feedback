@@ -5,8 +5,6 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 import schema from "./graphql/";
-import organizations from "../backend/source_data.json";
-import updated_organizations from "../backend/updated_data.json";
 
 const app = express();
 const PORT = process.env.PORT || "4000";

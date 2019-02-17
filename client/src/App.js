@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import Landing from "./components/Landing";
+import NavBar from "./components/NavBar";
 
 class App extends Component {
   // initialize our state 
@@ -13,8 +14,10 @@ class App extends Component {
     idToDelete: null,
     idToUpdate: null,
     objectToUpdate: null,
-    randomOrgs: ["政府機關"],
+    randomOrgs: [],
     randomIndex: 0,
+    selectedOrgId: undefined,
+    selectedOrgName: undefined,
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -43,14 +46,15 @@ class App extends Component {
     } else {
       this.setState({ randomIndex: this.state.randomIndex < this.state.randomOrgs.length - 1 ? this.state.randomIndex + 1 : 0 });
     }    
- } 
-  // just a note, here, in the front end, we use the id key of our data object 
-  // in order to identify which we want to Update or delete.
-  // for our back end, we use the object id assigned by MongoDB to modify 
-  // data base entries
+  } 
 
-  // our first get method that uses our backend api to 
-  // fetch data from our data base
+  setSelectedOrg = (org) => {
+    console.log("selected org", org);
+    this.setState({
+      selectedOrgId: org.identifiers[0].identifier,
+      selectedOrgName: org.name,
+    })
+  }
     
   getDataFromDb = (name) => {
     fetch('http://localhost:3001/graphql', {
@@ -63,6 +67,10 @@ class App extends Component {
         query: `query organizations($name: String){
           organizations(name: $name){
             name
+            identifiers {
+              scheme
+              identifier
+            }
           }
         }`,
         variables: { name },
@@ -70,7 +78,6 @@ class App extends Component {
     })
       .then(r => r.json())
       .then(searchResults => this.setState({searchResults: searchResults}));
-    
   };
 
   getRandomOrgs = (count) => {
@@ -150,11 +157,15 @@ class App extends Component {
   // it is easy to understand their functions when you 
   // see them render into our screen
   render() {
-    return (
-      <div>
-        <Landing queryDB={this.getDataFromDb} randomOrgs={this.state.randomOrgs} randomIndex={this.state.randomIndex} searchResults={this.state.searchResults} />
-      </div>
-    );
+    if (typeof this.state.selectedOrgId === "undefined") {
+      return (
+        <Landing setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} randomOrgs={this.state.randomOrgs} randomIndex={this.state.randomIndex} searchResults={this.state.searchResults} />
+      );
+    } else {
+      return (
+        <NavBar setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={this.state.selectedOrgName} dark />
+      )
+    }
   }
 }
 

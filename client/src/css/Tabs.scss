@@ -1,0 +1,21 @@
+.tabs {
+    display: flex;
+    flex-direction: row;
+    list-style: none;
+    margin: 0;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    padding-inline-start: 0;
+
+    &__item {
+        flex: 1;
+        text-align: center;
+        padding: 14px;
+        background-color: rgb(240,240,240);
+
+        &--selected {
+            background-color: white;
+        }
+    }
+}

@@ -23,7 +23,6 @@ class SearchBox extends Component {
 
         var items = [];
         if (searchResults){
-            console.log(searchResults);
             searchResults.data.organizations.forEach(function(result, key){
                 items.push(<li key={key} value={key} onMouseDown={this.handleClick} className={"dropdown__item" + (dark ? " dropdown__item--dark" : "")}>{result.name}</li>)
             }.bind(this));

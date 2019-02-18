@@ -1,0 +1,46 @@
+.composer {
+    background-color: white;
+    border: 1px solid rgb(240,240,240);
+    position: relative;
+    padding: 1em;
+    margin-bottom: 1em;
+
+    &__textarea {
+        width: 100%;
+        margin-top: 54px;
+        margin-bottom: 54px;
+        margin-right: 1em;
+        font-size: 24px;
+        min-height: 50px;
+        max-height: 450px;
+        border: none;
+        overflow: auto;
+        outline: none;
+        color: rgb(50,50,50);
+    
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    
+        resize: none; /*remove the resize handle on the bottom right*/
+    
+    }
+
+    &__tag {
+        position: absolute;
+        top:16px;
+        right:16px;
+    }
+
+    &__label {
+        position: absolute;
+        bottom: 16px;
+        left: 16px;
+    }
+
+    &__proceed {
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+    }
+}

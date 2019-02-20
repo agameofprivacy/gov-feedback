@@ -9,7 +9,6 @@ class Contact extends Component {
 
         var keyValues = [];
         contacts.forEach(function(contact, index){
-            console.log(contact.label);
             keyValues.push(<KeyValue key={index} k={contact.label} v={contact.value} />);
         });
 

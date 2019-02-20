@@ -1,0 +1,26 @@
+.pill-search {
+    display: flex;
+    flex-direction: column;
+    margin-right: 1em;
+
+    & .pills {
+        padding-top: 1.5em;
+        max-height: 200px;
+        overflow-y: scroll;
+        -ms-overflow-style: none;  // IE 10+
+        overflow-x: -moz-scrollbars-none;  // Firefox
+    
+        &::-webkit-scrollbar {
+            display: none;
+        }    
+    }
+
+    &__searchbox {
+        font-size: 20px;
+        padding: .5em .5em .25em 0;
+        border: none;
+        border-bottom: 1px solid rgb(118,118,118);
+        outline: none;
+        display: block;
+    }
+}

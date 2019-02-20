@@ -28,4 +28,12 @@
         display: inline-block;
         white-space: nowrap;
     }
+
+    &--wrap {
+        flex-wrap: wrap;
+
+        & .pill {
+            margin-bottom: 12px;
+        }
+    }
 }

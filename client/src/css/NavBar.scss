@@ -1,5 +1,7 @@
 .navbar {
     height: 60px;
+    width: 100%;
+    box-sizing: border-box;
     background-color: #323232;
     border-bottom: 1px solid #333333;
     display: flex;
@@ -8,7 +10,7 @@
     padding-right: 2em;
     color: white;
     z-index: 1;
-    position: relative;
+    position: fixed;
 
     &__logo {
         height: 31px;

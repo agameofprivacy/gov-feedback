@@ -3,4 +3,8 @@
     margin: 0 1em 2em 1em;
     min-width: 300px;
 
+    @media screen and (max-width: $break-small) {
+        margin: 0 10px 10px 10px;
+        min-width: 260px;
+    }
 }

@@ -3,9 +3,10 @@ import Composer from "./Composer";
 import Post from "./Post";
 
 class Feed extends Component {
+
     render() {
 
-        const {posts} = this.props;
+        const {posts, setFormState} = this.props;
 
         var postsArray = [];
 
@@ -17,7 +18,7 @@ class Feed extends Component {
 
         return (
             <div className="feed">
-                <Composer />
+                <Composer setFormState={setFormState} />
                 {postsArray}
             </div>
         )

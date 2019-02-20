@@ -5,6 +5,7 @@ import Landing from "./components/Landing";
 import NavBar from "./components/NavBar";
 import Feed from "./components/Feed";
 import Sidebar from "./components/Sidebar";
+import Modal from "./components/Modal";
 
 class App extends Component {
   // initialize our state 
@@ -20,6 +21,8 @@ class App extends Component {
     randomIndex: 0,
     selectedOrgId: undefined,
     selectedOrgName: undefined,
+    modalType: "",
+    showsModal: false,
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -154,6 +157,11 @@ class App extends Component {
     });
   };
 
+  setFormState = (form) => {
+    for ( const[key, value] of Object.entries(form)) {
+      this.setState({[key]: value});
+    }
+  }
 
   // here is our UI
   // it is easy to understand their functions when you 
@@ -178,6 +186,34 @@ class App extends Component {
       }
     ];
 
+    const sections = [
+      {
+        "title": "需登入",
+        "options": [
+          {
+            "title": "自訂",
+            "subtitle": "要怎麼署名都可以",
+            "value": "custom"
+          },
+          {
+            "title": "具名",
+            "subtitle": "使用帳戶設定之正式名稱、身份",
+            "value": "account"
+          },
+        ]
+      },
+      {
+        "title": "不需登入",
+        "options": [
+          {
+            "title": "匿名",
+            "subtitle": "要隱姓埋名，請遵守社群規範",
+            "value": "anonymous"
+          }
+        ]
+      }
+    ]
+
     if (typeof this.state.selectedOrgId === "undefined") {
       return (
         <Landing setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} randomOrgs={this.state.randomOrgs} randomIndex={this.state.randomIndex} searchResults={this.state.searchResults} />
@@ -185,9 +221,14 @@ class App extends Component {
     } else {
       return (
         <div>
+          {
+            this.state.showsModal &&
+            <Modal setFormState={this.setFormState} type={this.state.modalType} data={sections} />
+          }
+
           <NavBar setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={this.state.selectedOrgName} dark />
           <div className="container">
-            <Feed posts={posts} />
+            <Feed setFormState={this.setFormState} posts={posts} />
             <Sidebar selectedIndex={0} />
           </div>
         </div>

@@ -12,15 +12,22 @@ class RadioSelect extends Component {
         this.setState({value: value});
     }
 
+
     render = () => {
-        const {sections} = this.props;
+        const {sections, submitForm} = this.props;
         var sectionsArray = [];
 
         sections.forEach((section, index) =>{
             var radioItemsArray = [];
             section.options.forEach((option, index) => {
                 radioItemsArray.push(
-                    <RadioItem key={index} selected={option.value === this.state.value} item={option} radioSelected={this.radioSelected} />
+                    <RadioItem 
+                        submitForm={submitForm}
+                        key={index} 
+                        selected={option.value === this.state.value} 
+                        item={option} 
+                        radioSelected={this.radioSelected} 
+                    />
                 );
             });
 

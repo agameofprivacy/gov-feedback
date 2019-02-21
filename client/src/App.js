@@ -6,6 +6,7 @@ import NavBar from "./components/NavBar";
 import Feed from "./components/Feed";
 import Sidebar from "./components/Sidebar";
 import Modal from "./components/Modal";
+import Footer from "./components/Footer";
 
 class App extends Component {
   // initialize our state 
@@ -21,6 +22,8 @@ class App extends Component {
     randomIndex: 0,
     selectedOrgId: undefined,
     selectedOrgName: undefined,
+    selectedTag: "",
+    selectedIdentity: "",
     modalType: "",
     showsModal: false,
   };
@@ -228,9 +231,10 @@ class App extends Component {
 
           <NavBar setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={this.state.selectedOrgName} dark />
           <div className="container">
-            <Feed setFormState={this.setFormState} posts={posts} />
+            <Feed selectedOrgName={this.state.selectedOrgName} selectedTag={this.state.selectedTag} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={posts} />
             <Sidebar selectedIndex={0} />
           </div>
+          <Footer />
         </div>
       )
     }

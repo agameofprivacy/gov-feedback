@@ -6,9 +6,11 @@ class RadioItem extends Component {
         selected: false
     }
 
-    handleClick = () => {
+    handleClick = (e) => {
         this.setState({selected: !this.state.selected});
         this.props.radioSelected(this.props.item.value);
+        console.log(this.props.item.value);
+        this.props.submitForm(this.props.item.value);
     }
 
     render() {

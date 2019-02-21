@@ -4,19 +4,39 @@ import RadioSelect from "./RadioSelect";
 
 class Modal extends Component {
 
-    submitForm = () => {
+    state = {
+        selectedTag: "",
+        selectedIdentity: "",
+    };
+
+    submitForm = (string) => {
+        console.log("submit form");
+        console.log(string);
         switch(this.props.type) {
             case "topic-search":
+                this.setState({selectedTag: string});
                 break;
             case "identity-select":
+                this.setState({selectedIdentity: string});
                 break;
             default:
                 break;
         }
-        this.props.setFormState({showsModal: false});
     }
 
     handleModalClick = (e) => {
+        if (e.target.id === "modal-submit") {
+            switch(this.props.type) {
+                case "topic-search":
+                    this.props.setFormState({selectedTag: this.state.selectedTag});
+                    break;
+                case "identity-select":
+                    this.props.setFormState({selectedIdentity: this.state.selectedIdentity});
+                    break;
+                default:
+                    break;
+            }
+        }
         this.props.setFormState({showsModal: false});
     }
 
@@ -60,11 +80,11 @@ class Modal extends Component {
                         <div className="modal__dialog__body">
                             {
                                 type === "topic-search" &&
-                                <PillSearch type="topics" />
+                                <PillSearch submitForm={this.submitForm} type="topics" />
                             }
                             {
                                 type === "identity-select" &&
-                                <RadioSelect sections={data} />
+                                <RadioSelect submitForm={this.submitForm} sections={data} />
                             }
                             {this.props.children}
                         </div>

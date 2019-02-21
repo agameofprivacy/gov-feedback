@@ -1,0 +1,35 @@
+.footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    padding-left: 15%;
+    padding-right: 15%;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-color: white;
+
+    & a {
+        text-decoration: none;
+        color: rgb(50,50,50);
+    }
+
+    &__links {
+        font-size: 17px;
+        font-weight: 300;
+        list-style: none;
+        margin-bottom: 3em;
+        -webkit-padding-start: 0em;
+        padding-left: 0em;    
+
+        &__item {
+            margin-bottom: 15px;
+        }
+    }
+
+    &__logo img {
+        width: 160px;
+        height: 87px;
+    }
+}

@@ -3,6 +3,10 @@ import Pills from "./Pills";
 
 class PillSearch extends Component {
 
+    handleChange = (e) => {
+        this.props.submitForm(e.target.value);
+    }
+
     searchForTopic = (query) => {
 
     }
@@ -35,7 +39,7 @@ class PillSearch extends Component {
 
         return (
             <div className="pill-search">
-                <input placeholder="搜尋" className="pill-search__searchbox" />
+                <input onChange={this.handleChange} placeholder="搜尋" className="pill-search__searchbox" />
                 <Pills pills={sampleTopics} />
             </div>
         );

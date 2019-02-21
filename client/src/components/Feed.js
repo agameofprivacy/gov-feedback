@@ -6,7 +6,7 @@ class Feed extends Component {
 
     render() {
 
-        const {posts, setFormState} = this.props;
+        const {selectedOrgName, posts, setFormState, selectedTag, selectedIdentity} = this.props;
 
         var postsArray = [];
 
@@ -18,7 +18,7 @@ class Feed extends Component {
 
         return (
             <div className="feed">
-                <Composer setFormState={setFormState} />
+                <Composer selectedTag={selectedTag} selectedIdentity={selectedIdentity} defaultTagName={selectedOrgName} setFormState={setFormState} />
                 {postsArray}
             </div>
         )

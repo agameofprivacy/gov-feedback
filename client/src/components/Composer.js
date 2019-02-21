@@ -37,8 +37,10 @@ class Composer extends Component {
             <div className="composer">
                 <textarea onKeyUp={this.updateContent} className="composer__textarea" placeholder="想說什麼？" />
                 <button id="topic-search" onClick={this.handleClick} className="pill pill--unset composer__tag">{selectedTag === "" ? "選擇議題標籤" : selectedTag}</button>
-                <button className="pill pill--default composer__label">{defaultTagName}</button>
-                <button id="identity-select" onClick={this.handleClick} className="pill pill--disabled composer__proceed">{selectedIdentity === "" ? "選擇發佈身份" : `以${this.labelDict[selectedIdentity]}身份發佈`}</button>
+                <div className="composer__buttons-container">
+                    <button className="pill pill--default composer__label">{defaultTagName}</button>
+                    <button id="identity-select" onClick={this.handleClick} className="pill pill--disabled composer__proceed">{selectedIdentity === "" ? "選擇發佈身份" : `以${this.labelDict[selectedIdentity]}身份發佈`}</button>
+                </div>
             </div>
         )
     }

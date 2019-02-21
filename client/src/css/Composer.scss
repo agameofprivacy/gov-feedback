@@ -26,21 +26,25 @@
     
     }
 
+    &__buttons-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        & button {
+            margin-bottom: 10px;
+            
+            &:first-child{
+                margin-right: 10px;
+            }
+        }
+    }
+
     &__tag {
         position: absolute;
         top:16px;
         right:16px;
-    }
-
-    &__label {
-        position: absolute;
-        bottom: 16px;
-        left: 16px;
-    }
-
-    &__proceed {
-        position: absolute;
-        bottom: 16px;
-        right: 16px;
     }
 }

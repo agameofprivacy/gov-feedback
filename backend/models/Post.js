@@ -21,8 +21,12 @@ const PostSchema = new Schema({
     type: String,
     required: true
   },
+  organization_id: {
+    type: String,
+    required: true
+  },
   created: {
-    type: Date,
+    type: Number,
     required: true
   },
   content: {
@@ -37,7 +41,15 @@ const PostSchema = new Schema({
       }
     }
   ],
-  originalPost: {
+  is_forward_of_post_id: {
+    type: String,
+    required: false
+  },
+  is_forward_of_post_with_tag: {
+    type: String,
+    required: false
+  },
+  is_reply_to_post_id: {
     type: String,
     required: false
   }

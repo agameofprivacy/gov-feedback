@@ -26,6 +26,7 @@ class App extends Component {
     selectedIdentity: "",
     modalType: "",
     showsModal: false,
+    content: "",
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -33,6 +34,14 @@ class App extends Component {
   // changed and implement those changes into our UI
   componentDidMount() {
     this.getRandomOrgs(25);
+    this.createPost({
+      author: "Eddie Chen",
+      topic: "二次見面",
+      content: "測試內容",
+      organization: "法務部行政執行署",
+      organization_id: "2.16.886.101.20003.20006.20090",
+      created: 1550996472856
+    });
     var intervalId = setInterval(this.timer, 1800);
     this.setState({intervalId: intervalId});
   }
@@ -110,6 +119,32 @@ class App extends Component {
     });
   }
 
+  createPost = (postInput) => {
+    console.log("create post");
+    fetch('http://localhost:3001/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json",
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          mutation{
+            createPost(input: $postInput) {
+              content
+              organization
+            }
+          }
+        `,
+        variables: {postInput},
+      })
+    })
+    .then(r => r.json())
+    .then(response => {
+      console.log(response);
+    })
+  }
+
   // our put method that uses our backend api
   // to create new query into our data base
   putDataToDB = message => {
@@ -166,9 +201,7 @@ class App extends Component {
     }
   }
 
-  // here is our UI
-  // it is easy to understand their functions when you 
-  // see them render into our screen
+  
   render() {
     const posts = [
       {
@@ -226,7 +259,7 @@ class App extends Component {
         <div>
           {
             this.state.showsModal &&
-            <Modal setFormState={this.setFormState} type={this.state.modalType} data={sections} />
+            <Modal setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} content={this.state.content} selectedTag={this.state.selectedTag} selectedIdentity={this.state.selectedIdentity} />
           }
 
           <NavBar setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={this.state.selectedOrgName} dark />

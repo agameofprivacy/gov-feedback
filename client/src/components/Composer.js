@@ -6,8 +6,6 @@ class Composer extends Component {
         var type = "";
         if (e.target.id === "topic-search") type = "topic-search";
         else if (e.target.id === "identity-select") type = "identity-select";
-        console.log(e.target.id);
-        console.log(type);
         this.props.setFormState({modalType: type, showsModal: true})
     }
 
@@ -15,6 +13,7 @@ class Composer extends Component {
         e.target.style.height = "0px";
         e.target.style.height = (e.target.scrollHeight)+"px";    
         this.setState({content: e.target.value});
+        this.props.setFormState({content: e.target.value});
     }
 
     state = {
@@ -36,10 +35,10 @@ class Composer extends Component {
         return (
             <div className="composer">
                 <textarea onKeyUp={this.updateContent} className="composer__textarea" placeholder="想說什麼？" />
-                <button id="topic-search" onClick={this.handleClick} className="pill pill--unset composer__tag">{selectedTag === "" ? "選擇議題標籤" : selectedTag}</button>
+                <button id="topic-search" onClick={this.handleClick} className={"pill composer__tag" + (selectedTag === "" ? " pill--unset" : " pill--new")}>{selectedTag === "" ? "選擇議題標籤" : selectedTag}</button>
                 <div className="composer__buttons-container">
                     <button className="pill pill--default composer__label">{defaultTagName}</button>
-                    <button id="identity-select" onClick={this.handleClick} className="pill pill--disabled composer__proceed">{selectedIdentity === "" ? "選擇發佈身份" : `以${this.labelDict[selectedIdentity]}身份發佈`}</button>
+                    <button id="identity-select" onClick={selectedTag !== "" ? this.handleClick : undefined} className={"pill composer__proceed" + (selectedTag === "" ? " pill--disabled" : "")} >{selectedIdentity === "" ? "選擇發佈身份" : `以${this.labelDict[selectedIdentity]}身份發佈`}</button>
                 </div>
             </div>
         )

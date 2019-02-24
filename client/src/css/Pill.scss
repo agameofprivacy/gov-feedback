@@ -48,6 +48,12 @@
         }
     }
 
+    &--new {
+        border-color: rgb(248,102,140);
+        background-color: rgb(248,102,140);
+        color: white;
+    }
+
     &--like {
         border-color: rgb(248,102,140);
         height: 35px;

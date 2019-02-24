@@ -1,17 +1,20 @@
 import React, {Component} from "react";
 import PillSearch from "./PillSearch";
 import RadioSelect from "./RadioSelect";
+import ConfirmFeedback from "./ConfirmFeedback";
 
 class Modal extends Component {
 
     state = {
         selectedTag: "",
         selectedIdentity: "",
+        identiyConfirmed: false
     };
 
     submitForm = (string) => {
         console.log("submit form");
         console.log(string);
+        console.log(this.props.type);
         switch(this.props.type) {
             case "topic-search":
                 this.setState({selectedTag: string});
@@ -28,16 +31,21 @@ class Modal extends Component {
         if (e.target.id === "modal-submit") {
             switch(this.props.type) {
                 case "topic-search":
-                    this.props.setFormState({selectedTag: this.state.selectedTag});
+                    this.props.setFormState({selectedTag: this.state.selectedTag, showsModal: false});
                     break;
                 case "identity-select":
                     this.props.setFormState({selectedIdentity: this.state.selectedIdentity});
                     break;
                 default:
+                    this.props.setFormState({showsModal: false});
                     break;
             }
+        } else if (e.target.id === "identity-next") {
+            this.setState({identiyConfirmed: true});
+            this.props.setFormState({selectedIdentity: this.state.selectedIdentity});
+        } else {
+            this.props.setFormState({showsModal: false});
         }
-        this.props.setFormState({showsModal: false});
     }
 
     render(){
@@ -74,7 +82,7 @@ class Modal extends Component {
                                 </svg>
                             </button>
                             <h2 className="modal__dialog__header__title">
-                                {title}
+                                {this.props.selectedTag !== "" && this.props.selectedIdentity !== "" && this.state.identiyConfirmed ? "檢查回饋內容" : title}
                             </h2>
                         </div>
                         <div className="modal__dialog__body">
@@ -83,18 +91,40 @@ class Modal extends Component {
                                 <PillSearch submitForm={this.submitForm} type="topics" />
                             }
                             {
-                                type === "identity-select" &&
+                                type === "identity-select" && !this.state.identiyConfirmed &&
                                 <RadioSelect submitForm={this.submitForm} sections={data} />
+                            }
+                            {
+                                type === "identity-select" && this.state.identiyConfirmed &&
+                                <ConfirmFeedback tags={[this.props.selectedOrgName, this.props.selectedTag]} content={this.props.content} identity={this.props.selectedIdentity} />
                             }
                             {this.props.children}
                         </div>
                         <div className="modal__dialog__footer">
-                            <button id="modal-cancel" onClick={this.handleModalClick} className="modal__dialog__footer__action modal__dialog__footer__action--secondary">
-                                取消
-                            </button>
-                            <button id="modal-submit" onClick={this.handleModalClick} className="modal__dialog__footer__action modal__dialog__footer__action--primary">
-                                確認
-                            </button>
+                            {
+                                type === "topic-search" &&
+                                <button id="modal-cancel" onClick={this.handleModalClick} className="modal__dialog__footer__action modal__dialog__footer__action--secondary">
+                                    取消
+                                </button>
+                            }
+                            {
+                                type === "topic-search" &&
+                                <button id="modal-submit" onClick={this.handleModalClick} className="modal__dialog__footer__action modal__dialog__footer__action--primary">
+                                    確認
+                                </button>
+                            }
+                            {
+                                type === "identity-select" && !this.state.identiyConfirmed &&
+                                <button id="identity-next" onClick={this.handleModalClick} className="modal__dialog__footer__action modal__dialog__footer__action--primary">
+                                    下一步
+                                </button>
+                            }
+                            {
+                                type === "identity-select" && this.state.identiyConfirmed &&
+                                <button id="feedback-submit" onClick={this.handleModalClick} className="modal__dialog__footer__action modal__dialog__footer__action--primary">
+                                    發佈回饋
+                                </button>
+                            }
                         </div>
                     </div>
                 </div>

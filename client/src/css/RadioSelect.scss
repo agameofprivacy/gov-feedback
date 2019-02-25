@@ -1,5 +1,6 @@
 .radio-select {
     display: flex;
     flex-direction: column;
-    
+    max-height: 50vh;
+    overflow-y: scroll;
 }

@@ -6,7 +6,7 @@ import ConfirmFeedback from "./ConfirmFeedback";
 class Modal extends Component {
 
     state = {
-        selectedTag: "",
+        selectedTopic: "",
         selectedIdentity: "",
         identiyConfirmed: false
     };
@@ -17,7 +17,7 @@ class Modal extends Component {
         console.log(this.props.type);
         switch(this.props.type) {
             case "topic-search":
-                this.setState({selectedTag: string});
+                this.setState({selectedTopic: string});
                 break;
             case "identity-select":
                 this.setState({selectedIdentity: string});
@@ -31,7 +31,7 @@ class Modal extends Component {
         if (e.target.id === "modal-submit") {
             switch(this.props.type) {
                 case "topic-search":
-                    this.props.setFormState({selectedTag: this.state.selectedTag, showsModal: false});
+                    this.props.setFormState({selectedTopic: this.state.selectedTopic, showsModal: false});
                     break;
                 case "identity-select":
                     this.props.setFormState({selectedIdentity: this.state.selectedIdentity});
@@ -82,7 +82,7 @@ class Modal extends Component {
                                 </svg>
                             </button>
                             <h2 className="modal__dialog__header__title">
-                                {this.props.selectedTag !== "" && this.props.selectedIdentity !== "" && this.state.identiyConfirmed ? "檢查回饋內容" : title}
+                                {this.props.selectedTopic !== "" && this.props.selectedIdentity !== "" && this.state.identiyConfirmed ? "檢查回饋內容" : title}
                             </h2>
                         </div>
                         <div className="modal__dialog__body">
@@ -96,7 +96,7 @@ class Modal extends Component {
                             }
                             {
                                 type === "identity-select" && this.state.identiyConfirmed &&
-                                <ConfirmFeedback tags={[this.props.selectedOrgName, this.props.selectedTag]} content={this.props.content} identity={this.props.selectedIdentity} />
+                                <ConfirmFeedback tags={[this.props.selectedOrgName, this.props.selectedTopic]} content={this.props.content} identity={this.props.selectedIdentity} />
                             }
                             {this.props.children}
                         </div>
@@ -121,7 +121,7 @@ class Modal extends Component {
                             }
                             {
                                 type === "identity-select" && this.state.identiyConfirmed &&
-                                <button id="feedback-submit" onClick={this.handleModalClick} className="modal__dialog__footer__action modal__dialog__footer__action--primary">
+                                <button id="feedback-submit" onClick={this.props.createPostWithComposer} className="modal__dialog__footer__action modal__dialog__footer__action--primary">
                                     發佈回饋
                                 </button>
                             }

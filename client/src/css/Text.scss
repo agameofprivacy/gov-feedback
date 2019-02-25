@@ -7,8 +7,12 @@
             font-size: 4em;
         }
 
+        @media screen and (max-width: $break-medium) {
+            font-size: 3em;
+        }
+
         @media screen and (max-width: $break-small) {
-            font-size: 2em;
+            font-size: 2.5em;
         }
 
     }

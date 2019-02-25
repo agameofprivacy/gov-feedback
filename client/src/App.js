@@ -22,11 +22,12 @@ class App extends Component {
     randomIndex: 0,
     selectedOrgId: undefined,
     selectedOrgName: undefined,
-    selectedTag: "",
+    selectedTopic: "",
     selectedIdentity: "",
     modalType: "",
     showsModal: false,
     content: "",
+    reset: false,
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -34,14 +35,14 @@ class App extends Component {
   // changed and implement those changes into our UI
   componentDidMount() {
     this.getRandomOrgs(25);
-    this.createPost({
-      author: "Eddie Chen",
-      topic: "二次見面",
-      content: "測試內容",
-      organization: "法務部行政執行署",
-      organization_id: "2.16.886.101.20003.20006.20090",
-      created: 1550996472856
-    });
+    // this.createPost({
+    //   author: "Eddie Chen",
+    //   topic: "四次見面",
+    //   content: "測試內容",
+    //   organization: "法務部行政執行署",
+    //   organization_id: "2.16.886.101.20003.20006.20090",
+    //   created: 1550996472856
+    // });
     var intervalId = setInterval(this.timer, 1800);
     this.setState({intervalId: intervalId});
   }
@@ -73,7 +74,7 @@ class App extends Component {
     })
   }
     
-  getDataFromDb = (name) => {
+  getDataFromDb = (name, callback) => {
     fetch('http://localhost:3001/graphql', {
       method: 'POST',
       headers: {
@@ -94,7 +95,13 @@ class App extends Component {
       })
     })
       .then(r => r.json())
-      .then(searchResults => this.setState({searchResults: searchResults}));
+      .then(searchResults => {
+        console.log(searchResults)
+        if (searchResults !== null) {
+          this.setState({searchResults: searchResults});
+          callback(searchResults);
+        }
+      });
   };
 
   getRandomOrgs = (count) => {
@@ -119,8 +126,9 @@ class App extends Component {
     });
   }
 
-  createPost = (postInput) => {
+  createPost = (postInput, callback) => {
     console.log("create post");
+    console.log("postInput", postInput);
     fetch('http://localhost:3001/graphql', {
       method: 'POST',
       headers: {
@@ -129,7 +137,7 @@ class App extends Component {
       },
       body: JSON.stringify({
         query: `
-          mutation{
+          mutation($postInput: PostInput){
             createPost(input: $postInput) {
               content
               organization
@@ -141,7 +149,7 @@ class App extends Component {
     })
     .then(r => r.json())
     .then(response => {
-      console.log(response);
+      callback(response);
     })
   }
 
@@ -199,6 +207,33 @@ class App extends Component {
     for ( const[key, value] of Object.entries(form)) {
       this.setState({[key]: value});
     }
+  }
+
+  createPostWithComposer = () => {
+      console.log("run createPostWithComposer");
+      this.createPost({
+        author: "Eddie Chen",
+        topic: this.state.selectedTopic,
+        content: this.state.content,
+        organization: this.state.selectedOrgName,
+        organization_id: this.state.selectedOrgId,
+        created: Number(new Date())
+      }, (function(r){
+        console.log(r);
+        console.log(r.data);
+        this.resetComposer();
+      }).bind(this));
+  }
+
+  resetComposer = () => {
+    this.setState({
+      selectedTopic: "",
+      selectedIdentity: "",
+      modalType: "",
+      showsModal: false,
+      content: "",
+      reset: true
+    });
   }
 
   
@@ -259,12 +294,12 @@ class App extends Component {
         <div>
           {
             this.state.showsModal &&
-            <Modal setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} content={this.state.content} selectedTag={this.state.selectedTag} selectedIdentity={this.state.selectedIdentity} />
+            <Modal content={this.state.content} setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} selectedTopic={this.state.selectedTopic} selectedIdentity={this.state.selectedIdentity} createPostWithComposer={this.createPostWithComposer} />
           }
 
           <NavBar setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={this.state.selectedOrgName} dark />
           <div className="container">
-            <Feed selectedOrgName={this.state.selectedOrgName} selectedTag={this.state.selectedTag} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={posts} />
+            <Feed reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopic={this.state.selectedTopic} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={posts} />
             <Sidebar selectedIndex={0} />
           </div>
           <Footer />

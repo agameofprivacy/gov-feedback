@@ -1,8 +1,13 @@
 import React, {Component} from "react";
 import Pill from "./Pill";
 import Pills from "./Pills";
+import 'moment/locale/zh-tw';
+
+var moment = require ("moment");
+moment.locale('zh-tw');
 
 class Post extends Component {
+
     render() {
         const {post} = this.props;
         const actions = [
@@ -10,18 +15,22 @@ class Post extends Component {
             "轉發",
             "檢舉",
         ];
+        
+        var createdMoment = moment(post.created);
+        var createdString = createdMoment.fromNow();
+
         return (
             <div className={"post" + (post.type === "reply" ? " post--indented" : "")}>
                 <div className="post__header">
                     {
-                        post.tag !== "" &&
-                        <Pill label={post.tag} />
+                        post.topic !== "" &&
+                        <Pill label={post.topic} />
                     }
                     {
                         post.type === "reply" &&
                         <div className="post__header__author">{post.author}</div>
                     }
-                    <div className="post__header__timestamp">{post.created}</div>
+                    <div className="post__header__timestamp">{createdString}</div>
                 </div>
                 <div className="post__body">
                     <p className="post__body__content">{post.content}</p>

@@ -43,6 +43,9 @@ class App extends Component {
     //   organization_id: "2.16.886.101.20003.20006.20090",
     //   created: 1550996472856
     // });
+
+    this.getPostsForOrgId("2.16.886.101.20003.20006.20090");
+
     var intervalId = setInterval(this.timer, 1800);
     this.setState({intervalId: intervalId});
   }
@@ -124,6 +127,56 @@ class App extends Component {
     .then(samples => {
       this.setState({randomOrgs: samples.data.randomOrganizations})
     });
+  }
+
+  getRandomOrgs = (count) => {
+    fetch('http://localhost:3001/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json",
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `query randomOrganizations($count: Int){
+          randomOrganizations(count: $count){
+            name
+          }
+        }`,
+        variables: { count },
+      })
+    })
+    .then(r => r.json())
+    .then(samples => {
+      this.setState({randomOrgs: samples.data.randomOrganizations})
+    });
+  }
+
+  getPostsForOrgId = (orgId) => {
+    fetch('http://localhost:3001/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json",
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `query postsForOrgId($orgId: String){
+          postsForOrgId(orgId: $orgId) {
+            author,
+            topic,
+            organization,
+            organization_id,
+            created,
+            content            
+          }
+        }`,
+        variables: { orgId },
+      })
+    })
+    .then(r => r.json())
+    .then(posts => {
+      console.log(posts);
+      this.setState({posts: posts.data.postsForOrgId})
+    })
   }
 
   createPost = (postInput, callback) => {
@@ -238,24 +291,24 @@ class App extends Component {
 
   
   render() {
-    const posts = [
-      {
-        "tag": "不當黨產",
-        "created": "4小時前",
-        "content": "在蔡總統上任之後，同年七月即完成「不當黨產處理條例」的立法，隨即成立不當黨產處理委員會，大舉清查國民黨的黨產及附隨機構，此法的成立具有極大的爭議性及不平等之處，可見立法的粗糙以及具針對性和不周全，執政者運用政府的公權力強行清算國民黨資產關閉其附隨機構，但對於因政策執行下受牽累國民黨機構任職員工，因此失去賴以維生的工作，對於此情形法條中也未明定附加...",
-        "author": "蔡忠勇",
-        "liked": false,
-        "type": "original"
-      },
-      {
-        "tag": "",
-        "created": "3小時前",
-        "content": "依勞動基準法規定，政黨所聘僱之勞工，適用勞動基準法。中國國民黨現職基層勞工之薪資僅符合一般社會水準，退休金計算亦依現行法令規定辦理，且早已無18％優惠存款利息（有關已退職人員或專案聘用人員與主管之優惠退休金或高薪問題，與本會無涉）。本會一方面希望社會各界，持平對待勞工爭取法律保障之權益；另一方面也要求雇主應付起責任，拿出解決方案。",
-        "author": "中國國民黨工會",
-        "liked": false,
-        "type": "reply"
-      }
-    ];
+    // const posts = [
+    //   {
+    //     "tag": "不當黨產",
+    //     "created": "4小時前",
+    //     "content": "在蔡總統上任之後，同年七月即完成「不當黨產處理條例」的立法，隨即成立不當黨產處理委員會，大舉清查國民黨的黨產及附隨機構，此法的成立具有極大的爭議性及不平等之處，可見立法的粗糙以及具針對性和不周全，執政者運用政府的公權力強行清算國民黨資產關閉其附隨機構，但對於因政策執行下受牽累國民黨機構任職員工，因此失去賴以維生的工作，對於此情形法條中也未明定附加...",
+    //     "author": "蔡忠勇",
+    //     "liked": false,
+    //     "type": "original"
+    //   },
+    //   {
+    //     "tag": "",
+    //     "created": "3小時前",
+    //     "content": "依勞動基準法規定，政黨所聘僱之勞工，適用勞動基準法。中國國民黨現職基層勞工之薪資僅符合一般社會水準，退休金計算亦依現行法令規定辦理，且早已無18％優惠存款利息（有關已退職人員或專案聘用人員與主管之優惠退休金或高薪問題，與本會無涉）。本會一方面希望社會各界，持平對待勞工爭取法律保障之權益；另一方面也要求雇主應付起責任，拿出解決方案。",
+    //     "author": "中國國民黨工會",
+    //     "liked": false,
+    //     "type": "reply"
+    //   }
+    // ];
 
     const sections = [
       {
@@ -299,7 +352,7 @@ class App extends Component {
 
           <NavBar setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={this.state.selectedOrgName} dark />
           <div className="container">
-            <Feed reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopic={this.state.selectedTopic} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={posts} />
+            <Feed reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopic={this.state.selectedTopic} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
             <Sidebar selectedIndex={0} />
           </div>
           <Footer />

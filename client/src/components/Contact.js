@@ -3,13 +3,18 @@ import KeyValue from "./KeyValue";
 
 class Contact extends Component {
 
-    render() {
 
+    render() {
+        let labelDict = {
+            "voice": "電話",
+            "address": "地址"
+        }
+    
         const {contacts} = this.props;
 
         var keyValues = [];
         contacts.forEach(function(contact, index){
-            keyValues.push(<KeyValue key={index} k={contact.label} v={contact.value} />);
+            keyValues.push(<KeyValue key={index} k={labelDict[contact.kind]} v={contact.value} />);
         });
 
         return (

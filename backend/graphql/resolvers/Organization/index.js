@@ -13,6 +13,28 @@ export default {
                 });
             });
         },
+        organizationWithId: (root, args) => {
+            return new Promise((resolve, reject) => {
+                Organization.findOne({
+                    "identifiers.identifier": args.orgId
+                })
+                .populate("parent")
+                .exec((err, res) => {
+                    err ? reject(err) : resolve(res);
+                });
+            });
+        },
+        organizationsWithParentId: (root, args) => {
+            return new Promise((resolve, reject) => {
+                Organization.find({
+                    "parent": args.parentId
+                })
+                .populate("parent")
+                .exec((err, res) => {
+                    err ? reject(err) : resolve(res);
+                });
+            });
+        },
         randomOrganizations: (root, args) => {
             return new Promise((resolve, reject) => {
                 Organization.aggregate([ 

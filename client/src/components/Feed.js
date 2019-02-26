@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import Composer from "./Composer";
 import Post from "./Post";
+import EmptyState from "./EmptyState";
 
 class Feed extends Component {
 
@@ -26,7 +27,7 @@ class Feed extends Component {
                     postsArray
                 }
                 { posts !== undefined && posts.length === 0 &&
-                    <p>尚無回饋</p>
+                    <EmptyState title={"尚無回饋"} />
                 }
             </div>
         )

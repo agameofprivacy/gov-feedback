@@ -28,6 +28,7 @@ class App extends Component {
     showsModal: false,
     content: "",
     reset: false,
+    parallelOrgs: [],
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -75,6 +76,7 @@ class App extends Component {
       selectedOrgName: org.name,
     })
     this.getPostsForOrgId(org.identifiers[0].identifier);
+    this.getOrgWithOrgId(org.identifiers[0].identifier);
   }
     
   getDataFromDb = (name, callback) => {
@@ -176,6 +178,74 @@ class App extends Component {
     .then(posts => {
       console.log(posts);
       this.setState({posts: posts.data.postsForOrgId})
+    });
+  }
+
+  getOrgWithOrgId = (orgId) => {
+    fetch('http://localhost:3001/graphql',{
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json",
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `query organizationWithId($orgId: String){
+          organizationWithId(orgId: $orgId){
+            name,
+            parent {
+              _id,
+              name,
+              identifiers {
+                identifier
+              }
+            },
+            contact_details {
+              kind,
+              value,
+              label
+            },
+            level,
+            hierarchy
+          }
+        }`,
+        variables: { orgId },
+      })
+    })
+    .then(r => r.json())
+    .then(org => {
+      console.log("retrieved org: ", org);
+      this.setState({selectedOrg: org.data.organizationWithId});
+      if (this.state.selectedOrg.parent !== null) {
+          this.getOrgsWithParentId(this.state.selectedOrg.parent._id, (function(orgs){ this.setState({parallelOrgs: orgs.data.organizationsWithParentId})}).bind(this));
+      }
+    });
+  }
+
+  getOrgsWithParentId = (parentId, callback) => {
+    fetch('http://localhost:3001/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        query: `
+          query organizationsWithParentId($parentId: String){
+            organizationsWithParentId(parentId: $parentId) {
+              name,
+              identifiers {
+                identifier
+              }       
+            }
+          }
+        `,
+        variables: { parentId },
+      })
+    })
+    .then(r => r.json())
+    .then(orgs => {
+      console.log(orgs);
+      callback(orgs);
     })
   }
 
@@ -353,7 +423,7 @@ class App extends Component {
           <NavBar setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={this.state.selectedOrgName} dark />
           <div className="container">
             <Feed reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopic={this.state.selectedTopic} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
-            <Sidebar selectedIndex={0} />
+            <Sidebar org={this.state.selectedOrg} parallelOrgs={this.state.parallelOrgs} selectedIndex={0} />
           </div>
           <Footer />
         </div>

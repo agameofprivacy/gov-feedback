@@ -7,51 +7,7 @@ import Pills from "./Pills";
 class Sidebar extends Component {
 
     render() {
-        const {selectedIndex} = this.props;
-
-        let contacts = [
-            {
-                "label": "電話",
-                "value": "(02) 2521-6555",
-            },
-            {
-                "label": "地址",
-                "value": "臺北市中山區南京東路2段1號",
-            },
-            {
-                "label": "電子郵件信箱",
-                "value": "tpy@mail.moj.gov.tw",
-            },
-            {
-                "label": "臉書粉絲團",
-                "value": "facebook.com/tpymoj",
-            }
-        ];
-
-        let collections = [
-            {
-                "label": "上級機關",
-                "entries": [
-                    {
-                        "name": "行政執行署",
-                        "identifier": ""
-                    }
-                ]
-            },
-            {
-                "label": "平行機關",
-                "entries": [
-                    {
-                        "name": "行政執行署士林分署",
-                        "identifier": ""
-                    },
-                    {
-                        "name": "行政執行署新北分署",
-                        "identifier": ""
-                    }
-                ]
-            }
-        ];
+        const {selectedIndex, org, parallelOrgs} = this.props;
 
         let pills = [
             "新案管",
@@ -61,15 +17,42 @@ class Sidebar extends Component {
             "電子憑證未發",
         ];
 
+        var collections = [];
+        if (org !== undefined && org.parent !== null) {
+            collections.push({
+                "label": "上級機關",
+                "entries": [
+                    {
+                        "name": org.parent.name,
+                        "identifier": org.parent.identifiers[0].identifier
+                    }
+                ]
+            })
+        }
+
+        if (parallelOrgs !== null && parallelOrgs.length > 0) {
+            var entries = [];
+            parallelOrgs.forEach((org => {
+                entries.push({
+                    "name": org.name,
+                    "identifier": org.identifiers[0].identifier
+                })
+            }))
+            collections.push({
+                "label": `平行機關 (${entries.length})`,
+                "entries": entries
+            });
+        }
+
         return (
             <div className="sidebar">
                 <Tabs selectedIndex={selectedIndex} tabs={["關於", "關注"]} />
                 {
-                    selectedIndex === 0 &&
-                    <Contact contacts={contacts} />
+                    org !== undefined && selectedIndex === 0 &&
+                    <Contact contacts={org.contact_details} />
                 }
                 {
-                    selectedIndex === 0 &&
+                    org !== undefined && selectedIndex === 0 &&
                     <div className="section">
                         <div className="section__title-container m-b-1">
                             <h3 className="section__title-container__title">熱門議題</h3>
@@ -77,8 +60,8 @@ class Sidebar extends Component {
                         <Pills pills={pills} />
                     </div>
                 }
-                                {
-                    selectedIndex === 0 &&
+                {
+                    org !== undefined && selectedIndex === 0 &&
                     <RelatedOrgs collections={collections} />
                 }
             </div>

@@ -44,7 +44,6 @@ class App extends Component {
     //   created: 1550996472856
     // });
 
-    this.getPostsForOrgId("2.16.886.101.20003.20006.20090");
 
     var intervalId = setInterval(this.timer, 1800);
     this.setState({intervalId: intervalId});
@@ -75,6 +74,7 @@ class App extends Component {
       selectedOrgId: org.identifiers[0].identifier,
       selectedOrgName: org.name,
     })
+    this.getPostsForOrgId(org.identifiers[0].identifier);
   }
     
   getDataFromDb = (name, callback) => {

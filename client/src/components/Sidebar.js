@@ -10,11 +10,7 @@ class Sidebar extends Component {
         const {selectedIndex, org, parallelOrgs} = this.props;
 
         let pills = [
-            "新案管",
-            "案管當機",
-            "案管問題",
-            "案管廠商",
-            "電子憑證未發",
+            "範例議題",
         ];
 
         var collections = [];
@@ -43,7 +39,6 @@ class Sidebar extends Component {
                 "entries": entries
             });
         }
-
         return (
             <div className="sidebar">
                 <Tabs selectedIndex={selectedIndex} tabs={["關於", "關注"]} />

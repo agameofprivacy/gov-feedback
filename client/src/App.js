@@ -217,6 +217,8 @@ class App extends Component {
       this.setState({selectedOrg: org.data.organizationWithId});
       if (this.state.selectedOrg.parent !== null) {
           this.getOrgsWithParentId(this.state.selectedOrg.parent._id, (function(orgs){ this.setState({parallelOrgs: orgs.data.organizationsWithParentId})}).bind(this));
+      } else {
+        this.setState({parallelOrgs: []})
       }
     });
   }
@@ -345,6 +347,7 @@ class App extends Component {
         console.log(r);
         console.log(r.data);
         this.resetComposer();
+        this.getPostsForOrgId(this.state.selectedOrgId);
       }).bind(this));
   }
 

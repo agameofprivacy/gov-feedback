@@ -28,14 +28,16 @@ class Composer extends Component {
         "anonymous": "匿名",
     };
 
-    render() {
-
-        const {defaultTagName, selectedTopic, selectedIdentity, reset} = this.props;
-
-        if (reset) {
+    componentDidUpdate = () => {
+        if (this.props.reset) {
             this.refs.content.value = "";
             this.props.setFormState({reset: false});
-        }
+        }    
+    }
+
+    render() {
+
+        const {defaultTagName, selectedTopic, selectedIdentity} = this.props;
 
         return (
             <div className="composer">

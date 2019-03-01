@@ -15,7 +15,7 @@
     "graphql": "^14.1.1",
     "graphql-tools": "^4.0.4",
     "merge-graphql-schemas": "^1.5.8",
-    "mongoose": "^5.4.10",
+    "mongoose": "^5.4.16",
     "morgan": "^1.9.1",
     "nodemon": "^1.18.9"
   },

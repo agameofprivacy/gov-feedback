@@ -101,7 +101,6 @@ class App extends Component {
     })
       .then(r => r.json())
       .then(searchResults => {
-        console.log(searchResults)
         if (searchResults !== null) {
           this.setState({searchResults: searchResults});
           callback(searchResults);
@@ -216,7 +215,12 @@ class App extends Component {
       console.log("retrieved org: ", org);
       this.setState({selectedOrg: org.data.organizationWithId});
       if (this.state.selectedOrg.parent !== null) {
-          this.getOrgsWithParentId(this.state.selectedOrg.parent._id, (function(orgs){ this.setState({parallelOrgs: orgs.data.organizationsWithParentId})}).bind(this));
+          this.getOrgsWithParentId(this.state.selectedOrg.parent._id, (function(orgs){ 
+            orgs = orgs.data.organizationsWithParentId.filter((function( org ) {
+              return org.identifiers[0].identifier !== this.state.selectedOrgId;
+            }).bind(this));
+          
+            this.setState({parallelOrgs: orgs})}).bind(this));
       } else {
         this.setState({parallelOrgs: []})
       }
@@ -270,6 +274,34 @@ class App extends Component {
           }
         `,
         variables: {postInput},
+      })
+    })
+    .then(r => r.json())
+    .then(response => {
+      callback(response);
+    })
+  }
+
+  createTopic = (topicInput, callback) => {
+    console.log("create topic");
+    console.log("topicInput", topicInput);
+    fetch('http://localhost:3001/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json",
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          mutation($topicInput: TopicInput){
+            createTopic(input: $topicInput) {
+              name
+              popularityWeek
+              popularityAll
+            }
+          }
+        `,
+        variables: {topicInput},
       })
     })
     .then(r => r.json())

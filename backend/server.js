@@ -18,10 +18,12 @@ mongoose
   .connect(
     dbRoute,
     {
+      dbName: 'gov-feedback',
       useCreateIndex: true,
       useNewUrlParser: true,
-      server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
-      replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
+      keepAlive: 1,
+      connectTimeoutMS: 30000,
+      readConcern: {level: "majority"},
     }
   )
   .then(() => console.log("MongoDB connected"))
@@ -42,6 +44,17 @@ app.listen(PORT, () => console.log(`SERVER running on PORT ${PORT}`));
 // model imports
 const Organization = require("./models/Organization");
 
+const Post = require("./models/Post");
+
+Post.watch().on('change', data => {
+  switch (data.operationType) {
+    case 'insert':
+      console.log('inserted', data);
+    default:
+      console.log(data.operationType);
+      break;
+  }
+});
 // organizations.forEach(function(org){
   
 //   var other_names = [];

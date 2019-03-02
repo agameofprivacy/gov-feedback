@@ -80,18 +80,6 @@ const OrganizationSchema = new Schema({
         type: String,
         required: true,
     },
-    identifiers: [
-      {
-        scheme: {
-          type: String,
-          required: true,
-        },
-        identifier: {
-          type: String,
-          required: true,
-        }
-      }
-    ],
     count: {
       type: Number,
       required: true,
@@ -102,18 +90,6 @@ const OrganizationSchema = new Schema({
         type: String,
         required: true,
     },
-    identifiers: [
-      {
-        scheme: {
-          type: String,
-          required: true,
-        },
-        identifier: {
-          type: String,
-          required: true,
-        }
-      }
-    ],
     count: {
       type: Number,
       required: true

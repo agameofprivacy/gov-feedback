@@ -11,7 +11,7 @@ export default {
                     err ? reject(err) : resolve(res);
                 });
             });
-        }
+        }  
     },
     Mutation: {
         async createTopic(root, {

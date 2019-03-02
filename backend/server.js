@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 import schema from "./graphql/";
+import Topic from "./models/Topic";
+import Organization from "./models/Organization";
 
 const app = express();
 const PORT = process.env.PORT || "4000";
@@ -42,14 +44,153 @@ app.use(
 app.listen(PORT, () => console.log(`SERVER running on PORT ${PORT}`));
 
 // model imports
-const Organization = require("./models/Organization");
-
 const Post = require("./models/Post");
 
 Post.watch().on('change', data => {
   switch (data.operationType) {
     case 'insert':
       console.log('inserted', data);
+      var topic = data.fullDocument.topic;
+      var organization_id = data.fullDocument.organization_id;
+      var organization_name = data.fullDocument.organization;
+
+      Topic.findOne({name: topic})
+      .exec((err, res) => {
+        if (err) {console.log(err)} else {
+          console.log("res", res);
+          if (res === null) {
+            // topic doesn't exist, create it
+            Topic.create({
+              name: topic,
+              popularityAll: 1,
+              popularityWeek: 1,
+              orgsAll: [{
+                name: organization_name,
+                identifier: organization_id,
+                count: 1
+              }],
+              orgsWeek: [{
+                name: organization_name,
+                identifier: organization_id,
+                count: 1
+              }]
+            }).then(result => {
+              console.log("created", result);
+            })
+          } else {
+            // topic exists, update it
+            var targetPopularityAll = res.hasOwnProperty("popularityAll") ? res.popularityAll + 1 : 1;
+            var targetPopularityWeek = res.hasOwnProperty("popularityWeek") ? res.popularityWeek + 1 : 1;
+            var targetOrgsAll;
+            var targetOrgsWeek;
+
+            var indexOfOrgAll = res.orgsAll.map(e => e.identifier).indexOf(organization_id);
+            var indexOfOrgWeek = res.orgsWeek.map(e => e.identifier).indexOf(organization_id);
+            if (indexOfOrgAll >= 0){
+              // if topic already had organization, increment existing count
+              targetOrgsAll = res.orgsAll;
+              targetOrgsAll[indexOfOrgAll].count = targetOrgsAll[indexOfOrgAll].count + 1;
+            } else {
+              // topic didn't have organization, add to array
+              targetOrgsAll = res.orgsAll;
+              targetOrgsAll.push({
+                name: organization_name,
+                identifier: organization_id,
+                count: 1
+              })
+            }
+            if (indexOfOrgWeek >= 0){
+              // if topic already had organization, increment existing count
+              targetOrgsWeek = res.orgsWeek;
+              targetOrgsWeek[indexOfOrgWeek].count = targetOrgsWeek[indexOfOrgWeek].count + 1;
+            } else {
+              // topic didn't have organization, add to array
+              targetOrgsWeek = res.orgsWeek;
+              targetOrgsWeek.push({
+                name: organization_name,
+                identifier: organization_id,
+                count: 1
+              })
+            }
+            Topic.updateOne({_id: res._id}, {
+                popularityAll: targetPopularityAll,
+                popularityWeek: targetPopularityWeek,
+                orgsAll: targetOrgsAll,
+                orgsWeek: targetOrgsWeek
+              }, 
+              (err, affected, res) => {
+                if (err) {
+                  console.log(err)
+                } else {
+                  console.log(res);
+                }
+              }
+            );
+          }
+        }
+      })
+      // update Organization
+
+      Organization.findOne({"identifiers.identifier": organization_id})
+      .exec((err, res) => {
+        if (err) { console.log(err); }
+        else {
+          if (res === undefined) {
+            // weird
+            console.log("org not found", organization_id);
+          } else {
+            var targetTopicsAll;
+            var targetTopicsWeek;
+
+            var indexOfTopicAll = res.topicsAll.map(e => e.name).indexOf(topic);
+            var indexOfTopicWeek = res.topicsWeek.map(e => e.name).indexOf(topic);
+            if (indexOfTopicAll >= 0){
+              // if topic already had organization, increment existing count
+              targetTopicsAll = res.topicsAll;
+              targetTopicsAll[indexOfTopicAll].count = targetTopicsAll[indexOfTopicAll].count + 1;
+            } else {
+              // topic didn't have organization, add to array
+              targetTopicsAll = res.topicsAll;
+              targetTopicsAll.push({
+                name: topic,
+                count: 1
+              })
+            }
+            if (indexOfTopicWeek >= 0){
+              // if topic already had organization, increment existing count
+              targetTopicsWeek = res.topicsWeek;
+              targetTopicsWeek[indexOfTopicWeek].count = targetTopicsWeek[indexOfTopicWeek].count + 1;
+            } else {
+              // topic didn't have organization, add to array
+              targetTopicsWeek = res.topicsWeek;
+              targetTopicsWeek.push({
+                name: topic,
+                count: 1
+              })
+            }
+
+            // popularityAll++
+            // popularityWeek++
+            // topicsWeek find topic and increment count, add to array if doesn't exist
+            // topicsAll find topic and increment count, add to array if doesn't exist
+            Organization.updateOne({_id: res._id}, {
+              popularityAll: res.hasOwnProperty("popularityAll") ? res.popularityAll + 1 : 1,
+              popularityWeek: res.hasOwnProperty("popularityWeek") ? res.popularityWeek + 1 : 1,
+              topicsAll: targetTopicsAll,
+              topicsWeek: targetTopicsWeek
+            }, 
+            (err, affected, res) => {
+              if (err) {
+                console.log(err)
+              } else {
+                console.log(res);
+              }
+            }
+            );
+          }
+        }
+      });
+
     default:
       console.log(data.operationType);
       break;

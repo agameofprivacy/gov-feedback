@@ -12,9 +12,6 @@ class Modal extends Component {
     };
 
     submitForm = (string) => {
-        console.log("submit form");
-        console.log(string);
-        console.log(this.props.type);
         switch(this.props.type) {
             case "topic-search":
                 this.setState({selectedTopic: string});

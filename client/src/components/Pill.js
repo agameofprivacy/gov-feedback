@@ -2,8 +2,14 @@ import React, {Component} from "react";
 
 class Pill extends Component {
 
+    handleClick = (e) => {
+        if (this.props.handlePillClick) {
+            this.props.handlePillClick(this.props.label);
+        }
+    }
+
     render() {
-        const {label, action, like} = this.props;
+        const {label, action, like, highlighted} = this.props;
 
         if (like) {
             return (
@@ -16,7 +22,7 @@ class Pill extends Component {
             );
         } else {
             return (
-                <div className={"pill" + (action ? " pill--action" : "")} >{label}</div>
+                <div onClick={this.handleClick} className={"pill" + (action ? " pill--action" : "") + (highlighted ? " pill--highlighted" : "")} >{label}</div>
             );
         }
         

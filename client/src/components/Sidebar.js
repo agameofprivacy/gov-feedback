@@ -6,12 +6,20 @@ import Pills from "./Pills";
 
 class Sidebar extends Component {
 
+    handlePillClick = (identifier) => {
+        console.log(identifier[0], identifier[1]);
+        this.props.setSelectedOrg({
+            name: identifier[1],
+            identifiers: [
+                {
+                    identifier: identifier[0]
+                }
+            ]
+        })
+    }
+
     render() {
         const {selectedIndex, org, parallelOrgs} = this.props;
-
-        let pills = [
-            "範例議題",
-        ];
 
         var collections = [];
         if (org !== undefined && org.parent !== null) {
@@ -39,25 +47,36 @@ class Sidebar extends Component {
                 "entries": entries
             });
         }
+
+        var hotTopics = [];
+        if (org !== undefined) {
+            var topicsWeek = org.topicsWeek.sort((a, b) => {
+                return a.count - b.count;
+            })
+            topicsWeek.forEach((topic) => {
+                hotTopics.push(topic.name);
+            })
+        }
+
         return (
             <div className="sidebar">
                 <Tabs selectedIndex={selectedIndex} tabs={["關於", "關注"]} />
                 {
-                    org !== undefined && selectedIndex === 0 &&
-                    <Contact contacts={org.contact_details} />
-                }
-                {
-                    org !== undefined && selectedIndex === 0 &&
+                    org !== undefined && selectedIndex === 0 && hotTopics.length > 0 &&
                     <div className="section">
                         <div className="section__title-container m-b-1">
-                            <h3 className="section__title-container__title">熱門議題</h3>
+                            <h3 className="section__title-container__title">熱門話題</h3>
                         </div>
-                        <Pills pills={pills} />
+                        <Pills pills={hotTopics} />
                     </div>
                 }
                 {
                     org !== undefined && selectedIndex === 0 &&
-                    <RelatedOrgs collections={collections} />
+                    <RelatedOrgs collections={collections} handlePillClick={this.handlePillClick} />
+                }
+                {
+                    org !== undefined && selectedIndex === 0 &&
+                    <Contact contacts={org.contact_details} />
                 }
             </div>
         )

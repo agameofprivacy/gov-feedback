@@ -14,7 +14,7 @@ class Contact extends Component {
 
         var keyValues = [];
         contacts.forEach(function(contact, index){
-            keyValues.push(<KeyValue key={index} k={labelDict[contact.kind]} v={contact.value} />);
+            keyValues.push(<KeyValue last={index === contacts.length - 1} key={index} k={labelDict[contact.kind]} v={contact.value} />);
         });
 
         return (

@@ -45,7 +45,7 @@ class SearchBox extends Component {
 
         return (
             <div>
-                <input onBlur={this.handleClick} className={dark ? "searchbox searchbox--dark" : "searchbox"} onChange={e => {this.setState({query: e.target.value, isFetching: true}); this.props.queryDB(e.target.value, (function(r){this.setState({isFetching: false})}).bind(this));}} value={query} placeholder="搜尋機關或議題" />
+                <input onBlur={this.handleClick} className={dark ? "searchbox searchbox--dark" : "searchbox"} onChange={e => {this.setState({query: e.target.value, isFetching: true}); this.props.queryDB(e.target.value, (function(r){this.setState({isFetching: false})}).bind(this));}} value={query} placeholder="搜尋機關或話題" />
                 { showsClose &&
                     <button onClick={dismissSearchbox} className="navbar__button navbar__button--secondary"><IconButton type="close" /></button>
                 }

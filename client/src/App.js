@@ -80,6 +80,7 @@ class App extends Component {
   }
     
   getDataFromDb = (name, callback) => {
+    this.setState({query: name});
     fetch('http://localhost:3001/graphql', {
       method: 'POST',
       headers: {
@@ -101,7 +102,7 @@ class App extends Component {
     })
       .then(r => r.json())
       .then(searchResults => {
-        if (searchResults !== null) {
+        if (searchResults !== null && this.state.query === name) {
           this.setState({searchResults: searchResults});
           callback(searchResults);
         }
@@ -204,7 +205,15 @@ class App extends Component {
               label
             },
             level,
-            hierarchy
+            hierarchy,
+            topicsWeek {
+              name,
+              count
+            },
+            topicsAll {
+              name,
+              count
+            }
           }
         }`,
         variables: { orgId },
@@ -452,13 +461,13 @@ class App extends Component {
         <div>
           {
             this.state.showsModal &&
-            <Modal content={this.state.content} setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} selectedTopic={this.state.selectedTopic} selectedIdentity={this.state.selectedIdentity} createPostWithComposer={this.createPostWithComposer} />
+            <Modal selectedOrg={this.state.selectedOrg} content={this.state.content} setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} selectedTopic={this.state.selectedTopic} selectedIdentity={this.state.selectedIdentity} createPostWithComposer={this.createPostWithComposer} />
           }
 
           <NavBar setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={this.state.selectedOrgName} dark />
           <div className="container">
             <Feed reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopic={this.state.selectedTopic} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
-            <Sidebar org={this.state.selectedOrg} parallelOrgs={this.state.parallelOrgs} selectedIndex={0} />
+            <Sidebar setSelectedOrg={this.setSelectedOrg} org={this.state.selectedOrg} parallelOrgs={this.state.parallelOrgs} selectedIndex={0} />
           </div>
           <Footer />
         </div>

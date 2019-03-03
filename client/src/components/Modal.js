@@ -52,7 +52,7 @@ class Modal extends Component {
 
         switch(type) {
             case "topic-search":
-                title = "選擇議題標籤";
+                title = "選擇話題標籤";
                 break;
             case "identity-select":
                 title = "選擇發佈身份";
@@ -85,7 +85,7 @@ class Modal extends Component {
                         <div className="modal__dialog__body">
                             {
                                 type === "topic-search" &&
-                                <PillSearch submitForm={this.submitForm} type="topics" />
+                                <PillSearch selectedOrg={this.props.selectedOrg} submitForm={this.submitForm} type="topics" />
                             }
                             {
                                 type === "identity-select" && !this.state.identiyConfirmed &&

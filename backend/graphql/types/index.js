@@ -5,7 +5,8 @@ import ContactDetail from "./ContactDetail/";
 import Identifier from "./Identifier/";
 import Post from "./Post/";
 import Topic from "./Topic/";
+import OrgTopic from "./OrgTopic/";
 
-const typeDefs = [Organization, ContactDetail, Identifier, Post, Topic];
+const typeDefs = [Organization, ContactDetail, Identifier, Post, Topic, OrgTopic];
 
 export default mergeTypes(typeDefs, { all: true });

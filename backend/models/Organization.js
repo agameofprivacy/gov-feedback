@@ -81,8 +81,8 @@ const OrganizationSchema = new Schema({
         required: true,
     },
     count: {
-      type: Number,
-      required: true,
+        type: Number,
+        required: true,
     }
   }],
   topicsAll: [{
@@ -91,8 +91,8 @@ const OrganizationSchema = new Schema({
         required: true,
     },
     count: {
-      type: Number,
-      required: true
+        type: Number,
+        required: true
     }
   }],
 });

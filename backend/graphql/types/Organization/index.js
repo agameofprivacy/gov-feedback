@@ -6,6 +6,8 @@ export default `
         identifiers: [Identifier]!,
         level: Int,
         hierarchy: String,
+        topicsAll: [OrgTopic],
+        topicsWeek: [OrgTopic],
         _id: String,
     }
 

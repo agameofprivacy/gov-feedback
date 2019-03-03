@@ -81,7 +81,7 @@ class App extends Component {
     
   getDataFromDb = (name, callback) => {
     this.setState({query: name});
-    fetch('http://localhost:3001/graphql', {
+    fetch('/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ class App extends Component {
   };
 
   getRandomOrgs = (count) => {
-    fetch('http://localhost:3001/graphql', {
+    fetch('/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -132,7 +132,7 @@ class App extends Component {
   }
 
   getRandomOrgs = (count) => {
-    fetch('http://localhost:3001/graphql', {
+    fetch('/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -154,7 +154,7 @@ class App extends Component {
   }
 
   getPostsForOrgId = (orgId) => {
-    fetch('http://localhost:3001/graphql', {
+    fetch('/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -182,7 +182,7 @@ class App extends Component {
   }
 
   getOrgWithOrgId = (orgId) => {
-    fetch('http://localhost:3001/graphql',{
+    fetch('/graphql',{
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -237,7 +237,7 @@ class App extends Component {
   }
 
   getOrgsWithParentId = (parentId, callback) => {
-    fetch('http://localhost:3001/graphql', {
+    fetch('/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -267,7 +267,7 @@ class App extends Component {
   createPost = (postInput, callback) => {
     console.log("create post");
     console.log("postInput", postInput);
-    fetch('http://localhost:3001/graphql', {
+    fetch('/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -294,7 +294,7 @@ class App extends Component {
   createTopic = (topicInput, callback) => {
     console.log("create topic");
     console.log("topicInput", topicInput);
-    fetch('http://localhost:3001/graphql', {
+    fetch('/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -328,7 +328,7 @@ class App extends Component {
       ++idToBeAdded;
     }
 
-    axios.post("http://localhost:3001/api/putData", {
+    axios.post("/api/putData", {
       id: idToBeAdded,
       message: message
     });
@@ -345,7 +345,7 @@ class App extends Component {
       }
     });
 
-    axios.delete("http://localhost:3001/api/deleteData", {
+    axios.delete("/api/deleteData", {
       data: {
         id: objIdToDelete
       }
@@ -363,7 +363,7 @@ class App extends Component {
       }
     });
 
-    axios.post("http://localhost:3001/api/updateData", {
+    axios.post("/api/updateData", {
       id: objIdToUpdate,
       update: { message: updateToApply }
     });

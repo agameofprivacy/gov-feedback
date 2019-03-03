@@ -42,7 +42,7 @@ class PillSearch extends Component {
     searchForTopic = (name) => {
         console.log(name);
         this.setState({topics: []});
-        fetch('http://localhost:3001/graphql', {
+        fetch('/graphql', {
             method: 'POST',
             headers: {
               'Content-Type': "application/json",

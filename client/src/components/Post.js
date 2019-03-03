@@ -8,8 +8,9 @@ moment.locale('zh-tw');
 
 class Post extends Component {
 
+
     render() {
-        const {post} = this.props;
+        const {post, color} = this.props;
         const actions = [
             "回覆",
             "轉發",
@@ -24,7 +25,7 @@ class Post extends Component {
                 <div className="post__header">
                     {
                         post.topic !== "" &&
-                        <Pill label={post.topic} />
+                        <Pill color={color} label={post.topic} />
                     }
                     {
                         post.type === "reply" &&

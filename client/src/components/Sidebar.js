@@ -71,7 +71,7 @@ class Sidebar extends Component {
                     </div>
                 }
                 {
-                    org !== undefined && selectedIndex === 0 &&
+                    org !== undefined && selectedIndex === 0 && collections.length > 0 &&
                     <RelatedOrgs collections={collections} handlePillClick={this.handlePillClick} />
                 }
                 {

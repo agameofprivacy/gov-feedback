@@ -2,8 +2,15 @@ import React, {Component} from "react";
 import Composer from "./Composer";
 import Post from "./Post";
 import EmptyState from "./EmptyState";
+const randomColor = require('randomcolor');
 
 class Feed extends Component {
+    
+    colors = randomColor({
+        luminosity: 'bright',
+        format: 'hex',
+        count: 100,
+    })
 
     render() {
 
@@ -12,11 +19,17 @@ class Feed extends Component {
         var postsArray = [];
 
         if (posts !== undefined && posts.length > 0) {
+            var topics = [];
+            posts.forEach((post) => {
+                if (!topics.includes(post.topic)){
+                    topics.push(post.topic);
+                }
+            })
             posts.forEach(function(post, index){
                 postsArray.push(
-                    <Post key={index} post={post} />
+                    <Post color={this.colors[topics.indexOf(post.topic)]} key={index} post={post} />
                 );
-            })
+            }.bind(this));
             
         }
 

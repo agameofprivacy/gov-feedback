@@ -9,7 +9,7 @@ class Pill extends Component {
     }
 
     render() {
-        const {label, action, like, highlighted} = this.props;
+        const {label, action, like, highlighted, color} = this.props;
 
         if (like) {
             return (
@@ -22,7 +22,7 @@ class Pill extends Component {
             );
         } else {
             return (
-                <div onClick={this.handleClick} className={"pill" + (action ? " pill--action" : "") + (highlighted ? " pill--highlighted" : "")} >{label}</div>
+                <div style={color ? {backgroundColor: color} : {}} onClick={this.handleClick} className={"pill" + (action ? " pill--action" : "") + (highlighted ? " pill--highlighted" : "") + (color ? " pill--filled--dark" : "")} >{label}</div>
             );
         }
         

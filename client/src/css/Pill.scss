@@ -7,6 +7,14 @@
     outline: none;
     cursor: pointer;
 
+    &--filled {
+        border: none;
+        
+        &--dark {
+            color: white;
+        }
+    }
+
     &--default {
         border-color: rgb(100,100,100);
         background-color: rgb(100,100,100);

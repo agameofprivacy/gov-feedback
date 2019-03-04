@@ -8,6 +8,18 @@ moment.locale('zh-tw');
 
 class Post extends Component {
 
+    handleTagClick = (e) => {
+        switch (this.props.tagType) {
+            case "org":
+                this.props.handleOrgClick([e.target.getAttribute("value"), e.target.innerText]);
+                break;
+            case "topic":
+                this.props.handleTopicClick(e.target.innerText);
+                break;
+            default:
+                break;
+        }
+    }
 
     render() {
         const {post, color} = this.props;
@@ -25,7 +37,7 @@ class Post extends Component {
                 <div className="post__header">
                     {
                         post.topic !== "" &&
-                        <Pill color={color} label={post.topic} />
+                        <Pill handleClick={this.handleTagClick} color={color} label={this.props.tagType === "topic" ? post.topic : post.organization} type="link"/>
                     }
                     {
                         post.type === "reply" &&

@@ -11,7 +11,7 @@ class Pills extends Component {
         pills.forEach(function(pill, index){
             pillsArray.push(
                 <div key={index} className="pill-container">
-                    <Pill highlighted={highlighted ? highlighted.includes(pill) : false} value={pill} action={actions} label={pill} handlePillClick={handlePillClick} />
+                    <Pill highlighted={highlighted ? highlighted.includes(pill) : false} value={pill} action={actions} label={pill} handlePillClick={handlePillClick} type="toggle"/>
                 </div>
             )
         })

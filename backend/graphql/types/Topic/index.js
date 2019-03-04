@@ -3,11 +3,13 @@ export default `
         name: String!,
         popularityWeek: Float,
         popularityAll: Float,
+        orgsAll: [TopicOrg],
+        orgsWeek: [TopicOrg],
     }
 
     type Query {
         topics(name: String): [Topic]!,
-        getTopicWithName(name: String): Topic,
+        topicWithName(name: String): Topic,
     }
 
     input TopicInput {

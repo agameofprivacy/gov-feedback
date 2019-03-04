@@ -12,10 +12,14 @@ export default {
                 });
             });
         },
-        getTopicWithName: (root, args) => {
+        topicWithName: (root, args) => {
             return new Promise((resolve, reject) => {
-                Topic.findOne({name: args.topic})
+                Topic.findOne({
+                    "name": args.name
+                })
                 .exec((err, res) => {
+                    console.log(err);
+                    console.log(res);
                     err ? reject(err) : resolve(res);
                 });
             });

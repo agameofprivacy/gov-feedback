@@ -6,7 +6,7 @@ import ConfirmFeedback from "./ConfirmFeedback";
 class Modal extends Component {
 
     state = {
-        selectedTopicName: "",
+        composerTag: "",
         selectedIdentity: "",
         identiyConfirmed: false
     };
@@ -14,7 +14,7 @@ class Modal extends Component {
     submitForm = (string) => {
         switch(this.props.type) {
             case "topic-search":
-                this.setState({selectedTopicName: string});
+                this.setState({composerTag: string});
                 break;
             case "identity-select":
                 this.setState({selectedIdentity: string});
@@ -28,7 +28,7 @@ class Modal extends Component {
         if (e.target.id === "modal-submit") {
             switch(this.props.type) {
                 case "topic-search":
-                    this.props.setFormState({selectedTopicName: this.state.selectedTopicName, showsModal: false});
+                    this.props.setFormState({composerTag: this.state.composerTag, showsModal: false});
                     break;
                 case "identity-select":
                     this.props.setFormState({selectedIdentity: this.state.selectedIdentity});
@@ -79,7 +79,7 @@ class Modal extends Component {
                                 </svg>
                             </button>
                             <h2 className="modal__dialog__header__title">
-                                {this.props.selectedTopicName !== "" && this.props.selectedIdentity !== "" && this.state.identiyConfirmed ? "檢查回饋內容" : title}
+                                {this.props.composerTag !== "" && this.props.selectedIdentity !== "" && this.state.identiyConfirmed ? "檢查回饋內容" : title}
                             </h2>
                         </div>
                         <div className="modal__dialog__body">
@@ -93,7 +93,7 @@ class Modal extends Component {
                             }
                             {
                                 type === "identity-select" && this.state.identiyConfirmed &&
-                                <ConfirmFeedback tags={[this.props.selectedOrgName, this.props.selectedTopicName]} content={this.props.content} identity={this.props.selectedIdentity} />
+                                <ConfirmFeedback tags={[this.props.selectedOrgName, this.props.composerTag]} content={this.props.content} identity={this.props.selectedIdentity} />
                             }
                             {this.props.children}
                         </div>

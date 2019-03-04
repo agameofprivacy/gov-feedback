@@ -3,8 +3,19 @@ import React, {Component} from "react";
 class Pill extends Component {
 
     handleClick = (e) => {
-        if (this.props.handlePillClick) {
-            this.props.handlePillClick(this.props.label);
+        switch (this.props.type) {
+            case "toggle":
+                if (this.props.handlePillClick) {
+                    this.props.handlePillClick(this.props.label);
+                }
+                break;
+            case "link":
+                if (this.props.handleClick) {
+                    this.props.handleClick(e);
+                }
+                break;
+            default:
+                break;
         }
     }
 

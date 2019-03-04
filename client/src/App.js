@@ -8,6 +8,7 @@ import Sidebar from "./components/Sidebar";
 import Modal from "./components/Modal";
 import Footer from "./components/Footer";
 
+
 class App extends Component {
   // initialize our state 
   state = {
@@ -25,6 +26,7 @@ class App extends Component {
     selectedOrgName: undefined,
     selectedTopicName: "",
     selectedIdentity: "",
+    composerTag: "",
     modalType: "",
     showsModal: false,
     content: "",
@@ -82,16 +84,15 @@ class App extends Component {
     this.getOrgWithOrgId(org.identifiers[0].identifier);
   }
 
-  setselectedTopicName = (topic) => {
-    console.log("selected topic", topic);
+  setSelectedTopic = (name) => {
     this.setState({
       selectedOrgId: "",
       selectedOrgName: "",
       selectedType: "topic",
-      selectedTopicName: topic
+      selectedTopicName: name,
     })
-    this.getPostsForTopic(topic);
-    this.getTopicWithName(topic);
+    this.getPostsForTopic(name);
+    this.topicWithName(name);
   }
 
   getPostsForTopic = (topic) => {
@@ -122,7 +123,7 @@ class App extends Component {
     });
   };
 
-  getTopicWithName = (name) => {
+  topicWithName = (name) => {
     fetch('/graphql', {
       method: 'POST',
       headers: {
@@ -130,11 +131,19 @@ class App extends Component {
         'Accept': 'application/json',
       },
       body: JSON.stringify({
-        query: `query getTopicWithName($name: String){
-          getTopicWithName(name: $name) {
+        query: `query topicWithName($name: String){
+          topicWithName(name: $name) {
             name,
-            orgsAll,
-            orgsWeek,            
+            orgsAll {
+              name
+              identifier
+              count
+            },
+            orgsWeek {
+              name
+              identifier
+              count
+            },            
           }
         }`,
         variables: { name },
@@ -142,7 +151,7 @@ class App extends Component {
     })
     .then(r => r.json())
     .then(result => {
-      this.setState({selectedTopic: result.data.getTopicWithName})
+      this.setState({selectedTopic: result.data.topicWithName})
     });
   };
 
@@ -448,7 +457,7 @@ class App extends Component {
       console.log("run createPostWithComposer");
       this.createPost({
         author: "Eddie Chen",
-        topic: this.state.selectedTopicName,
+        topic: this.state.composerTag,
         content: this.state.content,
         organization: this.state.selectedOrgName,
         organization_id: this.state.selectedOrgId,
@@ -463,7 +472,7 @@ class App extends Component {
 
   resetComposer = () => {
     this.setState({
-      selectedTopicName: "",
+      composerTag: "",
       selectedIdentity: "",
       modalType: "",
       showsModal: false,
@@ -530,12 +539,12 @@ class App extends Component {
         <div>
           {
             this.state.showsModal &&
-            <Modal selectedOrg={this.state.selectedOrg} content={this.state.content} setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} createPostWithComposer={this.createPostWithComposer} />
+            <Modal selectedOrg={this.state.selectedOrg} content={this.state.content} setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} createPostWithComposer={this.createPostWithComposer} composerTag={this.state.composerTag} />
           }
 
           <NavBar {...this.props} setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={ this.state.selectedType === "org" ? this.state.selectedOrgName : this.state.selectedTopicName } dark />
           <div className="container">
-            <Feed reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
+            <Feed composerTag={this.state.composerTag} setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} selectedType={this.state.selectedType} reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
             <Sidebar setSelectedOrg={this.setSelectedOrg} org={this.state.selectedOrg} parallelOrgs={this.state.parallelOrgs} selectedIndex={0} />
           </div>
           <Footer />

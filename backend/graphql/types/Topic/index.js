@@ -6,7 +6,8 @@ export default `
     }
 
     type Query {
-        topics(name: String): [Topic]!
+        topics(name: String): [Topic]!,
+        getTopicWithName(name: String): Topic,
     }
 
     input TopicInput {

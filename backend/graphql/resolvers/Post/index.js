@@ -20,7 +20,17 @@ export default {
                     err ? reject(err) : resolve(res);
                 });
             });
-        }
+        },
+        postsForTopic: (root, args) => {
+            return new Promise((resolve, reject) => {
+                Post.find({topic: args.topic})
+                .sort({'created': -1})
+                .limit(10)
+                .exec((err, res) => {
+                    err ? reject(err) : resolve(res);
+                });
+            });
+        },
     },
     Mutation: {
         async createPost(root, {

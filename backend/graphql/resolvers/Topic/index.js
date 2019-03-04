@@ -11,7 +11,15 @@ export default {
                     err ? reject(err) : resolve(res);
                 });
             });
-        }  
+        },
+        getTopicWithName: (root, args) => {
+            return new Promise((resolve, reject) => {
+                Topic.findOne({name: args.topic})
+                .exec((err, res) => {
+                    err ? reject(err) : resolve(res);
+                });
+            });
+        },
     },
     Mutation: {
         async createTopic(root, {

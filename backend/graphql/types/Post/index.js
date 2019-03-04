@@ -11,6 +11,7 @@ export default `
     type Query {
         posts: [Post]!,
         postsForOrgId(orgId: String): [Post]!,
+        postsForTopic(topic: String): [Post]!,
     }
     input PostInput {
         author: String!,

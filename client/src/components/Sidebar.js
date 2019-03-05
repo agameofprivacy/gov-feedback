@@ -3,8 +3,13 @@ import Tabs from "./Tabs";
 import Contact from "./Contact";
 import RelatedOrgs from "./RelatedOrgs";
 import Pills from "./Pills";
+import RadioSelect from "./RadioSelect";
 
 class Sidebar extends Component {
+
+    state={
+        selectedTab: 0,
+    }
 
     handlePillClick = (identifier) => {
         console.log(identifier[0], identifier[1]);
@@ -18,11 +23,15 @@ class Sidebar extends Component {
         })
     }
 
+    setSelectedTab = (index) => {
+        this.setState({selectedTab: index});
+    }
+
     render() {
-        const {selectedIndex, org, parallelOrgs} = this.props;
+        const {org, parallelOrgs, topic, selectedType} = this.props;
 
         var collections = [];
-        if (org !== undefined && org.parent !== null) {
+        if (org !== null && typeof org !== "undefined" && org.hasOwnProperty("parent")) {
             collections.push({
                 "label": "上級機關",
                 "entries": [
@@ -49,7 +58,7 @@ class Sidebar extends Component {
         }
 
         var hotTopics = [];
-        if (org !== undefined) {
+        if (org !== undefined && org !== null) {
             var topicsWeek = org.topicsWeek.sort((a, b) => {
                 return a.count - b.count;
             })
@@ -58,11 +67,65 @@ class Sidebar extends Component {
             })
         }
 
+        var hotOrgs = [];
+        if (topic !== undefined && topic !== null) {
+            var orgsWeek = topic.orgsWeek.sort((a, b) => {
+                return a.count - b.count;
+            })
+            orgsWeek.forEach((org) => {
+                hotOrgs.push(org.name);
+            })
+        }
+
+        const sections = (this.props.selectedType === "org" && this.props.org === undefined) || (this.props.selectedType === "topic" && this.props.topic === undefined) ? [] : [
+            {
+              "title": "通知方式",
+              "options": [
+                {
+                  "title": "電子郵件",
+                  "subtitle": "agameofprivacy@gmail.com",
+                  "value": "email"
+                },
+              ]
+            },
+            {
+              "title": "通知頻率",
+              "options": [
+                {
+                    "title": "每次",
+                    "subtitle": `每次有人對 ${this.props.selectedType === "org" ? this.props.org.name : this.props.topic.name} 發布新的回饋`,
+                    "value": "every"
+                },
+                {
+                    "title": "每天",
+                    "subtitle": `每天收到一個彙整當天 ${this.props.selectedType === "org" ? this.props.org.name : this.props.topic.name} 回饋
+                    的通知`,
+                    "value": "daily"
+                },
+                {
+                    "title": "每週",
+                    "subtitle": `每週收到一個彙整當週 ${this.props.selectedType === "org" ? this.props.org.name : this.props.topic.name} 回饋
+                    的通知`,
+                    "value": "weekly"
+                }
+              ]
+            }
+          ];
+        
+
         return (
             <div className="sidebar">
-                <Tabs selectedIndex={selectedIndex} tabs={["關於", "關注"]} />
+                <Tabs setSelectedTab={this.setSelectedTab} selectedTab={this.state.selectedTab} tabs={["關於", "關注"]} />
                 {
-                    org !== undefined && selectedIndex === 0 && hotTopics.length > 0 &&
+                    selectedType === "org" && org !== undefined && this.state.selectedTab === 0 && collections.length > 0 &&
+                    <RelatedOrgs collections={collections} handlePillClick={this.handlePillClick} />
+                }
+                {
+                    selectedType === "org" && org !== undefined && org !== null && this.state.selectedTab === 0 &&
+                    <Contact contacts={org.contact_details} />
+                }
+                {
+                    selectedType === "org" && org !== undefined && this.state.selectedTab === 0 && hotTopics.length > 0 &&
                     <div className="section">
                         <div className="section__title-container m-b-1">
                             <h3 className="section__title-container__title">熱門話題</h3>
@@ -71,12 +134,19 @@ class Sidebar extends Component {
                     </div>
                 }
                 {
-                    org !== undefined && selectedIndex === 0 && collections.length > 0 &&
-                    <RelatedOrgs collections={collections} handlePillClick={this.handlePillClick} />
+                    selectedType === "topic" && topic !== undefined && topic !== null && this.state.selectedTab === 0 &&
+                    <div className="section">
+                        <div className="section__title-container m-b-1">
+                            <h3 className="section__title-container__title">熱門機關</h3>
+                        </div>
+                        <Pills pills={hotOrgs} />
+                    </div>
                 }
                 {
-                    org !== undefined && selectedIndex === 0 &&
-                    <Contact contacts={org.contact_details} />
+                    this.state.selectedTab === 1 &&
+                    <div className="section">
+                        <RadioSelect submitForm={this.submitForm} sections={sections} />
+                    </div>
                 }
             </div>
         )

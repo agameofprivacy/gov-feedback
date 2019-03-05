@@ -20,7 +20,7 @@ class Pill extends Component {
     }
 
     render() {
-        const {label, action, like, highlighted, color} = this.props;
+        const {value, label, action, like, highlighted, color} = this.props;
 
         if (like) {
             return (
@@ -33,7 +33,7 @@ class Pill extends Component {
             );
         } else {
             return (
-                <div style={color ? {backgroundColor: color} : {}} onClick={this.handleClick} className={"pill" + (action ? " pill--action" : "") + (highlighted ? " pill--highlighted" : "") + (color ? " pill--filled--dark" : "")} >{label}</div>
+                <div value={value} style={color ? {backgroundColor: color} : {}} onClick={this.handleClick} className={"pill" + (action ? " pill--action" : "") + (highlighted ? " pill--highlighted" : "") + (color ? " pill--filled pill--filled--dark" : "")} >{label}</div>
             );
         }
         

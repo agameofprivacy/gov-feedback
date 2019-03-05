@@ -1,15 +1,21 @@
 .footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    padding-left: 15%;
-    padding-right: 15%;
-    padding-top: 50px;
-    padding-bottom: 50px;
     background-color: white;
 
+    &__container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        padding: 50px 1em 50px 1em;
+    
+        @media screen and (min-width: $break-large) {
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }    
+    }
+    
     & a {
         text-decoration: none;
         color: rgb(50,50,50);

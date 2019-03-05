@@ -300,17 +300,18 @@ class App extends Component {
     .then(r => r.json())
     .then(org => {
       console.log("retrieved org: ", org);
-      this.setState({selectedOrg: org.data.organizationWithId});
-      if (this.state.selectedOrg.parent !== null) {
+      this.setState({selectedOrg: org.data.organizationWithId}, () => {
+        if (this.state.selectedOrg.parent !== null) {
           this.getOrgsWithParentId(this.state.selectedOrg.parent._id, (function(orgs){ 
             orgs = orgs.data.organizationsWithParentId.filter((function( org ) {
               return org.identifiers[0].identifier !== this.state.selectedOrgId;
             }).bind(this));
           
             this.setState({parallelOrgs: orgs})}).bind(this));
-      } else {
-        this.setState({parallelOrgs: []})
-      }
+        } else {
+          this.setState({parallelOrgs: []})
+        }
+      });
     });
   }
 
@@ -545,7 +546,7 @@ class App extends Component {
           <NavBar {...this.props} setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={ this.state.selectedType === "org" ? this.state.selectedOrgName : this.state.selectedTopicName } dark />
           <div className="container">
             <Feed composerTag={this.state.composerTag} setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} selectedType={this.state.selectedType} reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
-            <Sidebar setSelectedOrg={this.setSelectedOrg} org={this.state.selectedOrg} parallelOrgs={this.state.parallelOrgs} selectedIndex={0} />
+            <Sidebar selectedType={this.state.selectedType} setSelectedOrg={this.setSelectedOrg} org={this.state.selectedOrg} topic={this.state.selectedTopic} parallelOrgs={this.state.parallelOrgs} />
           </div>
           <Footer />
         </div>

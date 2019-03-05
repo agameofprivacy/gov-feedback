@@ -37,7 +37,7 @@ class Post extends Component {
                 <div className="post__header">
                     {
                         post.topic !== "" &&
-                        <Pill handleClick={this.handleTagClick} color={color} label={this.props.tagType === "topic" ? post.topic : post.organization} type="link"/>
+                        <Pill handleClick={this.handleTagClick} color={color} label={this.props.tagType === "topic" ? post.topic : post.organization} value={this.props.tagType === "org" ? post.organization_id : undefined} type="link"/>
                     }
                     {
                         post.type === "reply" &&

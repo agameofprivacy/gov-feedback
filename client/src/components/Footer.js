@@ -29,12 +29,14 @@ class Footer extends Component {
         })
         return (
             <div className="footer">
-                <ul className="footer__links">
-                    {linkItemsArray}
-                    <li className="footer__links__item"><strong>中文</strong> / EN</li>
-                </ul>
-                <div className="footer__logo">
-                    <img src={logoWhite} alt="logo--white" />
+                <div className="footer__container">
+                    <ul className="footer__links">
+                        {linkItemsArray}
+                        <li className="footer__links__item"><strong>中文</strong> / EN</li>
+                    </ul>
+                    <div className="footer__logo">
+                        <img src={logoWhite} alt="logo--white" />
+                    </div>
                 </div>
             </div>
         );

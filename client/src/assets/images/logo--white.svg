@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160px" height="87px" viewBox="0 0 160 87" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.1 (72631) - https://sketchapp.com -->
+    <title>Group 2</title>
+    <desc>Created with Sketch.</desc>
+    <g id="a" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="24-Platform__home--desktop" transform="translate(-838.000000, -1736.000000)">
+            <g id="Group-2" transform="translate(838.000000, 1736.000000)">
+                <rect id="Rectangle" stroke="#323232" fill-rule="nonzero" x="0.5" y="0.5" width="159" height="86"></rect>
+                <text id="政府-回饋-機關-平台" font-family="PingFangTC-Regular, PingFang TC" font-size="24" font-weight="normal" line-spacing="29" fill="#323232">
+                    <tspan x="16" y="38">政府    回饋</tspan>
+                    <tspan x="16" y="67">機關    平台</tspan>
+                </text>
+                <g id="Group-3" transform="translate(68.000000, 28.000000)" fill-rule="nonzero">
+                    <rect id="Rectangle" fill="#C9C9C9" transform="translate(12.000000, 19.500000) rotate(-45.000000) translate(-12.000000, -19.500000) " x="-3" y="18.5" width="30" height="2"></rect>
+                    <rect id="Rectangle-Copy" fill="#FF0000" transform="translate(12.146447, 14.146447) rotate(61.000000) translate(-12.146447, -14.146447) " x="-2.85355339" y="13.1464466" width="30" height="2"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

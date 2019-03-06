@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "concurrently": "^4.1.0",
+    "create-react-app": "^2.1.3"
+  },
+  "scripts": {
+    "start": "concurrently \"cd backend && yarn run server\" \"cd client && yarn start\""
+  },
+  "name": "gov-feedback",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:agameofprivacy/gov-feedback.git",
+  "author": "Eddie Chen <agameofprivacy@gmail.com>",
+  "license": "MIT"
+}

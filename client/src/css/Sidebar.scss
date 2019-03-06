@@ -1,0 +1,13 @@
+.sidebar {
+    flex: 2;
+    border: 1px solid rgb(240,240,240);
+    margin: 0 1em;
+    min-width: 300px;
+    padding-bottom: 1em;
+    background-color: white;
+
+    @media screen and (max-width: $break-small) {
+        margin: 0 10px 10px 10px;
+        min-width: 260px;
+    }    
+}

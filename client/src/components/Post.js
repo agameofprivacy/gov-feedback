@@ -8,6 +8,19 @@ moment.locale('zh-tw');
 
 class Post extends Component {
 
+    handlePillClick = (action) => {
+        switch(action) {
+            case "reply":
+                break;
+            case "forward":
+                break;
+            case "report":
+                break;
+            default:
+                break;
+        }
+    }
+
     handleTagClick = (e) => {
         switch (this.props.tagType) {
             case "org":
@@ -28,6 +41,11 @@ class Post extends Component {
             "轉發",
             "檢舉",
         ];
+        const actionValues = [
+            "reply",
+            "forward",
+            "report"
+        ]
         
         var createdMoment = moment(post.created);
         var createdString = createdMoment.fromNow();
@@ -52,7 +70,7 @@ class Post extends Component {
                     }
                 </div>
                 <div className="post__footer">
-                    <Pills actions pills={ post.type === "reply" ? actions.splice(1, 2) : actions} />
+                    <Pills actions values={actionValues} pills={ post.type === "reply" ? actions.splice(1, 2) : actions} handlePillClick={this.handlePillClick} />
                     <Pill like />
                 </div>
             </div>

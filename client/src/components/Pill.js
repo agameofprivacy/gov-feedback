@@ -14,6 +14,11 @@ class Pill extends Component {
                     this.props.handleClick(e);
                 }
                 break;
+            case "action":
+                if (this.props.handlePillClick) {
+                    this.props.handlePillClick(e.target.getAttribute("value"));
+                }
+                break;
             default:
                 break;
         }

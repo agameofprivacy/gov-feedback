@@ -7,7 +7,7 @@ export default {
                 Organization.find({name: new RegExp(args.name, "gi")})
                 .populate("parent")
                 .sort({'level': 1, 'name': 1})
-                .limit(5)
+                .limit(8)
                 .exec((err, res) => {
                     err ? reject(err) : resolve(res);
                 });

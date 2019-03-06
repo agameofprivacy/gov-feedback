@@ -10,12 +10,10 @@ class SearchBox extends Component {
     };
 
     handleClick = (e) => {
-        console.log(e.target);
         if (e.target.type !== "text") {
             if (e.target.type === "org") {
                 this.props.setSelectedOrg(this.props.orgResults.data.organizations[e.target.value]);
             } else if (e.target.type === "topic") {
-                console.log("set topic")
                 this.props.setSelectedTopic(this.props.topicResults.data.topics[e.target.value].name);
             }
         }

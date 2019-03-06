@@ -10,6 +10,7 @@ class Landing extends Component {
     state = {
         query: "",
     };
+
     render() {      
         const { query } = this.state;
         const { randomOrgs, randomIndex, orgResults, topicResults, setSelectedOrg, setSelectedTopic } = this.props;

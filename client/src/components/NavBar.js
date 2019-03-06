@@ -25,12 +25,12 @@ class NavBar extends Component {
     }
 
     render() {
-        const {dark, title, setSelectedOrg, queryDB, searchResults} = this.props;
+        const {dark, title, setSelectedOrg, setSelectedTopic, queryOrgs, queryTopics, orgResults, topicResults} = this.props;
         const {showsSearchBox, query} = this.state;
         if (showsSearchBox) {
             return (
                 <div className="navbar">
-                    <SearchBox showsClose dismissSearchbox={this.dismissSearchbox} setSelectedOrg={setSelectedOrg} query={query} queryDB={queryDB} searchResults={searchResults} dark={dark} />
+                    <SearchBox showsClose dismissSearchbox={this.dismissSearchbox} setSelectedOrg={setSelectedOrg} setSelectedTopic={setSelectedTopic} query={query} queryOrgs={queryOrgs} queryTopics={queryTopics} orgResults={orgResults} topicResults={topicResults} dark={dark} />
                 </div>
             );
         } else {

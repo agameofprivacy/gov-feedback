@@ -37,7 +37,7 @@ class NavBar extends Component {
             return (
                 <div className="navbar">
                     <img className="navbar__logo" src={logo} alt="政府機關回饋平台 logo" />
-                    <h1 className="navbar__title">{title}</h1>
+                    <h1 onClick={this.toggleSearchBox} className="navbar__title">{title}</h1>
                     <button onClick={this.toggleSearchBox} className="navbar__button"><IconButton type="search" /></button>
                 </div>
             );

@@ -9,6 +9,8 @@ class Sidebar extends Component {
 
     state={
         selectedTab: 0,
+        selectedFreq: "",
+        selectedChannel: "email",
     }
 
     handlePillClick = (identifier) => {
@@ -27,11 +29,21 @@ class Sidebar extends Component {
         this.setState({selectedTab: index});
     }
 
+    saveSubsciption = (value) => {
+        if (["every", "daily", "weekly"].includes(value)) {
+            this.setState({selectedFreq: value});
+        } else {
+            this.setState({selectedChannel: value});
+        }
+    }
+
+
+
     render() {
         const {org, parallelOrgs, topic, selectedType} = this.props;
 
         var collections = [];
-        if (org !== null && typeof org !== "undefined" && org.hasOwnProperty("parent")) {
+        if (org !== null && typeof org !== "undefined" && org.parent !== null) {
             collections.push({
                 "label": "上級機關",
                 "entries": [
@@ -145,7 +157,7 @@ class Sidebar extends Component {
                 {
                     this.state.selectedTab === 1 &&
                     <div className="section">
-                        <RadioSelect submitForm={this.submitForm} sections={sections} />
+                        <RadioSelect submitForm={this.saveSubsciption} sections={sections} />
                     </div>
                 }
             </div>

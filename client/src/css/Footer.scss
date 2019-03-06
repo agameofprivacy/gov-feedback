@@ -7,7 +7,7 @@
         justify-content: space-between;
         flex-wrap: wrap;
         align-items: flex-end;
-        padding: 50px 1em 50px 1em;
+        padding: 50px 2em 50px 2em;
     
         @media screen and (min-width: $break-large) {
             max-width: 1200px;
@@ -26,6 +26,7 @@
         font-weight: 300;
         list-style: none;
         margin-bottom: 3em;
+        margin-right: 2em;
         -webkit-padding-start: 0em;
         padding-left: 0em;    
 

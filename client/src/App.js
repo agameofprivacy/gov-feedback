@@ -12,7 +12,8 @@ import Footer from "./components/Footer";
 class App extends Component {
   // initialize our state 
   state = {
-    searchResults: null,
+    orgResults: null,
+    topicResults: null,
     id: 0,
     message: null,
     intervalIsSet: false,
@@ -54,7 +55,7 @@ class App extends Component {
     this.setState({intervalId: intervalId});
   }
     // if (!this.state.intervalIsSet) {
-    //   let interval = setInterval(this.getDataFromDb, 1000);
+    //   let interval = setInterval(this.getOrgsFromDb, 1000);
     //   this.setState({ intervalIsSet: interval });
     // }
 
@@ -157,13 +158,14 @@ class App extends Component {
     })
     .then(r => r.json())
     .then(result => {
+      console.log(result);
       this.setState({selectedTopic: result.data.topicWithName})
     });
   };
 
 
     
-  getDataFromDb = (name, callback) => {
+  getOrgsFromDb = (name, callback) => {
     this.setState({query: name});
     fetch('/graphql', {
       method: 'POST',
@@ -185,13 +187,39 @@ class App extends Component {
       })
     })
       .then(r => r.json())
-      .then(searchResults => {
-        if (searchResults !== null && this.state.query === name) {
-          this.setState({searchResults: searchResults});
-          callback(searchResults);
+      .then(orgResults => {
+        if (orgResults !== null && this.state.query === name) {
+          this.setState({orgResults: orgResults});
+          callback(orgResults);
         }
       });
   };
+
+  getTopicsFromDb = (name, callback) => {
+    this.setState({topics: []});
+    fetch('/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': "application/json",
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `query topics($name: String) {
+            topics(name: $name){
+              name
+            }
+          }`,
+          variables: { name },
+        })
+      })
+      .then(r => r.json())
+      .then(topicResults => {
+        if (topicResults !== null && this.state.query === name) {
+          this.setState({topicResults: topicResults});
+          callback(topicResults);
+        }
+    });
+}  
 
   getRandomOrgs = (count) => {
     fetch('/graphql', {
@@ -543,7 +571,7 @@ class App extends Component {
 
     if (typeof this.state.selectedOrgId === "undefined") {
       return (
-        <Landing setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} randomOrgs={this.state.randomOrgs} randomIndex={this.state.randomIndex} searchResults={this.state.searchResults} />
+        <Landing setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} queryOrgs={this.getOrgsFromDb} queryTopics={this.getTopicsFromDb} randomOrgs={this.state.randomOrgs} randomIndex={this.state.randomIndex} orgResults={this.state.orgResults} topicResults={this.state.topicResults} />
       );
     } else {
       return (
@@ -553,7 +581,7 @@ class App extends Component {
             <Modal selectedTopic={this.state.selectedTopic} selectedOrg={this.state.selectedOrg} content={this.state.content} setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} createPostWithComposer={this.createPostWithComposer} composerTag={this.state.composerTag} selectedType={this.state.selectedType} />
           }
 
-          <NavBar {...this.props} setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={ this.state.selectedType === "org" ? this.state.selectedOrgName : this.state.selectedTopicName } dark />
+          <NavBar {...this.props} setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} queryOrgs={this.getOrgsFromDb} queryTopics={this.getTopicsFromDb} orgResults={this.state.orgResults} topicResults={this.state.topicResults} title={ this.state.selectedType === "org" ? this.state.selectedOrgName : this.state.selectedTopicName } dark />
           <div className="container">
             <Feed composerTag={this.state.composerTag} setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} selectedType={this.state.selectedType} reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
             <Sidebar selectedType={this.state.selectedType} setSelectedOrg={this.setSelectedOrg} org={this.state.selectedOrg} topic={this.state.selectedTopic} parallelOrgs={this.state.parallelOrgs} />

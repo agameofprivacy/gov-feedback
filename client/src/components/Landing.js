@@ -12,13 +12,13 @@ class Landing extends Component {
     };
     render() {      
         const { query } = this.state;
-        const { randomOrgs, randomIndex, searchResults, setSelectedOrg } = this.props;
+        const { randomOrgs, randomIndex, orgResults, topicResults, setSelectedOrg, setSelectedTopic } = this.props;
         return (
             <div>
                 <div className="landing">
                     <img className="landing__logo" src={logo} alt="政府機關回饋平台 logo" />
                     <AgencyPrompt randomOrgs={randomOrgs} randomIndex={randomIndex} />
-                    <SearchBox setSelectedOrg={setSelectedOrg} query={query} queryDB={this.props.queryDB} searchResults={searchResults} />
+                    <SearchBox setSelectedOrg={setSelectedOrg} setSelectedTopic={setSelectedTopic} query={query} queryOrgs={this.props.queryOrgs} queryTopics={this.props.queryTopics} orgResults={orgResults} topicResults={topicResults} />
                 </div>
                 <Footer />
             </div>

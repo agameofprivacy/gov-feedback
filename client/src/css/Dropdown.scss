@@ -11,6 +11,23 @@
     box-sizing: border-box;
     position: absolute;
 
+    &__section {
+
+        &__title {
+            padding: 1.5em 1em 0.75em 1em;
+            border-bottom: 1px solid rgb(220,220,220);
+            margin-top: 0;
+            margin-bottom: 0;
+            font-size: 17px;
+        }
+    }
+
+    &__list {
+        list-style: none;
+        -webkit-padding-start: 0em;
+        padding-left: 0em;    
+    }
+
     &--dark {
         background-color: #1E1E1E;
         border: 1px solid #767676;

@@ -56,7 +56,7 @@ class Modal extends Component {
         switch(type) {
             case "tag-search":
                 if (this.props.selectedType === "org") {
-                    title = "選擇話題標籤";
+                    title = "選擇議題標籤";
                 } else {
                     title = "選擇回饋機關";
                 }

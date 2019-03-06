@@ -42,7 +42,7 @@ class Composer extends Component {
         return (
             <div className="composer">
                 <textarea ref="content" onKeyUp={this.updateContent} className="composer__textarea" placeholder="想說什麼？" />
-                <button id="tag-search" onClick={this.handleClick} className={"pill composer__tag" + (composerTag === "" ? " pill--unset" : " pill--highlighted")}>{composerTag === "" ? (selectedType === "org" ? "選擇話題標籤" : "選擇回饋機關") : composerTag}</button>
+                <button id="tag-search" onClick={this.handleClick} className={"pill composer__tag" + (composerTag === "" ? " pill--unset" : " pill--highlighted")}>{composerTag === "" ? (selectedType === "org" ? "選擇議題標籤" : "選擇回饋機關") : composerTag}</button>
                 <div className="composer__buttons-container">
                     <button className="pill pill--default composer__label">{defaultTagName}</button>
                     <button id="identity-select" onClick={composerTag !== "" ? this.handleClick : undefined} className={"pill pill--unset" + (composerTag === "" ? " pill--disabled" : "")} >{selectedIdentity === "" ? "選擇發佈身份" : `以${this.labelDict[selectedIdentity]}身份發佈`}</button>

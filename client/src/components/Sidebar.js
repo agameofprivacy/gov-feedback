@@ -140,7 +140,7 @@ class Sidebar extends Component {
                     selectedType === "org" && org !== undefined && this.state.selectedTab === 0 && hotTopics.length > 0 &&
                     <div className="section">
                         <div className="section__title-container m-b-1">
-                            <h3 className="section__title-container__title">熱門話題</h3>
+                            <h3 className="section__title-container__title">熱門議題</h3>
                         </div>
                         <Pills pills={hotTopics} />
                     </div>

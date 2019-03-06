@@ -16,6 +16,7 @@
         height: 31px;
         width: 24px;
         margin-right: 10px;
+        cursor: pointer;
     }
 
     &__title {
@@ -26,6 +27,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        cursor: pointer;
     }
 
     &__button {

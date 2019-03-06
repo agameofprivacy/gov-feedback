@@ -83,7 +83,7 @@ class SearchBox extends Component {
                         }
                     } 
                     value={query} 
-                    placeholder="搜尋機關或話題" 
+                    placeholder="搜尋機關或議題名稱" 
                 />
                 { showsClose &&
                     <button onClick={dismissSearchbox} className="navbar__button navbar__button--secondary"><IconButton type="close" /></button>
@@ -98,7 +98,7 @@ class SearchBox extends Component {
                             </ul>
                         </li>
                         <li className="dropdown__section">
-                            <h4 className="dropdown__section__title">話題</h4>
+                            <h4 className="dropdown__section__title">議題</h4>
                             <ul className="dropdown__list">
                                 {topicItems}
                             </ul>

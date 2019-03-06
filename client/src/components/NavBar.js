@@ -24,6 +24,10 @@ class NavBar extends Component {
         this.setState({showsSearchBox: false});
     }
 
+    clickHome = () => {
+        window.location.reload();
+    }
+
     render() {
         const {dark, title, setSelectedOrg, setSelectedTopic, queryOrgs, queryTopics, orgResults, topicResults} = this.props;
         const {showsSearchBox, query} = this.state;
@@ -36,7 +40,7 @@ class NavBar extends Component {
         } else {
             return (
                 <div className="navbar">
-                    <img className="navbar__logo" src={logo} alt="政府機關回饋平台 logo" />
+                    <img className="navbar__logo" src={logo} alt="政府機關回饋平台 logo" onClick={this.clickHome} />
                     <h1 onClick={this.toggleSearchBox} className="navbar__title">{title}</h1>
                     <button onClick={this.toggleSearchBox} className="navbar__button"><IconButton type="search" /></button>
                 </div>

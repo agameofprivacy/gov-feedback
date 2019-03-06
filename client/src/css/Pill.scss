@@ -9,7 +9,7 @@
 
     &--filled {
         border: none;
-        text-shadow: 0px 1px 10px rgba(0,0,0,0.15);
+        text-shadow: 0px 1px 1px rgba(0,0,0,0.15);
         
         &--dark {
             color: white;
@@ -70,7 +70,7 @@
     }
 
     &--like {
-        border-color: rgb(248,102,140);
+        border-color: rgb(74, 144, 226);
         height: 35px;
         padding: 0 9px;
         box-sizing: border-box;
@@ -79,7 +79,7 @@
         justify-content: center;
 
         &:hover {
-            background-color: rgb(248,102,140);
+            background-color: rgb(74, 144, 226);
             color: white;
 
             svg {
@@ -89,10 +89,10 @@
 
         svg {
             display: block;
-            fill: rgb(248,102,140);
+            fill: rgb(74, 144, 226);
             overflow: hidden;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 17px;
         }
     }
 }

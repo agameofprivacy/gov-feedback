@@ -6,7 +6,7 @@ class Pill extends Component {
         switch (this.props.type) {
             case "toggle":
                 if (this.props.handlePillClick) {
-                    this.props.handlePillClick(this.props.label);
+                    this.props.handlePillClick(e.target.getAttribute("value"), e.target.innerText);
                 }
                 break;
             case "link":

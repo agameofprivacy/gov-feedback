@@ -157,6 +157,7 @@ class Sidebar extends Component {
                 {
                     this.state.selectedTab === 1 &&
                     <div className="section">
+                        <p>{`若您想持續關注 ${this.props.selectedType === "org" ? this.props.org ? this.props.org.name : "" : this.props.topic ? this.props.topic.name : ""} 在平台的回饋動態，您可以由下列通知管道與通知頻率各擇一。`}</p>
                         <RadioSelect submitForm={this.saveSubsciption} sections={sections} />
                     </div>
                 }

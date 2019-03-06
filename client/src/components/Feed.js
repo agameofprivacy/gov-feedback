@@ -57,7 +57,7 @@ class Feed extends Component {
 
         return (
             <div className="feed">
-                <Composer reset={reset} composerTag={composerTag} selectedTopicName={selectedTopicName} selectedIdentity={selectedIdentity} defaultTagName={selectedType === "org" ? selectedOrgName : selectedTopicName} setFormState={setFormState} />
+                <Composer reset={reset} composerTag={composerTag} selectedTopicName={selectedTopicName} selectedIdentity={selectedIdentity} defaultTagName={selectedType === "org" ? selectedOrgName : selectedTopicName} setFormState={setFormState} selectedType={selectedType} />
                 { posts !== undefined && posts.length > 0 &&
                     postsArray
                 }

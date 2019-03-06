@@ -27,6 +27,7 @@ class App extends Component {
     selectedTopicName: "",
     selectedIdentity: "",
     composerTag: "",
+    composerValue: "",
     modalType: "",
     showsModal: false,
     content: "",
@@ -79,6 +80,9 @@ class App extends Component {
       selectedOrgName: org.name,
       selectedType: "org",
       selectedTopicName: "",
+      composerTag: "",
+      composerValue: "",
+
     })
     this.getPostsForOrgId(org.identifiers[0].identifier);
     this.getOrgWithOrgId(org.identifiers[0].identifier);
@@ -90,6 +94,8 @@ class App extends Component {
       selectedOrgName: "",
       selectedType: "topic",
       selectedTopicName: name,
+      composerTag: "",
+      composerValue: "",
     })
     this.getPostsForTopic(name);
     this.topicWithName(name);
@@ -458,16 +464,20 @@ class App extends Component {
       console.log("run createPostWithComposer");
       this.createPost({
         author: "Eddie Chen",
-        topic: this.state.composerTag,
+        topic: this.state.selectedType === "org" ? this.state.composerTag : this.state.selectedTopicName,
         content: this.state.content,
-        organization: this.state.selectedOrgName,
-        organization_id: this.state.selectedOrgId,
+        organization: this.state.selectedType === "org" ? this.state.selectedOrgName : this.state.composerTag,
+        organization_id: this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.composerValue,
         created: Number(new Date())
       }, (function(r){
         console.log(r);
         console.log(r.data);
         this.resetComposer();
-        this.getPostsForOrgId(this.state.selectedOrgId);
+        if (this.state.selectedType === "org") {
+          this.getPostsForOrgId(this.state.selectedOrgId);
+        } else {
+          this.getPostsForTopic(this.state.selectedTopicName);
+        }
       }).bind(this));
   }
 
@@ -540,7 +550,7 @@ class App extends Component {
         <div>
           {
             this.state.showsModal &&
-            <Modal selectedOrg={this.state.selectedOrg} content={this.state.content} setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} createPostWithComposer={this.createPostWithComposer} composerTag={this.state.composerTag} />
+            <Modal selectedTopic={this.state.selectedTopic} selectedOrg={this.state.selectedOrg} content={this.state.content} setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} createPostWithComposer={this.createPostWithComposer} composerTag={this.state.composerTag} selectedType={this.state.selectedType} />
           }
 
           <NavBar {...this.props} setSelectedOrg={this.setSelectedOrg} queryDB={this.getDataFromDb} searchResults={this.state.searchResults} title={ this.state.selectedType === "org" ? this.state.selectedOrgName : this.state.selectedTopicName } dark />

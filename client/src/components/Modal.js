@@ -7,17 +7,20 @@ class Modal extends Component {
 
     state = {
         composerTag: "",
+        composerValue: "",
         selectedIdentity: "",
         identiyConfirmed: false
     };
 
-    submitForm = (string) => {
+    submitForm = (value, label) => {
         switch(this.props.type) {
-            case "topic-search":
-                this.setState({composerTag: string});
+            case "tag-search":
+                this.setState({composerValue: value, composerTag: label}, function(){
+                    console.log(this.state);
+                });
                 break;
             case "identity-select":
-                this.setState({selectedIdentity: string});
+                this.setState({selectedIdentity: value});
                 break;
             default:
                 break;
@@ -27,8 +30,8 @@ class Modal extends Component {
     handleModalClick = (e) => {
         if (e.target.id === "modal-submit") {
             switch(this.props.type) {
-                case "topic-search":
-                    this.props.setFormState({composerTag: this.state.composerTag, showsModal: false});
+                case "tag-search":
+                    this.props.setFormState({composerTag: this.state.composerTag, composerValue: this.state.composerValue, showsModal: false});
                     break;
                 case "identity-select":
                     this.props.setFormState({selectedIdentity: this.state.selectedIdentity});
@@ -51,8 +54,12 @@ class Modal extends Component {
         var title;
 
         switch(type) {
-            case "topic-search":
-                title = "選擇話題標籤";
+            case "tag-search":
+                if (this.props.selectedType === "org") {
+                    title = "選擇話題標籤";
+                } else {
+                    title = "選擇回饋機關";
+                }
                 break;
             case "identity-select":
                 title = "選擇發佈身份";
@@ -60,6 +67,19 @@ class Modal extends Component {
             default:
                 break;
         }
+
+        var confirmFeedbackTags = [];
+        switch(this.props.selectedType) {
+            case "org":
+                confirmFeedbackTags.push(this.props.selectedOrgName);
+                break;
+            case "topic":
+                confirmFeedbackTags.push(this.props.selectedTopic.name);
+                break;
+            default:
+                break;
+        }
+        confirmFeedbackTags.push(this.props.composerTag);
 
         return (
             <div className="modal">
@@ -84,8 +104,8 @@ class Modal extends Component {
                         </div>
                         <div className="modal__dialog__body">
                             {
-                                type === "topic-search" &&
-                                <PillSearch selectedOrg={this.props.selectedOrg} submitForm={this.submitForm} type="topics" />
+                                type === "tag-search" &&
+                                <PillSearch selectedTopic={this.props.selectedTopic} selectedOrg={this.props.selectedOrg} submitForm={this.submitForm} type={this.props.selectedType} />
                             }
                             {
                                 type === "identity-select" && !this.state.identiyConfirmed &&
@@ -93,19 +113,19 @@ class Modal extends Component {
                             }
                             {
                                 type === "identity-select" && this.state.identiyConfirmed &&
-                                <ConfirmFeedback tags={[this.props.selectedOrgName, this.props.composerTag]} content={this.props.content} identity={this.props.selectedIdentity} />
+                                <ConfirmFeedback tags={confirmFeedbackTags} content={this.props.content} identity={this.props.selectedIdentity} />
                             }
                             {this.props.children}
                         </div>
                         <div className="modal__dialog__footer">
                             {
-                                type === "topic-search" &&
+                                type === "tag-search" &&
                                 <button id="modal-cancel" onClick={this.handleModalClick} className="modal__dialog__footer__action modal__dialog__footer__action--secondary">
                                     取消
                                 </button>
                             }
                             {
-                                type === "topic-search" &&
+                                type === "tag-search" &&
                                 <button id="modal-submit" onClick={this.handleModalClick} className="modal__dialog__footer__action modal__dialog__footer__action--primary">
                                     確認
                                 </button>

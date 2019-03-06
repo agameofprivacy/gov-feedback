@@ -4,14 +4,14 @@ import Pill from "./Pill";
 class Pills extends Component {
 
     render() {
-        const {pills, actions, className, handlePillClick, highlighted} = this.props;
+        const {values, pills, actions, className, handlePillClick, highlighted} = this.props;
 
         var pillsArray = [];
 
         pills.forEach(function(pill, index){
             pillsArray.push(
                 <div key={index} className="pill-container">
-                    <Pill highlighted={highlighted ? highlighted.includes(pill) : false} value={pill} action={actions} label={pill} handlePillClick={handlePillClick} type="toggle"/>
+                    <Pill value={values ? values[index] : ""} highlighted={highlighted ? highlighted.includes(pill) : false} action={actions} label={pill} handlePillClick={handlePillClick} type="toggle"/>
                 </div>
             )
         })

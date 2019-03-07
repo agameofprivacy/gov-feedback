@@ -57,10 +57,10 @@ class Sidebar extends Component {
 
         if (parallelOrgs !== null && parallelOrgs.length > 0) {
             var entries = [];
-            parallelOrgs.forEach((org => {
+            parallelOrgs.forEach((parallelOrg => {
                 entries.push({
-                    "name": org.name,
-                    "identifier": org.identifiers[0].identifier
+                    "name": parallelOrg.name,
+                    "identifier": parallelOrg.identifiers[0].identifier
                 })
             }))
             collections.push({

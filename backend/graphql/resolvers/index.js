@@ -1,9 +1,9 @@
-import { mergeResolvers } from "merge-graphql-schemas";
+const mergeResolvers = require("merge-graphql-schemas").mergeResolvers;
 
-import Organization from "./Organization/";
-import Post from "./Post/";
-import Topic from "./Topic/";
+const Organization = require("./Organization/");
+const Post = require("./Post/");
+const Topic = require("./Topic/");
 
 const resolvers = [Organization, Post, Topic];
 
-export default mergeResolvers(resolvers);
+module.exports = mergeResolvers(resolvers);

@@ -1,5 +1,5 @@
 
-export default `
+module.exports = `
     type Post {
         content: String!,
         author: String!,

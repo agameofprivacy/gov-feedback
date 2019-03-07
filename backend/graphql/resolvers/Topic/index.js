@@ -1,6 +1,6 @@
-import Topic from "../../../models/Topic";
+const Topic = require("../../../models/Topic");
 
-export default {
+module.exports = {
     Query: {
         topics: (root, args) => {
             return new Promise((resolve, reject) => {

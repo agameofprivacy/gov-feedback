@@ -8,6 +8,7 @@ import Sidebar from "./components/Sidebar";
 import Modal from "./components/Modal";
 import Footer from "./components/Footer";
 
+const host = "https://gov-feedback.appspot.com";
 
 class App extends Component {
   // initialize our state 
@@ -103,7 +104,7 @@ class App extends Component {
   }
 
   getPostsForTopic = (topic) => {
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -131,7 +132,7 @@ class App extends Component {
   };
 
   topicWithName = (name) => {
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -167,7 +168,7 @@ class App extends Component {
     
   getOrgsFromDb = (name, callback) => {
     this.setState({query: name});
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -197,7 +198,7 @@ class App extends Component {
 
   getTopicsFromDb = (name, callback) => {
     this.setState({topics: []});
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
         method: 'POST',
         headers: {
           'Content-Type': "application/json",
@@ -222,7 +223,7 @@ class App extends Component {
 }  
 
   getRandomOrgs = (count) => {
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -244,7 +245,7 @@ class App extends Component {
   }
 
   getRandomOrgs = (count) => {
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -266,7 +267,7 @@ class App extends Component {
   }
 
   getPostsForOrgId = (orgId) => {
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -294,7 +295,7 @@ class App extends Component {
   }
 
   getOrgWithOrgId = (orgId) => {
-    fetch('/graphql',{
+    fetch(`${host}/graphql`,{
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -340,7 +341,6 @@ class App extends Component {
             orgs = orgs.data.organizationsWithParentId.filter((function( org ) {
               return org.identifiers[0].identifier !== this.state.selectedOrgId;
             }).bind(this));
-          
             this.setState({parallelOrgs: orgs})}).bind(this));
         } else {
           this.setState({parallelOrgs: []})
@@ -350,7 +350,7 @@ class App extends Component {
   }
 
   getOrgsWithParentId = (parentId, callback) => {
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -380,7 +380,7 @@ class App extends Component {
   createPost = (postInput, callback) => {
     console.log("create post");
     console.log("postInput", postInput);
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -407,7 +407,7 @@ class App extends Component {
   createTopic = (topicInput, callback) => {
     console.log("create topic");
     console.log("topicInput", topicInput);
-    fetch('/graphql', {
+    fetch(`${host}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': "application/json",
@@ -583,7 +583,7 @@ class App extends Component {
 
           <NavBar {...this.props} setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} queryOrgs={this.getOrgsFromDb} queryTopics={this.getTopicsFromDb} orgResults={this.state.orgResults} topicResults={this.state.topicResults} title={ this.state.selectedType === "org" ? this.state.selectedOrgName : this.state.selectedTopicName } dark />
           <div className="container">
-            <Feed composerTag={this.state.composerTag} setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} selectedType={this.state.selectedType} reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
+            <Feed parallelOrgs={this.state.parallelOrgs} composerTag={this.state.composerTag} org={this.state.selectedOrg} setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} selectedType={this.state.selectedType} reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
             <Sidebar selectedType={this.state.selectedType} setSelectedOrg={this.setSelectedOrg} org={this.state.selectedOrg} topic={this.state.selectedTopic} parallelOrgs={this.state.parallelOrgs} />
           </div>
           <Footer />

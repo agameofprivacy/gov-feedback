@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import Pills from "./Pills";
 
+const host = "https://gov-feedback.appspot.com";
+
 class PillSearch extends Component {
 
     state = {
@@ -72,7 +74,7 @@ class PillSearch extends Component {
     searchForTopic = (name) => {
         console.log(name);
         this.setState({topics: []});
-        fetch('/graphql', {
+        fetch(`${host}/graphql`, {
             method: 'POST',
             headers: {
               'Content-Type': "application/json",
@@ -106,7 +108,7 @@ class PillSearch extends Component {
     searchForOrg = (name) => {
         console.log(name);
         this.setState({orgs: []});
-        fetch('/graphql', {
+        fetch(`${host}/graphql`, {
             method: 'POST',
             headers: {
               'Content-Type': "application/json",

@@ -1,6 +1,6 @@
-import Organization from "../../../models/Organization";
+const Organization = require("../../../models/Organization");
 
-export default {
+module.exports = {
     Query: {
         organizations: (root, args) => {
             return new Promise((resolve, reject) => {

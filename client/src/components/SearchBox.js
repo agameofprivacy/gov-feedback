@@ -81,7 +81,7 @@ class SearchBox extends Component {
                         }
                     } 
                     value={query} 
-                    placeholder="搜尋機關或議題名稱" 
+                    placeholder="搜尋政府機關或議題名稱" 
                 />
                 { showsClose &&
                     <button onClick={dismissSearchbox} className="navbar__button navbar__button--secondary"><IconButton type="close" /></button>

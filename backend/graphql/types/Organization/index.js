@@ -1,4 +1,4 @@
-export default `
+module.exports = `
     type Organization {
         name: String!,
         parent: Organization,

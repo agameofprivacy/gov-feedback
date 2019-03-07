@@ -1,4 +1,4 @@
-export default `
+module.exports = `
     type Topic {
         name: String!,
         popularityWeek: Float,

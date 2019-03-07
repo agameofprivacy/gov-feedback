@@ -22,11 +22,6 @@
         color: white;
     }
 
-    &--highlighted {
-        border-color: rgb(74, 144, 226);
-        color: white;
-        background-color: rgb(74, 144, 226);
-    }
 
     &--primary {
         border-color: rgb(50, 50, 50);
@@ -61,6 +56,12 @@
             color: white;
             background-color: rgb(74, 144, 226);
         }
+    }
+
+    &--highlighted {
+        border-color: rgb(74, 144, 226);
+        color: white;
+        background-color: rgb(74, 144, 226);
     }
 
     &--new {

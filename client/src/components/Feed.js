@@ -7,7 +7,7 @@ const randomColor = require('randomcolor');
 class Feed extends Component {
     
     colors = randomColor({
-        luminosity: 'bright',
+        luminosity: 'dark',
         format: 'hex',
         count: 100,
     })
@@ -32,7 +32,7 @@ class Feed extends Component {
 
     render() {
 
-        const {selectedType, selectedOrgName, posts, setFormState, selectedTopicName, selectedIdentity, reset, composerTag} = this.props;
+        const {org, parallelOrgs, selectedType, selectedOrgName, posts, setFormState, selectedTopicName, selectedIdentity, reset, composerTag} = this.props;
 
         var postsArray = [];
 
@@ -49,7 +49,7 @@ class Feed extends Component {
             }) 
             posts.forEach(function(post, index){
                 postsArray.push(
-                    <Post handleTopicClick={this.handleTopicClick} handleOrgClick={this.handleOrgClick} tagType={selectedType === "org" ? "topic" : "org"} color={selectedType === "org" ? this.colors[topics.indexOf(post.topic)] : this.colors[orgs.indexOf(post.organization)]} key={index} post={post} />
+                    <Post parallelOrgs={parallelOrgs} org={org} first={index === 0} last={index === posts.length - 1} setFormState={setFormState} handleTopicClick={this.handleTopicClick} handleOrgClick={this.handleOrgClick} tagType={selectedType === "org" ? "topic" : "org"} color={selectedType === "org" ? this.colors[topics.indexOf(post.topic)] : this.colors[orgs.indexOf(post.organization)]} key={index} post={post} />
                 );
             }.bind(this));
             

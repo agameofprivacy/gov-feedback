@@ -1,4 +1,4 @@
-export default `
+module.exports = `
     type TopicOrg{
         name: String!,
         identifier: String!,

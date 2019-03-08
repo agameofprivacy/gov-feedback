@@ -1,6 +1,6 @@
 .pill {
     font-size: 15px;
-    border-radius: 6px;
+    border-radius: 3px;
     border: 1px solid;
     text-align: center;
     padding: 8px 9px;
@@ -9,7 +9,7 @@
 
     &--filled {
         border: none;
-        text-shadow: 0px 1px 1px rgba(0,0,0,0.2);
+        text-shadow: 0px 1px 1.2px rgba(0,0,0,0.2);
         
         &--dark {
             color: white;
@@ -39,12 +39,16 @@
         border-color: rgb(100,100,100);
         color: rgb(100,100,100);
         background-color: transparent;
+
+        &:hover {
+            background-color: rgb(245, 245, 245);
+        }
     }
 
     &--disabled {
-        border-color: rgb(155,155,155);
-        color: rgb(155,155,155);
-        background-color: transparent;
+        border-color: rgb(155,155,155) !important;
+        color: rgb(155,155,155) !important;
+        background-color: transparent !important;
     }
 
     &--action {
@@ -59,9 +63,9 @@
     }
 
     &--highlighted {
-        border-color: rgb(74, 144, 226);
-        color: white;
-        background-color: rgb(74, 144, 226);
+        border-color: rgb(74, 144, 226) !important;
+        color: white !important;
+        background-color: rgb(74, 144, 226) !important;
     }
 
     &--new {

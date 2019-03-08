@@ -13,7 +13,7 @@ class ConfirmFeedback extends Component {
 
     return (
       <div>
-        <Pills pills={tags} />
+        <Pills pills={tags} values={tags} highlighted={tags} />
         <p className="m-t-0">{content}</p>
         <p className="confirm-feedback__terms">
           您同意回饋內容遵守 <a href="http://www.google.com">社群規範</a> 且將以{" "}

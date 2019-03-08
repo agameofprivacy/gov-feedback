@@ -27,12 +27,27 @@ class Feed extends Component {
     this.props.setSelectedTopic(name);
   };
 
+  componentDidUpdate = (prevProps) => {
+    if ((
+            prevProps.hasOwnProperty("selectedOrgId") && 
+            this.props.hasOwnProperty("selectedOrgId") && 
+            prevProps.selectedOrgId !== this.props.selectedOrgId
+        ) || (
+            this.props.hasOwnProperty("selectedTopicName") && 
+            prevProps.hasOwnProperty("selectedTopicName") && 
+            prevProps.selectedTopicName !== this.props.selectedTopicName
+        )) {
+        console.log("update");
+    }
+  }
+
   render() {
     const {
       org,
       parallelOrgs,
       selectedType,
       selectedOrgName,
+      selectedOrgId,
       posts,
       setFormState,
       selectedTopicName,
@@ -61,6 +76,7 @@ class Feed extends Component {
               parallelOrgs={parallelOrgs}
               org={org}
               first={index === 0}
+              forwardables={selectedType === "org" ? parallelOrgs : []}
               last={index === posts.length - 1}
               setFormState={setFormState}
               handleTopicClick={this.handleTopicClick}
@@ -71,7 +87,7 @@ class Feed extends Component {
                   ? this.colors[topics.indexOf(post.topic)]
                   : this.colors[orgs.indexOf(post.organization)]
               }
-              key={index}
+              key={post._id}
               post={post}
             />
           );
@@ -82,6 +98,7 @@ class Feed extends Component {
     return (
       <div className="feed">
         <Composer
+          key={selectedType === "org" ? selectedOrgId : selectedTopicName}
           reset={reset}
           composerTag={composerTag}
           selectedTopicName={selectedTopicName}

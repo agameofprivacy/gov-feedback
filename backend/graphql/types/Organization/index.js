@@ -8,7 +8,7 @@ module.exports = `
         hierarchy: String,
         topicsAll: [OrgTopic],
         topicsWeek: [OrgTopic],
-        _id: String,
+        _id: String!,
     }
 
     type Query {

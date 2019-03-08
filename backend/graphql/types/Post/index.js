@@ -1,6 +1,7 @@
 
 module.exports = `
     type Post {
+        _id: String!,
         content: String!,
         author: String!,
         topic: String!,

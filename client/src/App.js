@@ -124,7 +124,8 @@ class App extends Component {
             organization,
             organization_id,
             created,
-            content            
+            content,
+            _id
           }
         }`,
         variables: { topic }
@@ -181,6 +182,7 @@ class App extends Component {
       body: JSON.stringify({
         query: `query organizations($name: String){
           organizations(name: $name){
+            _id
             name
             identifiers {
               scheme
@@ -285,7 +287,8 @@ class App extends Component {
             organization,
             organization_id,
             created,
-            content            
+            content,
+            _id            
           }
         }`,
         variables: { orgId }
@@ -308,6 +311,7 @@ class App extends Component {
       body: JSON.stringify({
         query: `query organizationWithId($orgId: String){
           organizationWithId(orgId: $orgId){
+            _id,
             name,
             parent {
               _id,
@@ -372,6 +376,7 @@ class App extends Component {
         query: `
           query organizationsWithParentId($parentId: String){
             organizationsWithParentId(parentId: $parentId) {
+              _id,
               name,
               identifiers {
                 identifier
@@ -640,6 +645,7 @@ class App extends Component {
           />
           <div className="container">
             <Feed
+              key={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
               parallelOrgs={this.state.parallelOrgs}
               composerTag={this.state.composerTag}
               org={this.state.selectedOrg}
@@ -648,12 +654,14 @@ class App extends Component {
               selectedType={this.state.selectedType}
               reset={this.state.reset}
               selectedOrgName={this.state.selectedOrgName}
+              selectedOrgId={this.state.selectedOrgId}
               selectedTopicName={this.state.selectedTopicName}
               selectedIdentity={this.state.selectedIdentity}
               setFormState={this.setFormState}
               posts={this.state.posts}
             />
             <Sidebar
+              selectedIdentifier={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
               selectedType={this.state.selectedType}
               setSelectedOrg={this.setSelectedOrg}
               org={this.state.selectedOrg}

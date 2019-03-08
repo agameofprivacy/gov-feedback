@@ -140,6 +140,7 @@ class PillSearch extends Component {
   };
 
   handlePillClick = (value, label) => {
+    console.log(value, label);
     var targetSelected = this.state.selected;
     if (this.state.selectMultiple) {
       if (targetSelected.includes(label)) {
@@ -148,7 +149,7 @@ class PillSearch extends Component {
         targetSelected.push(label);
       }
     } else {
-      targetSelected = [label];
+      targetSelected = [value];
     }
     this.setState({ selected: targetSelected });
     this.props.submitForm(value, label);
@@ -165,6 +166,7 @@ class PillSearch extends Component {
           className="pill-search__searchbox"
         />
         <Pills
+          unset
           highlighted={this.state.selected}
           handlePillClick={this.handlePillClick}
           values={

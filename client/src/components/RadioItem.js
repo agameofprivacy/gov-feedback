@@ -13,10 +13,10 @@ class RadioItem extends Component {
   };
 
   render() {
-    const { item, selected } = this.props;
+    const { item, selected, last } = this.props;
 
     return (
-      <div className="radio-item" onClick={this.handleClick}>
+      <div className={ last ? "radio-item radio-item--last" : "radio-item"} onClick={this.handleClick}>
         {selected && (
           <svg className="radio-item__icon">
             <path fill="none" d="M0 0h24v24H0V0z" />

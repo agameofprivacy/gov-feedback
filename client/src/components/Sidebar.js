@@ -149,6 +149,7 @@ class Sidebar extends Component {
           this.state.selectedTab === 0 &&
           collections.length > 0 && (
             <RelatedOrgs
+              key={this.props.selectedIdentifier}
               collections={collections}
               handlePillClick={this.handlePillClick}
             />

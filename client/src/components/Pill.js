@@ -27,7 +27,7 @@ class Pill extends Component {
   };
 
   render() {
-    const { value, label, action, like, highlighted, color } = this.props;
+    const { value, label, action, like, unset, highlighted, color } = this.props;
 
     if (like) {
       return (
@@ -46,6 +46,7 @@ class Pill extends Component {
           onClick={this.handleClick}
           className={
             "pill" +
+            (unset ? " pill--unset" : "") +
             (action ? " pill--action" : "") +
             (highlighted ? " pill--highlighted" : "") +
             (color ? " pill--filled pill--filled--dark" : "")

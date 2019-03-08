@@ -11,6 +11,7 @@ class Post extends Component {
     activeAction: "",
     content: "",
     forwardOrgIdSelected: "",
+    forwardables: this.props.forwardables,
   };
 
   updateContent = e => {
@@ -23,7 +24,12 @@ class Post extends Component {
   handlePillClick = action => {
     this.setState({
       activeAction: this.state.activeAction === action ? "" : action
-    });
+    }, function(){
+        if (this.state.activeAction === "forward") {
+            // fetch parallels for orgId this.props.post.organization_id
+            
+        }
+    })
   };
 
   handleForwardSelect = (identifier, name) => {
@@ -48,9 +54,14 @@ class Post extends Component {
   };
 
   render() {
-    const { post, color, first, last, parallelOrgs, org } = this.props;
-    const actions = ["回覆", "轉發", "檢舉"];
-    const actionValues = ["reply", "forward", "report"];
+    const { post, color, first, last, forwardables, org } = this.props;
+    var actions = ["回覆", "轉發", "檢舉"];
+    var actionValues = ["reply", "forward", "report"];
+
+    if (forwardables.length === 0) {
+        actions.splice(1, 1);
+        actionValues.splice(1, 1);
+    }
 
     var createdMoment = moment(post.created);
     var createdString = createdMoment.fromNow();
@@ -58,12 +69,12 @@ class Post extends Component {
     var forwardablePills = [];
     var forwardableVals = [];
 
-    if (org && org.hasOwnProperty("parent")) {
+    if (org && org.hasOwnProperty("parent") && org.parent !== null) {
       forwardablePills.push(org.parent.name);
       forwardableVals.push(org.parent.identifiers[0].identifier);
     }
 
-    parallelOrgs.forEach(paralleOrg => {
+    forwardables.forEach(paralleOrg => {
       forwardablePills.push(paralleOrg.name);
       forwardableVals.push(paralleOrg.identifiers[0].identifier);
     });
@@ -133,9 +144,9 @@ class Post extends Component {
             </button>
           </div>
         )}
-        {this.state.activeAction === "forward" && parallelOrgs.length > 0 && (
+        {this.state.activeAction === "forward" && forwardables.length > 0 && (
           <div className="post__forward post__accessory">
-            <Pills highlighted={[this.state.forwardOrgIdSelected]} type="toggle" handlePillClick={this.handleForwardSelect} pills={forwardablePills} values={forwardableVals} />
+            <Pills unset highlighted={[this.state.forwardOrgIdSelected]} type="toggle" handlePillClick={this.handleForwardSelect} pills={forwardablePills} values={forwardableVals} />
             <button className="post__accessory__submit pill pill--action">
               送出
             </button>

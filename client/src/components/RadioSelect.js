@@ -25,6 +25,7 @@ class RadioSelect extends Component {
             selected={option.value === this.state.value}
             item={option}
             radioSelected={this.radioSelected}
+            last={index === section.options.length - 1}
           />
         );
       });

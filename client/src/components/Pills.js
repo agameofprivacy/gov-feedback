@@ -7,6 +7,7 @@ class Pills extends Component {
       values,
       pills,
       actions,
+      unset,
       className,
       handlePillClick,
       highlighted
@@ -23,6 +24,7 @@ class Pills extends Component {
               highlighted ? highlighted.includes(values[index]) : false
             }
             action={actions}
+            unset={unset}
             label={pill}
             handlePillClick={handlePillClick}
             type="toggle"

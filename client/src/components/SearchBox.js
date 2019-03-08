@@ -195,7 +195,7 @@ class SearchBox extends Component {
             );
           }}
           value={query}
-          placeholder="搜尋政府機關或議題名稱"
+          placeholder="搜尋機關或議題"
         />
         {showsClose && (
           <button

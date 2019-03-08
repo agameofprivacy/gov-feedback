@@ -158,7 +158,7 @@ class Post extends Component {
               ref="content"
               onKeyUp={this.updateContent}
               className="post__accessory__textarea"
-              placeholder="想檢舉什麼？"
+              placeholder="這個回饋怎麼了？"
             />
             <button className="post__accessory__submit pill pill--action">
               送出

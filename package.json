@@ -11,5 +11,6 @@
   "main": "index.js",
   "repository": "git@github.com:agameofprivacy/gov-feedback.git",
   "author": "Eddie Chen <agameofprivacy@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {}
 }

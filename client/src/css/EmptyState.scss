@@ -1,13 +1,19 @@
 .empty-state {
     padding: 2em 1em;
-    background-color: white;
-    border: 1px solid rgb(240,240,240);
+    margin-bottom: 2em;
+    background-color: transparent;
+    // border: 1px solid rgb(230,230,230);
+    text-align: center;
 
     &__title {
+        display: inline-block;
         color: rgb(80,80,80);
-        padding-top: 1em;
+        padding: .4em .7em;
         font-size: 1.5em;
         font-weight: 500;
+        margin-left: auto;
+        margin-right: auto;
         text-align: center;
+        border-bottom: 3px solid #EA3223;
     }
 }

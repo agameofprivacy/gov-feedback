@@ -1,4 +1,4 @@
-export default `
+module.exports = `
     type ContactDetail{
         kind: String!,
         value: String!,

@@ -7,6 +7,7 @@ class NavBar extends Component {
 
     state = {
         showsSearchBox: false,
+        showsMenu: false,
         query: ""
     }
 
@@ -16,7 +17,7 @@ class NavBar extends Component {
             if (this.state.showsSearchBox) {
                 document.querySelector(".navbar input").focus();
                 document.querySelector(".navbar input").select();
-            }    
+            }
         })
     }
     
@@ -24,9 +25,13 @@ class NavBar extends Component {
         this.setState({showsSearchBox: false});
     }
 
+    toggleMenuDropdown = () => {
+
+    }
+
     render() {
         const {dark, title, setSelectedOrg, setSelectedTopic, queryOrgs, queryTopics, orgResults, topicResults} = this.props;
-        const {showsSearchBox, query} = this.state;
+        const {showsSearchBox, showsMenu, query} = this.state;
         if (showsSearchBox) {
             return (
                 <div className="navbar">
@@ -39,6 +44,7 @@ class NavBar extends Component {
                     <img className="navbar__logo" src={logo} alt="政府機關回饋平台 logo" />
                     <h1 onClick={this.toggleSearchBox} className="navbar__title">{title}</h1>
                     <button onClick={this.toggleSearchBox} className="navbar__button"><IconButton type="search" /></button>
+                    <button onClick={this.toggleMenuDropdown} className="navbar__button"><IconButton type="user" /></button>
                 </div>
             );
         }

@@ -49,7 +49,7 @@ class Pill extends Component {
             (unset ? " pill--unset" : "") +
             (action ? " pill--action" : "") +
             (highlighted ? " pill--highlighted" : "") +
-            (color ? " pill--filled pill--filled--dark" : "")
+            (color ? " pill--filled pill--filled--dark pill--selectable" : "")
           }
         >
           {label}

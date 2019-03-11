@@ -73,6 +73,10 @@
                 margin-left: -0.5em;
                 cursor: pointer;
 
+                & svg path:first-child {
+                    transition: fill .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+                }
+
                 &:hover {
                     fill: transparent;
 
@@ -122,6 +126,7 @@
                 display: block;
                 border-radius: 3px;
                 white-space: nowrap;
+                transition: background-color .15s cubic-bezier(0.4, 0.0, 0.2, 1), color .15s cubic-bezier(0.4, 0.0, 0.2, 1);
 
                 &--start {
                     margin-right: auto;

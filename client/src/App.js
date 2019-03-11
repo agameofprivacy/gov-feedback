@@ -8,6 +8,7 @@ import Sidebar from "./components/Sidebar";
 import Modal from "./components/Modal";
 import Footer from "./components/Footer";
 import LoginModal from "./components/LoginModal";
+import Loader from "./components/Loader";
 
 const host = "https://gov-feedback.appspot.com";
 
@@ -36,7 +37,8 @@ class App extends Component {
     showsLoginModal: false,
     content: "",
     reset: false,
-    parallelOrgs: []
+    parallelOrgs: [],
+    isLoading: false
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -92,7 +94,8 @@ class App extends Component {
       selectedType: "org",
       selectedTopicName: "",
       composerTag: "",
-      composerValue: ""
+      composerValue: "",
+      isLoading: true,
     });
     this.getPostsForOrgId(org.identifiers[0].identifier);
     this.getOrgWithOrgId(org.identifiers[0].identifier);
@@ -105,7 +108,8 @@ class App extends Component {
       selectedType: "topic",
       selectedTopicName: name,
       composerTag: "",
-      composerValue: ""
+      composerValue: "",
+      isLoading: true,
     });
     this.getPostsForTopic(name);
     this.topicWithName(name);
@@ -305,7 +309,9 @@ class App extends Component {
       .then(r => r.json())
       .then(posts => {
         console.log(posts);
-        this.setState({ posts: posts.data.postsForOrgId });
+        this.setState({ posts: posts.data.postsForOrgId, isLoading: false }, () => {
+          window.scrollTo(0, 0)
+        });
       });
   };
 
@@ -363,11 +369,15 @@ class App extends Component {
                     );
                   }.bind(this)
                 );
-                this.setState({ parallelOrgs: orgs });
+                this.setState({ parallelOrgs: orgs, isLoading: false }, () => {
+                  window.scrollTo(0, 0)
+                });
               }.bind(this)
             );
           } else {
-            this.setState({ parallelOrgs: [] });
+            this.setState({ parallelOrgs: [], isLoading: false }, () => {
+              window.scrollTo(0, 0)
+            });
           }
         });
       });
@@ -656,34 +666,41 @@ class App extends Component {
             }
             dark
           />
-          <div className="container">
-            <Feed
-              key={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
-              parallelOrgs={this.state.parallelOrgs}
-              composerTag={this.state.composerTag}
-              org={this.state.selectedOrg}
-              setSelectedOrg={this.setSelectedOrg}
-              setSelectedTopic={this.setSelectedTopic}
-              selectedType={this.state.selectedType}
-              reset={this.state.reset}
-              selectedOrgName={this.state.selectedOrgName}
-              selectedOrgId={this.state.selectedOrgId}
-              selectedTopicName={this.state.selectedTopicName}
-              selectedIdentity={this.state.selectedIdentity}
-              setFormState={this.setFormState}
-              posts={this.state.posts}
-            />
-            <Sidebar
-              selectedIdentifier={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
-              selectedType={this.state.selectedType}
-              setSelectedOrg={this.setSelectedOrg}
-              org={this.state.selectedOrg}
-              topic={this.state.selectedTopic}
-              parallelOrgs={this.state.parallelOrgs}
-            />
+          {
+            this.state.isLoading &&
+            <Loader />
+          }
+          {
+            !this.state.isLoading &&
+            <div className="container">
+              <Feed
+                key={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
+                parallelOrgs={this.state.parallelOrgs}
+                composerTag={this.state.composerTag}
+                org={this.state.selectedOrg}
+                setSelectedOrg={this.setSelectedOrg}
+                setSelectedTopic={this.setSelectedTopic}
+                selectedType={this.state.selectedType}
+                reset={this.state.reset}
+                selectedOrgName={this.state.selectedOrgName}
+                selectedOrgId={this.state.selectedOrgId}
+                selectedTopicName={this.state.selectedTopicName}
+                selectedIdentity={this.state.selectedIdentity}
+                setFormState={this.setFormState}
+                posts={this.state.posts}
+              />
+              <Sidebar
+                selectedIdentifier={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
+                selectedType={this.state.selectedType}
+                setSelectedOrg={this.setSelectedOrg}
+                org={this.state.selectedOrg}
+                topic={this.state.selectedTopic}
+                parallelOrgs={this.state.parallelOrgs}
+              />
+            </div>
+        }
+            <Footer />
           </div>
-          <Footer />
-        </div>
       );
     }
   }

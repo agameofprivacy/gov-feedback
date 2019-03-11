@@ -1,11 +1,25 @@
 .post {
     background-color: white;
     padding: 2em 1.5em 0 1.5em;
-    border: 1px solid rgb(240,240,240);
-    border-bottom: none;
+    border: 1px solid rgb(230,230,230);
+    border-bottom: 0;
 
-    &:last-child {
-        border-bottom: 1px solid rgb(240,240,240);
+    &--first {
+        border-top: 1px solid rgb(230,230,230);
+    }
+
+    &--last {
+        border-bottom: 1px solid rgb(230,230,230);
+    }
+
+
+    &--bordered {
+        border-top: 1px solid rgb(230,230,230);
+    }
+
+    &--accessory {
+        border-top: 1px solid rgb(230,230,230);
+        border-bottom: 1px solid rgb(230,230,230);
     }
 
     &--indented {
@@ -50,5 +64,55 @@
         justify-content: space-between;
         margin-top: 1.5em;
         align-items: flex-start;
+    }
+
+    &__accessory {
+        min-height: 150px;
+        margin-left: 1em;
+        margin-bottom: 1em;
+        background-color: white;
+        border: 1px solid rgb(230,230,230);
+        border-top: 0;
+        position: relative;
+
+        &__textarea {
+            width: 80%;
+            margin: 27px 1em;
+            font-size: 20px;
+            min-height: 50px;
+            max-height: 15vh;
+            border: none;
+            overflow: auto;
+            outline: none;
+            color: rgb(50,50,50);
+        
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+        
+            resize: none; /*remove the resize handle on the bottom right*/    
+        }
+
+        &__submit {
+            position: absolute;
+            bottom: 1em;
+            right: 1em;
+        }
+    }
+
+    &__reply {
+
+
+    }
+
+    &__forward {
+        padding: 2em;
+
+        & .pills {
+            margin-bottom: 2em;
+            max-height: 15vh;
+            min-height: 50px;
+            overflow-y: scroll;    
+        }
     }
 }

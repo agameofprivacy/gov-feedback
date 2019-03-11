@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { ObjectID } from "mongodb";
+const mongoose = require("mongoose");
+const ObjectID = require("mongodb").ObjectID;
 
 const Schema = mongoose.Schema;
 

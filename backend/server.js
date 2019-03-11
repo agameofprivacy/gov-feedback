@@ -4,9 +4,9 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-import schema from "./graphql/";
-import Topic from "./models/Topic";
-import Organization from "./models/Organization";
+const schema = require("./graphql/");
+const Topic = require("./models/Topic");
+const Organization = require("./models/Organization");
 
 const app = express();
 const PORT = process.env.PORT || "4000";
@@ -22,7 +22,7 @@ mongoose
     {
       dbName: 'gov-feedback',
       useCreateIndex: true,
-      useNewUrlParser: true,
+      useNewUrlParser: false,
       keepAlive: 1,
       connectTimeoutMS: 30000,
       readConcern: {level: "majority"},

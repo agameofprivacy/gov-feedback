@@ -12,10 +12,18 @@
         flex: 1;
         text-align: center;
         padding: 14px;
-        background-color: rgb(240,240,240);
+        background-color: rgb(230,230,230);
+
+        &:hover {
+            background-color: rgb(235,235,235);
+        }
 
         &--selected {
             background-color: white;
+
+            &:hover {
+                background-color: white;
+            }
         }
     }
 }

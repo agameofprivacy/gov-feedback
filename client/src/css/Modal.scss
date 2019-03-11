@@ -21,7 +21,7 @@
 
     &__dialog {
         background-color: white;
-        border: 1px solid rgb(240,240,240);
+        border: 1px solid rgb(230,230,230);
         max-height: 80vh;
         padding: 1em;
         position: relative;
@@ -78,6 +78,7 @@
                     height: 20px;
                     border: none;
                 }
+
             }
 
             &__title {
@@ -106,15 +107,25 @@
                 background: none;
                 outline: none;
                 display: block;
+                border-radius: 3px;
 
                 &--primary {
                     color: rgb(74, 144, 226);
                     font-weight: 400;
+
+                    &:hover {
+                        background-color: rgb(74, 144, 226);
+                        color: white;
+                    }
                 }
 
                 &--secondary {
                     color: rgb(50,50,50);
                     font-weight: 300;
+                    
+                    &:hover {
+                        background-color: rgb(245, 245, 245);
+                    }
                 }
             }
         }

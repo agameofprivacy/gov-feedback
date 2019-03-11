@@ -7,10 +7,12 @@ import Feed from "./components/Feed";
 import Sidebar from "./components/Sidebar";
 import Modal from "./components/Modal";
 import Footer from "./components/Footer";
+import LoginModal from "./components/LoginModal";
 
+const host = "https://gov-feedback.appspot.com";
 
 class App extends Component {
-  // initialize our state 
+  // initialize our state
   state = {
     orgResults: null,
     topicResults: null,
@@ -31,13 +33,14 @@ class App extends Component {
     composerValue: "",
     modalType: "",
     showsModal: false,
+    showsLoginModal: false,
     content: "",
     reset: false,
-    parallelOrgs: [],
+    parallelOrgs: []
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
-  // then we incorporate a polling logic so that we can easily see if our db has 
+  // then we incorporate a polling logic so that we can easily see if our db has
   // changed and implement those changes into our UI
   componentDidMount() {
     this.getRandomOrgs(25);
@@ -50,16 +53,15 @@ class App extends Component {
     //   created: 1550996472856
     // });
 
-
     var intervalId = setInterval(this.timer, 1800);
-    this.setState({intervalId: intervalId});
+    this.setState({ intervalId: intervalId });
   }
-    // if (!this.state.intervalIsSet) {
-    //   let interval = setInterval(this.getOrgsFromDb, 1000);
-    //   this.setState({ intervalIsSet: interval });
-    // }
+  // if (!this.state.intervalIsSet) {
+  //   let interval = setInterval(this.getOrgsFromDb, 1000);
+  //   this.setState({ intervalIsSet: interval });
+  // }
 
-  // never let a process live forever 
+  // never let a process live forever
   // always kill a process everytime we are done using it
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
@@ -68,13 +70,21 @@ class App extends Component {
   timer = () => {
     // setState method is used to update the state
     if (typeof this.state.randomIndex == "undefined") {
-      this.setState({ randomIndex: Math.floor(Math.random() * (this.state.randomOrgs.length - 0) ) + 0 });  
+      this.setState({
+        randomIndex:
+          Math.floor(Math.random() * (this.state.randomOrgs.length - 0)) + 0
+      });
     } else {
-      this.setState({ randomIndex: this.state.randomIndex < this.state.randomOrgs.length - 1 ? this.state.randomIndex + 1 : 0 });
-    }    
-  } 
+      this.setState({
+        randomIndex:
+          this.state.randomIndex < this.state.randomOrgs.length - 1
+            ? this.state.randomIndex + 1
+            : 0
+      });
+    }
+  };
 
-  setSelectedOrg = (org) => {
+  setSelectedOrg = org => {
     console.log("selected org", org);
     this.setState({
       selectedOrgId: org.identifiers[0].identifier,
@@ -82,32 +92,37 @@ class App extends Component {
       selectedType: "org",
       selectedTopicName: "",
       composerTag: "",
-      composerValue: "",
-
-    })
+      composerValue: ""
+    });
     this.getPostsForOrgId(org.identifiers[0].identifier);
     this.getOrgWithOrgId(org.identifiers[0].identifier);
-  }
+  };
 
-  setSelectedTopic = (name) => {
+  setSelectedTopic = name => {
     this.setState({
       selectedOrgId: "",
       selectedOrgName: "",
       selectedType: "topic",
       selectedTopicName: name,
       composerTag: "",
-      composerValue: "",
-    })
+      composerValue: ""
+    });
     this.getPostsForTopic(name);
     this.topicWithName(name);
+  };
+
+  showLoginModal = () => {
+    this.setState({
+      showsLoginModal: true,
+    })
   }
 
-  getPostsForTopic = (topic) => {
-    fetch('/graphql', {
-      method: 'POST',
+  getPostsForTopic = topic => {
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': "application/json",
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `query postsForTopic($topic: String){
@@ -117,25 +132,26 @@ class App extends Component {
             organization,
             organization_id,
             created,
-            content            
+            content,
+            _id
           }
         }`,
-        variables: { topic },
+        variables: { topic }
       })
     })
-    .then(r => r.json())
-    .then(posts => {
-      console.log(posts);
-      this.setState({posts: posts.data.postsForTopic})
-    });
+      .then(r => r.json())
+      .then(posts => {
+        console.log(posts);
+        this.setState({ posts: posts.data.postsForTopic });
+      });
   };
 
-  topicWithName = (name) => {
-    fetch('/graphql', {
-      method: 'POST',
+  topicWithName = name => {
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': "application/json",
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `query topicWithName($name: String){
@@ -153,29 +169,28 @@ class App extends Component {
             },            
           }
         }`,
-        variables: { name },
+        variables: { name }
       })
     })
-    .then(r => r.json())
-    .then(result => {
-      console.log(result);
-      this.setState({selectedTopic: result.data.topicWithName})
-    });
+      .then(r => r.json())
+      .then(result => {
+        console.log(result);
+        this.setState({ selectedTopic: result.data.topicWithName });
+      });
   };
 
-
-    
   getOrgsFromDb = (name, callback) => {
-    this.setState({query: name});
-    fetch('/graphql', {
-      method: 'POST',
+    this.setState({ query: name });
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `query organizations($name: String){
           organizations(name: $name){
+            _id
             name
             identifiers {
               scheme
@@ -183,50 +198,50 @@ class App extends Component {
             }
           }
         }`,
-        variables: { name },
+        variables: { name }
       })
     })
       .then(r => r.json())
       .then(orgResults => {
         if (orgResults !== null && this.state.query === name) {
-          this.setState({orgResults: orgResults});
+          this.setState({ orgResults: orgResults });
           callback(orgResults);
         }
       });
   };
 
   getTopicsFromDb = (name, callback) => {
-    this.setState({topics: []});
-    fetch('/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': "application/json",
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          query: `query topics($name: String) {
+    this.setState({ topics: [] });
+    fetch(`${host}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        query: `query topics($name: String) {
             topics(name: $name){
               name
             }
           }`,
-          variables: { name },
-        })
+        variables: { name }
       })
+    })
       .then(r => r.json())
       .then(topicResults => {
         if (topicResults !== null && this.state.query === name) {
-          this.setState({topicResults: topicResults});
+          this.setState({ topicResults: topicResults });
           callback(topicResults);
         }
-    });
-}  
+      });
+  };
 
-  getRandomOrgs = (count) => {
-    fetch('/graphql', {
-      method: 'POST',
+  getRandomOrgs = count => {
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': "application/json",
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `query randomOrganizations($count: Int){
@@ -234,21 +249,21 @@ class App extends Component {
             name
           }
         }`,
-        variables: { count },
+        variables: { count }
       })
     })
-    .then(r => r.json())
-    .then(samples => {
-      this.setState({randomOrgs: samples.data.randomOrganizations})
-    });
-  }
+      .then(r => r.json())
+      .then(samples => {
+        this.setState({ randomOrgs: samples.data.randomOrganizations });
+      });
+  };
 
-  getRandomOrgs = (count) => {
-    fetch('/graphql', {
-      method: 'POST',
+  getRandomOrgs = count => {
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': "application/json",
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `query randomOrganizations($count: Int){
@@ -256,21 +271,21 @@ class App extends Component {
             name
           }
         }`,
-        variables: { count },
+        variables: { count }
       })
     })
-    .then(r => r.json())
-    .then(samples => {
-      this.setState({randomOrgs: samples.data.randomOrganizations})
-    });
-  }
+      .then(r => r.json())
+      .then(samples => {
+        this.setState({ randomOrgs: samples.data.randomOrganizations });
+      });
+  };
 
-  getPostsForOrgId = (orgId) => {
-    fetch('/graphql', {
-      method: 'POST',
+  getPostsForOrgId = orgId => {
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': "application/json",
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `query postsForOrgId($orgId: String){
@@ -280,29 +295,31 @@ class App extends Component {
             organization,
             organization_id,
             created,
-            content            
+            content,
+            _id            
           }
         }`,
-        variables: { orgId },
+        variables: { orgId }
       })
     })
-    .then(r => r.json())
-    .then(posts => {
-      console.log(posts);
-      this.setState({posts: posts.data.postsForOrgId})
-    });
-  }
+      .then(r => r.json())
+      .then(posts => {
+        console.log(posts);
+        this.setState({ posts: posts.data.postsForOrgId });
+      });
+  };
 
-  getOrgWithOrgId = (orgId) => {
-    fetch('/graphql',{
-      method: 'POST',
+  getOrgWithOrgId = orgId => {
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': "application/json",
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `query organizationWithId($orgId: String){
           organizationWithId(orgId: $orgId){
+            _id,
             name,
             parent {
               _id,
@@ -328,38 +345,46 @@ class App extends Component {
             }
           }
         }`,
-        variables: { orgId },
+        variables: { orgId }
       })
     })
-    .then(r => r.json())
-    .then(org => {
-      console.log("retrieved org: ", org);
-      this.setState({selectedOrg: org.data.organizationWithId}, () => {
-        if (this.state.selectedOrg.parent !== null) {
-          this.getOrgsWithParentId(this.state.selectedOrg.parent._id, (function(orgs){ 
-            orgs = orgs.data.organizationsWithParentId.filter((function( org ) {
-              return org.identifiers[0].identifier !== this.state.selectedOrgId;
-            }).bind(this));
-          
-            this.setState({parallelOrgs: orgs})}).bind(this));
-        } else {
-          this.setState({parallelOrgs: []})
-        }
+      .then(r => r.json())
+      .then(org => {
+        console.log("retrieved org: ", org);
+        this.setState({ selectedOrg: org.data.organizationWithId }, () => {
+          if (this.state.selectedOrg.parent !== null) {
+            this.getOrgsWithParentId(
+              this.state.selectedOrg.parent._id,
+              function(orgs) {
+                orgs = orgs.data.organizationsWithParentId.filter(
+                  function(org) {
+                    return (
+                      org.identifiers[0].identifier !== this.state.selectedOrgId
+                    );
+                  }.bind(this)
+                );
+                this.setState({ parallelOrgs: orgs });
+              }.bind(this)
+            );
+          } else {
+            this.setState({ parallelOrgs: [] });
+          }
+        });
       });
-    });
-  }
+  };
 
   getOrgsWithParentId = (parentId, callback) => {
-    fetch('/graphql', {
-      method: 'POST',
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `
           query organizationsWithParentId($parentId: String){
             organizationsWithParentId(parentId: $parentId) {
+              _id,
               name,
               identifiers {
                 identifier
@@ -367,24 +392,24 @@ class App extends Component {
             }
           }
         `,
-        variables: { parentId },
+        variables: { parentId }
       })
     })
-    .then(r => r.json())
-    .then(orgs => {
-      console.log(orgs);
-      callback(orgs);
-    })
-  }
+      .then(r => r.json())
+      .then(orgs => {
+        console.log(orgs);
+        callback(orgs);
+      });
+  };
 
   createPost = (postInput, callback) => {
     console.log("create post");
     console.log("postInput", postInput);
-    fetch('/graphql', {
-      method: 'POST',
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': "application/json",
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `
@@ -395,23 +420,23 @@ class App extends Component {
             }
           }
         `,
-        variables: {postInput},
+        variables: { postInput }
       })
     })
-    .then(r => r.json())
-    .then(response => {
-      callback(response);
-    })
-  }
+      .then(r => r.json())
+      .then(response => {
+        callback(response);
+      });
+  };
 
   createTopic = (topicInput, callback) => {
     console.log("create topic");
     console.log("topicInput", topicInput);
-    fetch('/graphql', {
-      method: 'POST',
+    fetch(`${host}/graphql`, {
+      method: "POST",
       headers: {
-        'Content-Type': "application/json",
-        'Accept': 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json"
       },
       body: JSON.stringify({
         query: `
@@ -423,14 +448,14 @@ class App extends Component {
             }
           }
         `,
-        variables: {topicInput},
+        variables: { topicInput }
       })
     })
-    .then(r => r.json())
-    .then(response => {
-      callback(response);
-    })
-  }
+      .then(r => r.json())
+      .then(response => {
+        callback(response);
+      });
+  };
 
   // our put method that uses our backend api
   // to create new query into our data base
@@ -447,8 +472,7 @@ class App extends Component {
     });
   };
 
-
-  // our delete method that uses our backend api 
+  // our delete method that uses our backend api
   // to remove existing database information
   deleteFromDB = idTodelete => {
     let objIdToDelete = null;
@@ -464,7 +488,6 @@ class App extends Component {
       }
     });
   };
-
 
   // our update method that uses our backend api
   // to overwrite existing data base information
@@ -482,22 +505,33 @@ class App extends Component {
     });
   };
 
-  setFormState = (form) => {
-    for ( const[key, value] of Object.entries(form)) {
-      this.setState({[key]: value});
+  setFormState = form => {
+    for (const [key, value] of Object.entries(form)) {
+      this.setState({ [key]: value });
     }
-  }
+  };
 
   createPostWithComposer = () => {
-      console.log("run createPostWithComposer");
-      this.createPost({
+    console.log("run createPostWithComposer");
+    this.createPost(
+      {
         author: "Eddie Chen",
-        topic: this.state.selectedType === "org" ? this.state.composerTag : this.state.selectedTopicName,
+        topic:
+          this.state.selectedType === "org"
+            ? this.state.composerTag
+            : this.state.selectedTopicName,
         content: this.state.content,
-        organization: this.state.selectedType === "org" ? this.state.selectedOrgName : this.state.composerTag,
-        organization_id: this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.composerValue,
+        organization:
+          this.state.selectedType === "org"
+            ? this.state.selectedOrgName
+            : this.state.composerTag,
+        organization_id:
+          this.state.selectedType === "org"
+            ? this.state.selectedOrgId
+            : this.state.composerValue,
         created: Number(new Date())
-      }, (function(r){
+      },
+      function(r) {
         console.log(r);
         console.log(r.data);
         this.resetComposer();
@@ -506,8 +540,9 @@ class App extends Component {
         } else {
           this.getPostsForTopic(this.state.selectedTopicName);
         }
-      }).bind(this));
-  }
+      }.bind(this)
+    );
+  };
 
   resetComposer = () => {
     this.setState({
@@ -518,9 +553,8 @@ class App extends Component {
       content: "",
       reset: true
     });
-  }
+  };
 
-  
   render() {
     // const posts = [
     //   {
@@ -543,52 +577,114 @@ class App extends Component {
 
     const sections = [
       {
-        "title": "需登入",
-        "options": [
+        title: "需登入",
+        options: [
           {
-            "title": "自訂",
-            "subtitle": "要怎麼署名都可以",
-            "value": "custom"
+            title: "自訂",
+            subtitle: "要怎麼署名都可以",
+            value: "custom"
           },
           {
-            "title": "具名",
-            "subtitle": "使用帳戶設定之正式名稱、身份",
-            "value": "account"
-          },
+            title: "具名",
+            subtitle: "使用帳戶設定之正式名稱、身份",
+            value: "account"
+          }
         ]
       },
       {
-        "title": "不需登入",
-        "options": [
+        title: "不需登入",
+        options: [
           {
-            "title": "匿名",
-            "subtitle": "要隱姓埋名，請遵守社群規範",
-            "value": "anonymous"
+            title: "匿名",
+            subtitle: "要隱姓埋名，請遵守社群規範",
+            value: "anonymous"
           }
         ]
       }
-    ]
+    ];
 
     if (typeof this.state.selectedOrgId === "undefined") {
       return (
-        <Landing setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} queryOrgs={this.getOrgsFromDb} queryTopics={this.getTopicsFromDb} randomOrgs={this.state.randomOrgs} randomIndex={this.state.randomIndex} orgResults={this.state.orgResults} topicResults={this.state.topicResults} />
+        <Landing
+          setSelectedOrg={this.setSelectedOrg}
+          setSelectedTopic={this.setSelectedTopic}
+          queryOrgs={this.getOrgsFromDb}
+          queryTopics={this.getTopicsFromDb}
+          randomOrgs={this.state.randomOrgs}
+          randomIndex={this.state.randomIndex}
+          orgResults={this.state.orgResults}
+          topicResults={this.state.topicResults}
+        />
       );
     } else {
       return (
         <div>
-          {
-            this.state.showsModal &&
-            <Modal selectedTopic={this.state.selectedTopic} selectedOrg={this.state.selectedOrg} content={this.state.content} setFormState={this.setFormState} type={this.state.modalType} data={sections} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} createPostWithComposer={this.createPostWithComposer} composerTag={this.state.composerTag} selectedType={this.state.selectedType} />
-          }
+          {this.state.showsModal && (
+            <Modal
+              selectedTopic={this.state.selectedTopic}
+              selectedOrg={this.state.selectedOrg}
+              content={this.state.content}
+              setFormState={this.setFormState}
+              type={this.state.modalType}
+              data={sections}
+              selectedOrgName={this.state.selectedOrgName}
+              selectedTopicName={this.state.selectedTopicName}
+              selectedIdentity={this.state.selectedIdentity}
+              createPostWithComposer={this.createPostWithComposer}
+              composerTag={this.state.composerTag}
+              selectedType={this.state.selectedType}
+            />
+          )}
 
-          <NavBar {...this.props} setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} queryOrgs={this.getOrgsFromDb} queryTopics={this.getTopicsFromDb} orgResults={this.state.orgResults} topicResults={this.state.topicResults} title={ this.state.selectedType === "org" ? this.state.selectedOrgName : this.state.selectedTopicName } dark />
+          {this.state.showsLoginModal && (
+            <LoginModal setFormState={this.setFormState} />
+          )}
+
+          <NavBar
+            {...this.props}
+            setSelectedOrg={this.setSelectedOrg}
+            setSelectedTopic={this.setSelectedTopic}
+            showLoginModal={this.showLoginModal}
+            queryOrgs={this.getOrgsFromDb}
+            queryTopics={this.getTopicsFromDb}
+            orgResults={this.state.orgResults}
+            topicResults={this.state.topicResults}
+            title={
+              this.state.selectedType === "org"
+                ? this.state.selectedOrgName
+                : this.state.selectedTopicName
+            }
+            dark
+          />
           <div className="container">
-            <Feed composerTag={this.state.composerTag} setSelectedOrg={this.setSelectedOrg} setSelectedTopic={this.setSelectedTopic} selectedType={this.state.selectedType} reset={this.state.reset} selectedOrgName={this.state.selectedOrgName} selectedTopicName={this.state.selectedTopicName} selectedIdentity={this.state.selectedIdentity} setFormState={this.setFormState} posts={this.state.posts} />
-            <Sidebar selectedType={this.state.selectedType} setSelectedOrg={this.setSelectedOrg} org={this.state.selectedOrg} topic={this.state.selectedTopic} parallelOrgs={this.state.parallelOrgs} />
+            <Feed
+              key={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
+              parallelOrgs={this.state.parallelOrgs}
+              composerTag={this.state.composerTag}
+              org={this.state.selectedOrg}
+              setSelectedOrg={this.setSelectedOrg}
+              setSelectedTopic={this.setSelectedTopic}
+              selectedType={this.state.selectedType}
+              reset={this.state.reset}
+              selectedOrgName={this.state.selectedOrgName}
+              selectedOrgId={this.state.selectedOrgId}
+              selectedTopicName={this.state.selectedTopicName}
+              selectedIdentity={this.state.selectedIdentity}
+              setFormState={this.setFormState}
+              posts={this.state.posts}
+            />
+            <Sidebar
+              selectedIdentifier={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
+              selectedType={this.state.selectedType}
+              setSelectedOrg={this.setSelectedOrg}
+              org={this.state.selectedOrg}
+              topic={this.state.selectedTopic}
+              parallelOrgs={this.state.parallelOrgs}
+            />
           </div>
           <Footer />
         </div>
-      )
+      );
     }
   }
 }

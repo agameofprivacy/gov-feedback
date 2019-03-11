@@ -1,13 +1,13 @@
-import Organization from "../../../models/Organization";
+const Organization = require("../../../models/Organization");
 
-export default {
+module.exports = {
     Query: {
         organizations: (root, args) => {
             return new Promise((resolve, reject) => {
                 Organization.find({name: new RegExp(args.name, "gi")})
                 .populate("parent")
                 .sort({'level': 1, 'name': 1})
-                .limit(5)
+                .limit(8)
                 .exec((err, res) => {
                     err ? reject(err) : resolve(res);
                 });

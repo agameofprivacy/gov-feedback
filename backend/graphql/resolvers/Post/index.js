@@ -1,6 +1,6 @@
-import Post from "../../../models/Post";
+const Post = require("../../../models/Post");
 
-export default {
+module.exports = {
     Query: {
         posts: (root, args) => {
             return new Promise((resolve, reject) => {

@@ -89,16 +89,18 @@ class PillSearch extends Component {
     })
       .then(r => r.json())
       .then(result => {
-        var topicStrings = [];
-        result.data.topics.forEach(topic => {
-          topicStrings.push(topic.name);
-        });
-        if (!topicStrings.includes(name) && name !== "") {
-          topicStrings.push(name);
-        }
-        if (name === this.state.query) {
-          this.setState({ topics: topicStrings });
-          console.log("topics", this.state.topics);
+        if (result !== null) {
+          var topicStrings = [];
+          result.data.topics.forEach(topic => {
+            topicStrings.push(topic.name);
+          });
+          if (!topicStrings.includes(name) && name !== "") {
+            topicStrings.push(name);
+          }
+          if (name === this.state.query) {
+            this.setState({ topics: topicStrings });
+            console.log("topics", this.state.topics);
+          }
         }
       });
   };

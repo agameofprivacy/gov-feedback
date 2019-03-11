@@ -73,10 +73,20 @@
                 margin-left: -0.5em;
                 cursor: pointer;
 
+                &:hover {
+                    fill: transparent;
+
+                    & svg path:first-child {
+                        fill: black !important;
+                    }
+                }
+
                 & svg {
                     width: 20px;
                     height: 20px;
                     border: none;
+
+
                 }
 
             }
@@ -89,25 +99,33 @@
         &__body {
             font-size: 15px;
             font-weight: 300;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
         }
 
         &__footer {
             position: absolute;
             bottom: 1em;
-            right: 1em;
+            right: 0;
             height: 50px;
             display: flex;
+            width: 100%;
+            justify-content: flex-end;
 
             &__action {
                 padding: 10px 10px;
-                margin-left: 10px;
+                margin-left: 1em;
+                margin-right: 1em;
                 cursor: pointer;
                 border: none;
                 background: none;
                 outline: none;
                 display: block;
                 border-radius: 3px;
+                white-space: nowrap;
+
+                &--start {
+                    margin-right: auto;
+                }
 
                 &--primary {
                     color: rgb(74, 144, 226);

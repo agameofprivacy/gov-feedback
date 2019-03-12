@@ -7,8 +7,10 @@
     &__spinner {
         width: 8vw;
         height: 8vh;
+        max-width: 100px;
+        max-height: 100px;
         margin:auto;
-        margin-top: 40%;
+        margin-top: 15vh;
 
         -webkit-animation-name: spin;
         -webkit-animation-duration: .63s;

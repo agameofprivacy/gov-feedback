@@ -39,8 +39,14 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
 
+  var host;
+  var remote = "https://gov-feedback-web.appspot.com";
+  var local= "http://localhost:3000";
+  host = local;
+
   app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', "http://localhost:3000");
+    res.header('Access-Control-Allow-Origin', host);
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     if ('OPTIONS' == req.method) {
          res.sendStatus(200);
      } else {

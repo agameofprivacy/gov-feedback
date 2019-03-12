@@ -10,7 +10,7 @@ class LoginModal extends Component {
     remote = "https://gov-feedback.appspot.com";
     local = "http://localhost:3001";
     
-    host = this.local || this.remote;
+    host = this.local;
     
 
     state = {

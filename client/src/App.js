@@ -11,9 +11,9 @@ import LoginModal from "./components/LoginModal";
 import Loader from "./components/Loader";
 
 var remote = "https://gov-feedback.appspot.com";
-var local = "http://localhost:3001";
+var local= "http://localhost:3001";
 
-const host = local || remote;
+const host = local;
 
 class App extends Component {
   // initialize our state

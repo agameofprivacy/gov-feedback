@@ -3,7 +3,15 @@ import BaseModal from "./BaseModal";
 import FormInput from "./FormInput";
 import FormInputs from "./FormInputs";
 
+const axios = require("axios");
+
 class LoginModal extends Component {
+
+    remote = "https://gov-feedback.appspot.com";
+    local = "http://localhost:3001";
+    
+    host = this.local || this.remote;
+    
 
     state = {
         username: "",
@@ -22,7 +30,18 @@ class LoginModal extends Component {
         // process login then close modal
         console.log("user: ", this.state.username);
         console.log("password: ", this.state.password);
-        this.closeLoginModal();
+        axios(
+            {
+                method: 'post', 
+                url: `${this.host}/login`, 
+                data: {
+                    username: this.state.username,
+                    password: this.state.password
+                }
+            }).then((res) => {
+            console.log(res);
+            this.closeLoginModal();
+        })
     }
 
     register = () => {
@@ -35,6 +54,19 @@ class LoginModal extends Component {
         console.log("complete registration");
         console.log("user: ", this.state.username);
         console.log("password: ", this.state.password);
+        axios(
+            {
+                method: 'post', 
+                url: `${this.host}/signup`, 
+                data: {
+                    username: this.state.username,
+                    password: this.state.password
+                }
+            }).then((res) => {
+            console.log(res);
+            this.closeLoginModal();
+        })
+
     }
 
     updateValue = (name, value) => {

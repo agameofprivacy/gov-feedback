@@ -100,12 +100,8 @@
         }
     }
 
-    &__reply {
-
-
-    }
-
     &__forward {
+        -webkit-overflow-scrolling: touch;
         padding: 2em;
 
         & .pills {

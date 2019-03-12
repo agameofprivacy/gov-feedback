@@ -10,7 +10,10 @@ import Footer from "./components/Footer";
 import LoginModal from "./components/LoginModal";
 import Loader from "./components/Loader";
 
-const host = "https://gov-feedback.appspot.com";
+var remote = "https://gov-feedback.appspot.com";
+var local = "http://localhost:3001";
+
+const host = local || remote;
 
 class App extends Component {
   // initialize our state
@@ -179,7 +182,7 @@ class App extends Component {
       .then(r => r.json())
       .then(result => {
         console.log(result);
-        this.setState({ selectedTopic: result.data.topicWithName });
+        this.setState({ selectedTopic: result.data.topicWithName, isLoading: false });
       });
   };
 

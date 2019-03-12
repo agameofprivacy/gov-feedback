@@ -1,13 +1,21 @@
 const express = require("express");
 const expressGraphQL = require("express-graphql");
 const mongoose = require("mongoose");
+
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const session = require("express-session");
+
+const flash=require("connect-flash");
 
 const schema = require("./graphql/");
 const Topic = require("./models/Topic");
 const Organization = require("./models/Organization");
-
+const User = require("./models/User");
 const app = express();
 const PORT = process.env.PORT || "4000";
 var credentials = require('./credentials');
@@ -22,7 +30,7 @@ mongoose
     {
       dbName: 'gov-feedback',
       useCreateIndex: true,
-      useNewUrlParser: false,
+      useNewUrlParser: true,
       keepAlive: 1,
       connectTimeoutMS: 30000,
       readConcern: {level: "majority"},
@@ -31,15 +39,104 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
 
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', "http://localhost:3000");
+    if ('OPTIONS' == req.method) {
+         res.sendStatus(200);
+     } else {
+         next();
+     }
+    });
+    
+
 app.use(
   "/graphql",
   cors(),
-  bodyParser.json(),
   expressGraphQL({
     schema,
     graphiql: true
   })
 );
+
+passport.use('local-login', new LocalStrategy({passReqToCallback: true}, (req, username, password, done) => {
+  User.findOne({"local.username": username}, (err, user) => {
+    if (err) {
+      return done(err);
+    }
+    if (!user) {
+      return done(null, false, req.flash('loginMessage', "No user found."));
+    }
+    if (!user.validPassword(password)) {
+      console.log("wrong password")
+      return done(null, false, req.flash('loginMessage', "Oops! Wrong password."));
+    }
+    return done(null, user);
+  })
+}))
+
+passport.use('local-signup', new LocalStrategy({passReqToCallback: true}, (req, username, password, done) => {
+  console.log("username", username);
+  process.nextTick(() => {
+    User.findOne({"local.username": username}, (err, user) => {
+      if (err) {
+        console.log(err);
+        return done(err);
+      }
+
+      if (user) {
+        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+      } else {
+        // if there's no user with the email
+        // create the user
+
+        var newUser = new User();
+        newUser.local.username = username;
+        newUser.local.password = newUser.generateHash(password);
+
+        newUser.save((err) => {
+          if (err) throw err;
+          return done(null, newUser);
+        })
+      }
+    })
+  })
+}))
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+})
+
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(err, user);
+  })
+})
+
+app.use(
+  bodyParser.urlencoded({ extended: false }),
+  bodyParser.json(),
+)
+app.use(session({ secret: 'ilovescotchscotchyscotchscotch', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+app.post('/login', passport.authenticate('local-login', {
+  successRedirect: '/',
+  failureRedirect: '/error',
+  failureFlash: true
+}));
+
+app.post('/signup', passport.authenticate('local-signup', {
+  successRedirect: '/',
+  failureRedirect: '/error',
+  failureFlash: true
+}));
+
+
+app.get('/', (req, res) => {
+  res.sendStatus(200);
+})
 
 app.listen(PORT, () => console.log(`SERVER running on PORT ${PORT}`));
 

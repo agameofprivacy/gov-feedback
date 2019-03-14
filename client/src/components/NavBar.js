@@ -49,7 +49,7 @@ class NavBar extends Component {
         else if (showsSearchBox) {
             return (
                 <div className="navbar">
-                    <SearchBox showLoginModal={this.showLoginModal} showsAccount={true} showsClose dismissSearchbox={this.dismissSearchbox} setSelectedOrg={setSelectedOrg} setSelectedTopic={setSelectedTopic} query={query} queryOrgs={queryOrgs} queryTopics={queryTopics} orgResults={orgResults} topicResults={topicResults} dark={dark} />
+                    <SearchBox setFormState={this.props.setFormState} username={this.props.username} showLoginModal={this.showLoginModal} showsAccount={true} showsClose dismissSearchbox={this.dismissSearchbox} setSelectedOrg={setSelectedOrg} setSelectedTopic={setSelectedTopic} query={query} queryOrgs={queryOrgs} queryTopics={queryTopics} orgResults={orgResults} topicResults={topicResults} dark={dark} />
                 </div>
             );
         }

@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import Pills from "./Pills";
 
-const host = "https://gov-feedback.appspot.com";
+const remote = "https://gov-feedback.appspot.com";
+const local = "http://localhost:3001";
+
+const host = local;
 
 class PillSearch extends Component {
   state = {

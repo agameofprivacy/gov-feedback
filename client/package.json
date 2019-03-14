@@ -5,9 +5,9 @@
   "homepage": "https://gov-feedback-web.appspot.com",
   "dependencies": {
     "axios": "^0.18.0",
+    "chroma-js": "^2.0.3",
     "moment": "^2.24.0",
     "node-sass": "^4.11.0",
-    "randomcolor": "^0.5.4",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "2.1.3",

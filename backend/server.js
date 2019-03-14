@@ -6,7 +6,6 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
 const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const session = require("express-session");
 
@@ -66,6 +65,7 @@ app.use(
 
 passport.use('local-login', new LocalStrategy({passReqToCallback: true}, (req, username, password, done) => {
   User.findOne({"local.username": username}, (err, user) => {
+    console.log("user hello", user);
     if (err) {
       return done(err);
     }
@@ -76,12 +76,15 @@ passport.use('local-login', new LocalStrategy({passReqToCallback: true}, (req, u
       console.log("wrong password")
       return done(null, false, req.flash('loginMessage', "Oops! Wrong password."));
     }
-    return done(null, user);
+    console.log("local-login bye");
+    return done(null, {
+      id:user.id,
+      username: user.local.username
+    });
   })
 }))
 
 passport.use('local-signup', new LocalStrategy({passReqToCallback: true}, (req, username, password, done) => {
-  console.log("username", username);
   process.nextTick(() => {
     User.findOne({"local.username": username}, (err, user) => {
       if (err) {
@@ -108,12 +111,18 @@ passport.use('local-signup', new LocalStrategy({passReqToCallback: true}, (req, 
   })
 }))
 
+
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  console.log("user bye", user);
+  done(null, {
+    id:user.id,
+    username: user.username
+  });
 })
 
 passport.deserializeUser((id, done) => {
   User.findById(id, (err, user) => {
+    console.log("found user", user);
     done(err, user);
   })
 })
@@ -122,16 +131,32 @@ app.use(
   bodyParser.urlencoded({ extended: false }),
   bodyParser.json(),
 )
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch', resave: true, saveUninitialized: true }));
+app.use(session({ 
+  secret: 'ilovescotchscotchyscotchscotch', 
+  resave: true, 
+  saveUninitialized: true ,
+  cookie: {
+    secure: true
+  }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
 app.post('/login', passport.authenticate('local-login', {
-  successRedirect: '/',
   failureRedirect: '/error',
   failureFlash: true
-}));
+}), function(req, res){
+  console.log("called back")
+  console.log("isAuthenticated: ", req.isAuthenticated());
+  res.json({"user": req.user});
+  // req.logout();
+  // req.logout();
+  // console.log("isAuthenticated: ", req.isAuthenticated());
+  // res.redirect('/');
+
+  // res.send();
+});
 
 app.post('/signup', passport.authenticate('local-signup', {
   successRedirect: '/',
@@ -139,6 +164,10 @@ app.post('/signup', passport.authenticate('local-signup', {
   failureFlash: true
 }));
 
+app.get('/logout', function(req, res){
+  req.logout();
+  res.sendStatus(200);
+});
 
 app.get('/', (req, res) => {
   res.sendStatus(200);

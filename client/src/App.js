@@ -41,7 +41,8 @@ class App extends Component {
     content: "",
     reset: false,
     parallelOrgs: [],
-    isLoading: false
+    isLoading: false,
+    username: ""
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -182,7 +183,9 @@ class App extends Component {
       .then(r => r.json())
       .then(result => {
         console.log(result);
-        this.setState({ selectedTopic: result.data.topicWithName, isLoading: false });
+        this.setState({ selectedTopic: result.data.topicWithName, isLoading: false }, () => {
+          window.scrollTo(0, 0)
+        });
       });
   };
 
@@ -662,11 +665,13 @@ class App extends Component {
             queryTopics={this.getTopicsFromDb}
             orgResults={this.state.orgResults}
             topicResults={this.state.topicResults}
+            setFormState={this.setFormState}
             title={
               this.state.selectedType === "org"
                 ? this.state.selectedOrgName
                 : this.state.selectedTopicName
             }
+            username={this.state.username}
             dark
           />
           {

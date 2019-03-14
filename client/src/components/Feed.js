@@ -2,14 +2,30 @@ import React, { Component } from "react";
 import Composer from "./Composer";
 import Post from "./Post";
 import EmptyState from "./EmptyState";
-const randomColor = require("randomcolor");
+
+const chroma = require("chroma-js");
 
 class Feed extends Component {
-  colors = randomColor({
-    luminosity: "dark",
-    format: "hex",
-    count: 100
-  });
+
+  getColors = (count) => {
+    let MIN_CONTRAST_RATIO = 5,
+        MIN_LUMINANCE = 0.05,
+        WHITE = chroma('white')
+  
+    let bg = null,
+        text = null;
+    var colors = [];
+
+    do {
+        bg = chroma.random();
+        let contrastWithWhite = chroma.contrast(bg, WHITE)
+        if (contrastWithWhite >= MIN_CONTRAST_RATIO && bg.luminance() >= MIN_LUMINANCE) {
+            text = WHITE;
+            colors.push(bg);
+        }
+    } while (text === null || colors.length < count);
+    return colors;
+  }
 
   handleOrgClick = identifier => {
     console.log(identifier[0], identifier[1]);
@@ -38,10 +54,15 @@ class Feed extends Component {
             prevProps.selectedTopicName !== this.props.selectedTopicName
         )) {
         console.log("update");
+        this.colors = this.getColors(100);
     }
   }
 
+  colors = this.getColors(10);
+
+
   render() {
+
     const {
       org,
       parallelOrgs,
@@ -84,8 +105,8 @@ class Feed extends Component {
               tagType={selectedType === "org" ? "topic" : "org"}
               color={
                 selectedType === "org"
-                  ? this.colors[topics.indexOf(post.topic)]
-                  : this.colors[orgs.indexOf(post.organization)]
+                  ? this.colors[topics.indexOf(post.topic)].hex()
+                  : this.colors[orgs.indexOf(post.organization)].hex()
               }
               key={post._id}
               post={post}

@@ -30,6 +30,14 @@ class SearchBox extends Component {
     this.props.showLoginModal();
   }
 
+  logout = () => {
+    fetch(`/logout`, {method: "GET"}).then(r => {
+      if (r.status === 200) {
+        this.props.setFormState({username: ""});
+      }
+    })
+  }
+
   render() {
     const { query } = this.state;
     const {
@@ -215,13 +223,13 @@ class SearchBox extends Component {
           <ul className={"dropdown raised" + (dark ? " dropdown--dark" : "")}>
             { showsAccount && 
               <li className="dropdown__section">
-                <h4 className={ "dropdown__section__title" + (dark ? "  dropdown__section__title--dark" : "")}>我的回饋平台</h4>
+                <h4 className={ "dropdown__section__title" + (dark ? "  dropdown__section__title--dark" : "")}>{this.props.username === "" ? "我的回饋平台" : `${this.props.username} 的回饋平台`}</h4>
                 <ul className="dropdown__list">
                 <li
                   className={"dropdown__item" + (dark ? " dropdown__item--dark" : "")}
-                  onMouseDown={this.showLoginModal}
+                  onMouseDown={ this.props.username === "" ? this.showLoginModal : this.logout }
                 >
-                  登入
+                  { this.props.username === "" ? "登入" : "登出" }
                 </li>
                 </ul>                
               </li>

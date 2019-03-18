@@ -9,6 +9,7 @@ import Modal from "./components/Modal";
 import Footer from "./components/Footer";
 import LoginModal from "./components/LoginModal";
 import Loader from "./components/Loader";
+import Profile from "./components/Profile";
 
 var remote = "https://gov-feedback.appspot.com";
 var local= "http://localhost:3001";
@@ -38,6 +39,7 @@ class App extends Component {
     modalType: "",
     showsModal: false,
     showsLoginModal: false,
+    showsProfilePage: false,
     content: "",
     reset: false,
     parallelOrgs: [],
@@ -99,6 +101,7 @@ class App extends Component {
       selectedTopicName: "",
       composerTag: "",
       composerValue: "",
+      showsProfilePage: false,
       isLoading: true,
     });
     this.getPostsForOrgId(org.identifiers[0].identifier);
@@ -113,6 +116,7 @@ class App extends Component {
       selectedTopicName: name,
       composerTag: "",
       composerValue: "",
+      showsProfilePage: false,
       isLoading: true,
     });
     this.getPostsForTopic(name);
@@ -122,6 +126,12 @@ class App extends Component {
   showLoginModal = () => {
     this.setState({
       showsLoginModal: true,
+    })
+  }
+
+  showProfilePage = () => {
+    this.setState({
+      showsProfilePage: true,
     })
   }
 
@@ -661,6 +671,8 @@ class App extends Component {
             setSelectedOrg={this.setSelectedOrg}
             setSelectedTopic={this.setSelectedTopic}
             showLoginModal={this.showLoginModal}
+            showProfilePage={this.showProfilePage}
+            showsProfilePage={this.state.showsProfilePage}
             queryOrgs={this.getOrgsFromDb}
             queryTopics={this.getTopicsFromDb}
             orgResults={this.state.orgResults}
@@ -679,7 +691,7 @@ class App extends Component {
             <Loader />
           }
           {
-            !this.state.isLoading &&
+            !this.state.isLoading && !this.state.showsProfilePage &&
             <div className="container">
               <Feed
                 key={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
@@ -706,6 +718,11 @@ class App extends Component {
                 parallelOrgs={this.state.parallelOrgs}
               />
             </div>
+        }
+        { !this.state.isLoading && this.state.showsProfilePage &&
+          <div className="container">
+            <Profile />
+          </div>
         }
             <Footer />
           </div>

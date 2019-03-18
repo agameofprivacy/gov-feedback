@@ -30,10 +30,15 @@ class SearchBox extends Component {
     this.props.showLoginModal();
   }
 
+  showProfilePage = () => {
+    console.log("show profile screen")
+    this.props.showProfilePage();
+  }
+
   logout = () => {
     fetch(`/logout`, {method: "GET"}).then(r => {
       if (r.status === 200) {
-        this.props.setFormState({username: ""});
+        this.props.setFormState({username: "", showsProfilePage: false});
       }
     })
   }
@@ -62,7 +67,7 @@ class SearchBox extends Component {
               type="org"
               onMouseDown={this.handleClick}
               className={
-                "dropdown__item" + (dark ? " dropdown__item--dark" : "")
+                "dropdown__item dropdown__item--hoverable" + (dark ? " dropdown__item--dark dropdown__item--dark--hoverable" : "")
               }
             >
               {result.name}
@@ -109,7 +114,7 @@ class SearchBox extends Component {
               type="topic"
               onMouseDown={this.handleClick}
               className={
-                "dropdown__item" + (dark ? " dropdown__item--dark" : "")
+                "dropdown__item dropdown__item--hoverable" + (dark ? " dropdown__item--dark dropdown__item--dark--hoverable" : "")
               }
             >
               {result.name}
@@ -223,10 +228,18 @@ class SearchBox extends Component {
           <ul className={"dropdown raised" + (dark ? " dropdown--dark" : "")}>
             { showsAccount && 
               <li className="dropdown__section">
-                <h4 className={ "dropdown__section__title" + (dark ? "  dropdown__section__title--dark" : "")}>{this.props.username === "" ? "我的回饋平台" : `${this.props.username} 的回饋平台`}</h4>
+                <h4 className={ "dropdown__section__title" + (dark ? "  dropdown__section__title--dark" : "")}>{this.props.username === "" ? "我的回饋平台" : `${this.props.username}`}</h4>
                 <ul className="dropdown__list">
+                { this.props.username !== "" &&
+                  <li
+                    className={"dropdown__item dropdown__item--hoverable" + (dark ? " dropdown__item--dark dropdown__item--dark--hoverable" : "")}
+                    onMouseDown={ this.showProfilePage }
+                  >
+                    我的回饋平台
+                  </li>
+                }
                 <li
-                  className={"dropdown__item" + (dark ? " dropdown__item--dark" : "")}
+                  className={"dropdown__item dropdown__item--hoverable" + (dark ? " dropdown__item--dark dropdown__item--dark--hoverable" : "")}
                   onMouseDown={ this.props.username === "" ? this.showLoginModal : this.logout }
                 >
                   { this.props.username === "" ? "登入" : "登出" }

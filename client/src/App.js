@@ -720,9 +720,7 @@ class App extends Component {
             </div>
         }
         { !this.state.isLoading && this.state.showsProfilePage &&
-          <div className="container">
             <Profile />
-          </div>
         }
             <Footer />
           </div>

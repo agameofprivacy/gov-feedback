@@ -13,6 +13,7 @@ module.exports = `
         posts: [Post]!,
         postsForOrgId(orgId: String): [Post]!,
         postsForTopic(topic: String): [Post]!,
+        postsByUser(user: String): [Post]!,
     }
     input PostInput {
         author: String!,

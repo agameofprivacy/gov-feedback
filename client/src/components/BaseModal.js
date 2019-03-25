@@ -12,7 +12,8 @@ class BaseModal extends Component {
             small, 
             medium, 
             large,
-            footerActions
+            footerActions,
+            footer
         } = this.props;
 
         var headerActionIcon;
@@ -92,9 +93,15 @@ class BaseModal extends Component {
                         <div className="modal__dialog__body">
                             {this.props.children}
                         </div>
-                        <div className="modal__dialog__footer">
-                            {footerActions}
-                        </div>
+
+                        { footerActions.length > 0 &&
+                            <div className="modal__dialog__footer">
+                                {footerActions}
+                            </div>
+                        }
+                        { footer !== undefined &&
+                            {footer}
+                        }
                     </div>
                 </div>
             </div>

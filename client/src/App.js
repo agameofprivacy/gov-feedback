@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import LoginModal from "./components/LoginModal";
 import Loader from "./components/Loader";
 import Profile from "./components/Profile";
+import ProfileModal from "./components/ProfileModal";
 
 var remote = "https://gov-feedback.appspot.com";
 var local= "http://localhost:3001";
@@ -38,8 +39,9 @@ class App extends Component {
     composerValue: "",
     modalType: "",
     showsModal: false,
+    showsProfileModal: false,
     showsLoginModal: false,
-    showsProfilePage: false,
+    showsProfilePage: true,
     content: "",
     reset: false,
     parallelOrgs: [],
@@ -104,6 +106,7 @@ class App extends Component {
       showsProfilePage: false,
       isLoading: true,
     });
+    clearInterval(this.state.intervalId);
     this.getPostsForOrgId(org.identifiers[0].identifier);
     this.getOrgWithOrgId(org.identifiers[0].identifier);
   };
@@ -119,6 +122,7 @@ class App extends Component {
       showsProfilePage: false,
       isLoading: true,
     });
+    clearInterval(this.state.intervalId);
     this.getPostsForTopic(name);
     this.topicWithName(name);
   };
@@ -132,6 +136,12 @@ class App extends Component {
   showProfilePage = () => {
     this.setState({
       showsProfilePage: true,
+    })
+  }
+
+  showProfileModal = () => {
+    this.setState({
+      showsProfileModal: true,
     })
   }
 
@@ -541,7 +551,7 @@ class App extends Component {
     console.log("run createPostWithComposer");
     this.createPost(
       {
-        author: "Eddie Chen",
+        author: this.state.username !== "" ? this.state.username : "匿名",
         topic:
           this.state.selectedType === "org"
             ? this.state.composerTag
@@ -666,6 +676,10 @@ class App extends Component {
             <LoginModal setFormState={this.setFormState} />
           )}
 
+          {this.state.showsProfileModal && (
+            <ProfileModal setFormState={this.setFormState} />
+          )}
+
           <NavBar
             {...this.props}
             setSelectedOrg={this.setSelectedOrg}
@@ -694,6 +708,7 @@ class App extends Component {
             !this.state.isLoading && !this.state.showsProfilePage &&
             <div className="container">
               <Feed
+                showsComposer={true}
                 key={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
                 parallelOrgs={this.state.parallelOrgs}
                 composerTag={this.state.composerTag}
@@ -720,7 +735,12 @@ class App extends Component {
             </div>
         }
         { !this.state.isLoading && this.state.showsProfilePage &&
-            <Profile />
+            <Profile 
+              username={this.state.username} 
+              setSelectedOrg={this.setSelectedOrg}
+              setSelectedTopic={this.setSelectedTopic}
+              showProfileModal={this.showProfileModal}
+            />
         }
             <Footer />
           </div>

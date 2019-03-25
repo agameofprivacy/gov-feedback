@@ -146,6 +146,7 @@ class Post extends Component {
         )}
         {this.state.activeAction === "forward" && forwardables.length > 0 && (
           <div className="post__forward post__accessory">
+            <p>將此回饋轉發至下面其中一個機關：</p>
             <Pills unset highlighted={[this.state.forwardOrgIdSelected]} type="toggle" handlePillClick={this.handleForwardSelect} pills={forwardablePills} values={forwardableVals} />
             <button className="post__accessory__submit pill pill--action">
               送出

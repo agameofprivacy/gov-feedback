@@ -74,7 +74,8 @@ class Feed extends Component {
       selectedTopicName,
       selectedIdentity,
       reset,
-      composerTag
+      composerTag,
+      showsComposer
     } = this.props;
 
     var postsArray = [];
@@ -118,18 +119,20 @@ class Feed extends Component {
 
     return (
       <div className="feed">
-        <Composer
-          key={selectedType === "org" ? selectedOrgId : selectedTopicName}
-          reset={reset}
-          composerTag={composerTag}
-          selectedTopicName={selectedTopicName}
-          selectedIdentity={selectedIdentity}
-          defaultTagName={
-            selectedType === "org" ? selectedOrgName : selectedTopicName
-          }
-          setFormState={setFormState}
-          selectedType={selectedType}
-        />
+        { showsComposer &&
+          <Composer
+            key={selectedType === "org" ? selectedOrgId : selectedTopicName}
+            reset={reset}
+            composerTag={composerTag}
+            selectedTopicName={selectedTopicName}
+            selectedIdentity={selectedIdentity}
+            defaultTagName={
+              selectedType === "org" ? selectedOrgName : selectedTopicName
+            }
+            setFormState={setFormState}
+            selectedType={selectedType}
+          />
+        }
         {posts !== undefined && posts.length > 0 && postsArray}
         {posts !== undefined && posts.length === 0 && (
           <EmptyState title={"尚無回饋"} />

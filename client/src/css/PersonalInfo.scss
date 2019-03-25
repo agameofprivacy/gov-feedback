@@ -1,0 +1,35 @@
+.personal-info {
+
+    &__face {
+        text-align: center;
+        padding-top: 42px;
+        padding-bottom: 36px;
+        border-bottom: 1px solid rgb(240, 240, 240);
+
+        &__image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50px;
+            border: 1px solid rgb(240, 240, 240);
+        }
+
+        &__name {
+            font-size: 20px;
+            font-weight: 400;
+        }
+    }
+
+    &__stats {
+        display: flex;
+        justify-content: space-around;
+        border-bottom: 1px solid rgb(240, 240, 240);
+        padding: 0px 1em;
+    }
+
+    &__actions {
+        padding: .5em 1em;
+        display: flex;
+        justify-content: center;
+    }
+
+}

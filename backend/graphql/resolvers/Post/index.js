@@ -31,6 +31,16 @@ module.exports = {
                 });
             });
         },
+        postsByUser: (root, args) => {
+            return new Promise((resolve, reject) => {
+                Post.find({author: args.user})
+                .sort({'created': -1})
+                .limit(10)
+                .exec((err, res) => {
+                    err ? reject(err) : resolve(res);
+                })
+            })
+        }
     },
     Mutation: {
         async createPost(root, {

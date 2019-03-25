@@ -28,6 +28,10 @@
             color: rgb(74, 144, 226);
             outline: none;
             background: none;
+            transition: color .15s cubic-bezier(0.4, 0.0, 0.2, 1), transform .15s cubic-bezier(0.4, 0.0, 0.1, 1);
+            &:hover {
+                color: rgb(60, 120, 190);
+            }
         }
     }
 

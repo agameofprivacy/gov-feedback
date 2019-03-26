@@ -20,6 +20,6 @@ module.exports = `
     }
 
     type Mutation {
-        createProfile(input: ProfileInput) : Profile
+        updateProfile(input: ProfileInput) : Profile
     }
 `;

@@ -16,10 +16,17 @@ module.exports = {
         },
     },
     Mutation: {
-        async createProfile(root, {
+        async updateProfile(root, {
             input
         }) {
-            return Profile.create(input);
+            var query = {"user": new ObjectId(input.user)};
+            var update = input;
+            var options = { upsert: true, new: true, setDefaultsOnInsert: true };
+        
+            return Profile.findOneAndUpdate(query, update, options, function(error, result) {
+                if (error) return;
+                console.log(result);
+            });
         }
     }
 }

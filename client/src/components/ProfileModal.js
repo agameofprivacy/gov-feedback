@@ -13,7 +13,7 @@ class ProfileModal extends Component {
         this.props.setFormState({showsProfileModal: false});
     }
 
-    createProfile = (profileInput, callback) => {
+    updateProfile = (profileInput, callback) => {
         console.log("create profile");
         console.log("profileInput", profileInput);
         fetch(`${host}/graphql`, {
@@ -25,8 +25,8 @@ class ProfileModal extends Component {
           body: JSON.stringify({
             query: `
               mutation($profileInput: ProfileInput){
-                createProfile(input: $profileInput) {
-                  user_id
+                updateProfile(input: $profileInput) {
+                  user
                   birthday
                   gender
                   residence
@@ -68,9 +68,9 @@ class ProfileModal extends Component {
                         onSubmit={(values, { setSubmitting }) => {
                             setTimeout(() => {
                             alert(JSON.stringify(values, null, 2));
-                            this.createProfile(
+                            this.updateProfile(
                                 {
-                                  user_id: this.props.user_id,
+                                  user: this.props.user_id,
                                   birthday: values.birthday,
                                   gender: values.gender,
                                   residence: values.residence,

@@ -12,6 +12,12 @@ class PersonalInfo extends Component {
 
         const { statKVs, detailKVs } = this.props;
 
+        const genderKVs = {
+            "male": "男",
+            "female": "女",
+            "other": "其他"
+        }
+
         var stats = [];
 
         Object.entries(statKVs).forEach(function(statKV, index){
@@ -37,7 +43,7 @@ class PersonalInfo extends Component {
                     last={index === Object.entries(detailKVs).length - 1}
                     key={index}
                     k={detailKV[0]}
-                    v={detailKV[1]}
+                    v={genderKVs.hasOwnProperty(detailKV[1]) ? genderKVs[detailKV[1]] : detailKV[1]}
                 />
             )
         })

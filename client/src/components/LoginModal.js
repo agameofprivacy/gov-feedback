@@ -40,7 +40,7 @@ class LoginModal extends Component {
                 }
             }).then((res) => {
             console.log(res);
-            this.props.setFormState({username: res.data.user.username});
+            this.props.setFormState({username: res.data.user.username, user_id: res.data.user.id});
             this.closeLoginModal();
         })
     }

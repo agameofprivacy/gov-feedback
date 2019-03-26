@@ -46,7 +46,8 @@ class App extends Component {
     reset: false,
     parallelOrgs: [],
     isLoading: false,
-    username: ""
+    username: "",
+    user_id: "",
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -677,7 +678,7 @@ class App extends Component {
           )}
 
           {this.state.showsProfileModal && (
-            <ProfileModal setFormState={this.setFormState} />
+            <ProfileModal user_id={this.state.user_id} setFormState={this.setFormState} />
           )}
 
           <NavBar
@@ -736,6 +737,7 @@ class App extends Component {
         }
         { !this.state.isLoading && this.state.showsProfilePage &&
             <Profile 
+              user_id={this.state.user_id}
               username={this.state.username} 
               setSelectedOrg={this.setSelectedOrg}
               setSelectedTopic={this.setSelectedTopic}

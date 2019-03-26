@@ -144,6 +144,17 @@
                     }
                 }
 
+                &--disabled {
+                    color: rgb(150,150,150);
+                    background-color: rgb(245, 245, 245);
+                    cursor: not-allowed;
+
+                    &:hover {
+                        color: rgb(150,150,150);
+                        background-color: rgb(245, 245, 245);    
+                    }
+                }
+
                 &--secondary {
                     color: rgb(50,50,50);
                     font-weight: 300;

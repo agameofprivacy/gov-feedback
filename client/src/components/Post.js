@@ -117,7 +117,7 @@ class Post extends Component {
           <div className="post__body">
             <p className="post__body__content">{post.content}</p>
             {post.type !== "reply" && (
-              <div className="post__body__author">{post.author}</div>
+              <div className="post__body__author"><div className="post__body__author__image" />{post.author}</div>
             )}
           </div>
           <div className="post__footer">

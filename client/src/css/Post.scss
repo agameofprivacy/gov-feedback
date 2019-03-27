@@ -55,7 +55,19 @@
         }
 
         &__author {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
             font-size: 15px;
+            padding: .5em 0 1em 0;
+
+            &__image {
+                height: 30px;
+                width: 30px;
+                border-radius: 50%;
+                background-color: rgb(240,240,240);
+                margin-right: .5em;
+            }
         }
     }
 

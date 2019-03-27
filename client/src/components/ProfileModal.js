@@ -67,7 +67,7 @@ class ProfileModal extends Component {
                         }}
                         onSubmit={(values, { setSubmitting }) => {
                             setTimeout(() => {
-                            alert(JSON.stringify(values, null, 2));
+                            // alert(JSON.stringify(values, null, 2));
                             this.updateProfile(
                                 {
                                   user: this.props.user_id,
@@ -79,6 +79,12 @@ class ProfileModal extends Component {
                                 function(r) {
                                   console.log(r);
                                   console.log("save profile", r.data);
+                                  this.props.setFormState({
+                                    birthday: r.data.updateProfile.birthday, 
+                                    gender: r.data.updateProfile.gender,
+                                    residence: r.data.updateProfile.residence,
+                                    email: r.data.updateProfile.email                  
+                                  })
                                   setSubmitting(false);
                                   this.closeProfileModal();
                                 }.bind(this)

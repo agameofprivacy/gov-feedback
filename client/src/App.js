@@ -48,6 +48,10 @@ class App extends Component {
     isLoading: false,
     username: "",
     user_id: "",
+    birthday: "",
+    gender: "",
+    residence: "",
+    email: "",
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -678,7 +682,10 @@ class App extends Component {
           )}
 
           {this.state.showsProfileModal && (
-            <ProfileModal user_id={this.state.user_id} setFormState={this.setFormState} />
+            <ProfileModal 
+              user_id={this.state.user_id} 
+              setFormState={this.setFormState} 
+            />
           )}
 
           <NavBar
@@ -739,9 +746,14 @@ class App extends Component {
             <Profile 
               user_id={this.state.user_id}
               username={this.state.username} 
+              birthday={this.state.birthday}
+              gender={this.state.gender}
+              residence={this.state.residence}
+              email={this.state.email}
               setSelectedOrg={this.setSelectedOrg}
               setSelectedTopic={this.setSelectedTopic}
               showProfileModal={this.showProfileModal}
+              setFormState={this.setFormState}
             />
         }
             <Footer />

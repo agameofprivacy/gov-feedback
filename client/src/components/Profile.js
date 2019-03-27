@@ -12,10 +12,6 @@ class Profile extends Component {
 
     state = {
         selected: "0",
-        birthday: "",
-        gender: "",
-        residence: "",
-        email: "",
     }
 
     setSelectedState = (state) => {
@@ -44,7 +40,7 @@ class Profile extends Component {
             .then(r => r.json())
             .then(result => {
               console.log(result);
-              this.setState({ 
+              this.props.setFormState({ 
                   birthday: result.data.profileForUserWith.birthday, 
                   gender: result.data.profileForUserWith.gender,
                   residence: result.data.profileForUserWith.residence,
@@ -68,10 +64,10 @@ class Profile extends Component {
         }
 
         const detailKVs = {
-            "生日": this.state.birthday,
-            "性別": this.state.gender,
-            "居住地": this.state.residence,
-            "Email": this.state.email,
+            "生日": this.props.birthday,
+            "性別": this.props.gender,
+            "居住地": this.props.residence,
+            "Email": this.props.email,
         }
 
         return (

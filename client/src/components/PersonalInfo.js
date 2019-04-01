@@ -1,16 +1,29 @@
 import React, {Component} from "react";
 import KeyValue from "./KeyValue";
+import IconButton from "./IconButton";
 
 class PersonalInfo extends Component {
+
+    state={
+        overFace: false
+    }
 
     updatePersonalInfo = e => {
         console.log("修改個人資料");
         this.props.showProfileModal();
     }
 
+    handleMouseOver = e => {
+        this.setState({overFace: true});
+    }
+
+    handleMouseOut = e => {
+        this.setState({overFace: false});
+    }
+
     render() {
 
-        const { statKVs, detailKVs } = this.props;
+        const { statKVs, detailKVs, username } = this.props;
 
         const genderKVs = {
             "male": "男",
@@ -43,7 +56,7 @@ class PersonalInfo extends Component {
                     last={index === Object.entries(detailKVs).length - 1}
                     key={index}
                     k={detailKV[0]}
-                    v={detailKV[1] !== "" ? (genderKVs.hasOwnProperty(detailKV[1]) ? genderKVs[detailKV[1]] : detailKV[1]) : "未填"}
+                    v={(detailKV[1] !== "" && detailKV[1] !== null) ? (genderKVs.hasOwnProperty(detailKV[1]) ? genderKVs[detailKV[1]] : detailKV[1]) : "未填"}
                 />
             )
         })
@@ -54,8 +67,16 @@ class PersonalInfo extends Component {
         return (
             <div className="personal-info">
                 <div className="personal-info__face">
-                    <img src={`https://scontent.ftpe11-1.fna.fbcdn.net/v/t1.0-9/54410145_10214623991775549_9109365480056946688_n.jpg?_nc_cat=100&_nc_ht=scontent.ftpe11-1.fna&oh=f3478fa8a7f3358a2779b78e41057177&oe=5D200E24`} className="personal-info__face__image" />
-                    <h2 className="personal-info__face__name">agameofprivacy</h2>
+                    <div className="personal-info__face__container">
+                        <img 
+                            onMouseOver={this.handleMouseOver} 
+                            onMouseOut={this.handleMouseOut} 
+                            className={"personal-info__face__image" + (this.state.overFace ? " personal-info__face__image--highlighted" : "")}
+                            src={`https://scontent.ftpe11-1.fna.fbcdn.net/v/t1.0-9/54410145_10214623991775549_9109365480056946688_n.jpg?_nc_cat=100&_nc_ht=scontent.ftpe11-1.fna&oh=f3478fa8a7f3358a2779b78e41057177&oe=5D200E24`}
+                        />
+                        <IconButton type="upload" className={"personal-info__face__icon" + (!this.state.overFace ? " hidden" : "")} />
+                    </div>
+                    <h2 className="personal-info__face__name">{username}</h2>
                 </div>
                 <div className="personal-info__stats">
                     {stats}

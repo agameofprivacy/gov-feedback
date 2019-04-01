@@ -1,11 +1,25 @@
 import React, {Component} from "react";
 import BaseModal from "./BaseModal";
 import {Formik} from "formik";
+import * as Yup from "yup";
 
 const remote = "https://gov-feedback.appspot.com";
 const local = "http://localhost:3001";
 
 const host = local;
+
+const ProfileSchema = Yup.object().shape({
+    email: Yup.string()
+      .email('Email格式不符')
+      .nullable(),
+    birthday: Yup.string()
+      .matches(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/, "日期格式不符"),
+    gender: Yup.string()
+      .nullable(),
+    residence: Yup.string()
+      .nullable(),
+  });
+  
 
 class ProfileModal extends Component {
 
@@ -53,23 +67,24 @@ class ProfileModal extends Component {
             <BaseModal medium title="個人資料" headerAction={this.closeProfileModal} headerActionIcon="close" footerActions={footerActions}>
                     <Formik
                         initialValues={{ birthday: birthday, gender: gender, residence: residence, email: email }}
-                        validate={values => {
-                            let errors = {};
-                            // if (!values.email) {
-                            //     errors.email = '必填';
-                            // } 
+                        validationSchema={ProfileSchema}
+                        // validate={values => {
+                        //     let errors = {};
+                        //     // if (!values.email) {
+                        //     //     errors.email = '必填';
+                        //     // } 
                             
-                            if (
-                            values.email !== "" && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-                            ) {
-                            errors.email = '非正確格式之Email';
-                            }
-                            // if (!values.gender) {
-                            //     errors.gender = '必填';
-                            // }
+                        //     if (
+                        //     values.email !== "" && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                        //     ) {
+                        //     errors.email = '非正確格式之Email';
+                        //     }
+                        //     // if (!values.gender) {
+                        //     //     errors.gender = '必填';
+                        //     // }
     
-                            return errors;
-                        }}
+                        //     return errors;
+                        // }}
                         onSubmit={(values, { setSubmitting }) => {
                             setTimeout(() => {
                             // alert(JSON.stringify(values, null, 2));

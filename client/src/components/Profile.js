@@ -84,7 +84,7 @@ class Profile extends Component {
                     }
                 </div>
                 <div className="sidebar">
-                    <PersonalInfo showProfileModal={this.props.showProfileModal} statKVs={statKVs} detailKVs={detailKVs} />
+                    <PersonalInfo username={this.props.username} showProfileModal={this.props.showProfileModal} statKVs={statKVs} detailKVs={detailKVs} />
                 </div>
             </div>
         )

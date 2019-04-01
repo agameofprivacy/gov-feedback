@@ -43,7 +43,7 @@ class PersonalInfo extends Component {
                     last={index === Object.entries(detailKVs).length - 1}
                     key={index}
                     k={detailKV[0]}
-                    v={genderKVs.hasOwnProperty(detailKV[1]) ? genderKVs[detailKV[1]] : detailKV[1]}
+                    v={detailKV[1] !== "" ? (genderKVs.hasOwnProperty(detailKV[1]) ? genderKVs[detailKV[1]] : detailKV[1]) : "未填"}
                 />
             )
         })

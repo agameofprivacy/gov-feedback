@@ -46,45 +46,72 @@ class ProfileModal extends Component {
     render() {
 
         var footerActions = [];
+
+        const { birthday, gender, residence, email } = this.props;
+
         return (
             <BaseModal medium title="個人資料" headerAction={this.closeProfileModal} headerActionIcon="close" footerActions={footerActions}>
                     <Formik
-                        initialValues={{ birthday: '', gender: '', residence: '', email: '' }}
+                        initialValues={{ birthday: birthday, gender: gender, residence: residence, email: email }}
                         validate={values => {
                             let errors = {};
-                            if (!values.email) {
-                            errors.email = '必填';
-                            } else if (
-                            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+                            // if (!values.email) {
+                            //     errors.email = '必填';
+                            // } 
+                            
+                            if (
+                            values.email !== "" && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
                             ) {
                             errors.email = '非正確格式之Email';
                             }
-                            if (!values.gender) {
-                                errors.gender = '必填';
-                            }
+                            // if (!values.gender) {
+                            //     errors.gender = '必填';
+                            // }
     
                             return errors;
                         }}
                         onSubmit={(values, { setSubmitting }) => {
                             setTimeout(() => {
                             // alert(JSON.stringify(values, null, 2));
+                            var input = {};
+                            if (values.email !== "") {
+                                input["email"] = values.email;
+                            }
+                            if (values.birthday !== "") {
+                                input["birthday"] = values.birthday;
+                            }
+                            if (values.gender !== "") {
+                                input["gender"] = values.gender;
+                            }
+                            if (values.residence !== "") {
+                                input["residence"] = values.residence;
+                            }
+
+                            input.user = this.props.user_id;
+                            console.log("update input:", input);
                             this.updateProfile(
-                                {
-                                  user: this.props.user_id,
-                                  birthday: values.birthday,
-                                  gender: values.gender,
-                                  residence: values.residence,
-                                  email: values.email,
-                                },
+                                input,
                                 function(r) {
                                   console.log(r);
                                   console.log("save profile", r.data);
-                                  this.props.setFormState({
-                                    birthday: r.data.updateProfile.birthday, 
-                                    gender: r.data.updateProfile.gender,
-                                    residence: r.data.updateProfile.residence,
-                                    email: r.data.updateProfile.email                  
-                                  })
+                                  var update = r.data.updateProfile;
+                                  if (update !== null) {
+                                    var toUpdate = {};
+                                    if (update.email !== null && update.email !== "") {
+                                      toUpdate.email = update.email;
+                                    }
+                                    if (update.birthday !== null && update.birthday !== "") {
+                                      toUpdate.birthday = update.birthday;
+                                    }
+                                    if (update.gender !== null && update.gender !== "") {
+                                      toUpdate.gender = update.gender;
+                                    }
+                                    if (update.residence !== null && update.residence !== "") {
+                                      toUpdate.residence = update.residence;
+                                    }
+        
+                                    this.props.setFormState(toUpdate)  
+                                  }
                                   setSubmitting(false);
                                   this.closeProfileModal();
                                 }.bind(this)
@@ -111,7 +138,7 @@ class ProfileModal extends Component {
                                         <tr className="form__section__row">
                                             <td className="form__section__row__key">
                                                 生日
-                                                <br/><span className="form__section__row__error">{errors.birthday && touched.birthday && errors.birthday}</span>
+                                                <br/><span className="form__section__row__error">{errors.birthday && errors.birthday}</span>
                                             </td>
                                             <td className="form__section__row__input">
                                                 <input
@@ -126,7 +153,7 @@ class ProfileModal extends Component {
                                         <tr className="form__section__row">
                                             <td className="form__section__row__key">
                                                 性別
-                                                <br/><span className="form__section__row__error">{errors.gender && touched.gender && errors.gender}</span>
+                                                <br/><span className="form__section__row__error">{errors.gender && errors.gender}</span>
                                             </td>
                                             <td className="form__section__row__input">
                                                 <input
@@ -165,7 +192,7 @@ class ProfileModal extends Component {
                                         <tr className="form__section__row">
                                             <td className="form__section__row__key">
                                                 居住地
-                                                <br/><span className="form__section__row__error">{errors.residence && touched.residence && errors.residence}</span>
+                                                <br/><span className="form__section__row__error">{errors.residence && errors.residence}</span>
                                             </td>
                                             <td className="form__section__row__input">
                                                 <input
@@ -181,7 +208,7 @@ class ProfileModal extends Component {
                                         <tr className="form__section__row">
                                             <td className="form__section__row__key">
                                                 Email
-                                                <br/><span className="form__section__row__error">{errors.email && touched.email && errors.email}</span>
+                                                <br/><span className="form__section__row__error">{errors.email && errors.email}</span>
                                             </td>
                                             <td className="form__section__row__input">
                                                 <input
@@ -200,11 +227,11 @@ class ProfileModal extends Component {
                                 <div className="modal__dialog__footer">
                                     <button 
                                         type="submit" 
-                                        disabled={isSubmitting || Object.keys(errors).length > 0 || Object.keys(touched).length === 0}
+                                        disabled={isSubmitting || Object.keys(errors).length > 0}
                                         key="footer-save-details"
                                         id="modal-save-details"
                                         onClick={this.saveDetails}
-                                        className={"modal__dialog__footer__action modal__dialog__footer__action--primary" + (Object.keys(errors).length > 0 || Object.keys(touched).length === 0 ? " modal__dialog__footer__action--disabled" : "")}                        
+                                        className={"modal__dialog__footer__action modal__dialog__footer__action--primary" + (isSubmitting || Object.keys(errors).length > 0 ? " modal__dialog__footer__action--disabled" : "")}                        
                                     >
                                         儲存
                                     </button>

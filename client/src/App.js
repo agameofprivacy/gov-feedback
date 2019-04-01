@@ -684,6 +684,10 @@ class App extends Component {
           {this.state.showsProfileModal && (
             <ProfileModal 
               user_id={this.state.user_id} 
+              birthday={this.state.birthday}
+              gender={this.state.gender}
+              residence={this.state.residence}
+              email={this.state.email}
               setFormState={this.setFormState} 
             />
           )}

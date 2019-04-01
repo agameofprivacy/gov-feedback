@@ -40,11 +40,12 @@ class Profile extends Component {
             .then(r => r.json())
             .then(result => {
               console.log(result);
+              var profile = result.data.profileForUserWith !== null ? result.data.profileForUserWith : {};
               this.props.setFormState({ 
-                  birthday: result.data.profileForUserWith.birthday, 
-                  gender: result.data.profileForUserWith.gender,
-                  residence: result.data.profileForUserWith.residence,
-                  email: result.data.profileForUserWith.email
+                  birthday: profile.hasOwnProperty("birthday") ? profile.birthday : "", 
+                  gender: profile.hasOwnProperty("gender") ? profile.gender : "",
+                  residence: profile.hasOwnProperty("residence") ? profile.residence : "",
+                  email: profile.hasOwnProperty("email") ? profile.email : ""
               }, () => {
                 window.scrollTo(0, 0)
               });

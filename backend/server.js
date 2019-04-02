@@ -21,6 +21,8 @@ var credentials = require('./credentials');
 
 // this is our MongoDB database
 const dbRoute = credentials.dbRoute;
+const images = require('./images');
+const formidable = require('formidable');
 
 // Connect to MongoDB with Mongoose.
 mongoose
@@ -47,10 +49,10 @@ mongoose
     res.header('Access-Control-Allow-Origin', host);
     res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     if ('OPTIONS' == req.method) {
-         res.sendStatus(200);
-     } else {
-         next();
-     }
+      res.sendStatus(200);
+    } else {
+      next();
+    }
     });
     
 
@@ -173,6 +175,20 @@ app.get('/logout', function(req, res){
 
 app.get('/', (req, res) => {
   res.sendStatus(200);
+})
+
+app.post('/upload-avatar', (req, res) => {
+  new formidable.IncomingForm().parse(req, (err, fields, files) => {
+    if (err) {
+      console.error('Error', err)
+      throw err
+    }
+    console.log('Fields', fields)
+    console.log('Files', files)
+    Object.values(files).map(file => {
+      console.log("file", file)
+    })
+  })
 })
 
 app.listen(PORT, () => console.log(`SERVER running on PORT ${PORT}`));

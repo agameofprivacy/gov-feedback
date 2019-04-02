@@ -2,6 +2,11 @@ import React, {Component} from "react";
 import KeyValue from "./KeyValue";
 import IconButton from "./IconButton";
 
+var remote = "https://gov-feedback.appspot.com";
+var local= "http://localhost:3001";
+
+const host = local;
+
 class PersonalInfo extends Component {
 
     state={
@@ -19,6 +24,16 @@ class PersonalInfo extends Component {
 
     handleMouseOut = e => {
         this.setState({overFace: false});
+    }
+
+    handleUploadClick = e => {
+        console.log("clicked");
+        document.querySelector("input[type=file]").click();
+    }
+
+    handleFileSelect = e => {
+        console.log(document.querySelector("input[type=file]").value);
+        document.querySelector("#pickImageSubmit").click();
     }
 
     render() {
@@ -71,9 +86,14 @@ class PersonalInfo extends Component {
                         <img 
                             onMouseOver={this.handleMouseOver} 
                             onMouseOut={this.handleMouseOut} 
+                            onClick={this.handleUploadClick}
                             className={"personal-info__face__image" + (this.state.overFace ? " personal-info__face__image--highlighted" : "")}
                             src={`https://scontent.ftpe11-1.fna.fbcdn.net/v/t1.0-9/54410145_10214623991775549_9109365480056946688_n.jpg?_nc_cat=100&_nc_ht=scontent.ftpe11-1.fna&oh=f3478fa8a7f3358a2779b78e41057177&oe=5D200E24`}
                         />
+                        <form method="POST" className="hidden" enctype="multipart/form-data" action={`${host}/upload-avatar`}>
+                            <input onChange={this.handleFileSelect} type="file" id="pickImage" className="hidden" name="avatar-image" />
+                            <button type="submit" id="pickImageSubmit" className="hidden" />
+                        </form>
                         <IconButton type="upload" className={"personal-info__face__icon" + (!this.state.overFace ? " hidden" : "")} />
                     </div>
                     <h2 className="personal-info__face__name">{username}</h2>

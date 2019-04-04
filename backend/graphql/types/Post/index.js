@@ -3,6 +3,7 @@ module.exports = `
     type Post {
         _id: String!,
         content: String!,
+        authorProfile: PublicProfile,
         author: String!,
         topic: String!,
         organization: String!,
@@ -16,7 +17,10 @@ module.exports = `
         postsByUser(user: String): [Post]!,
     }
     input PostInput {
+        user_id: String!,
+        authorProfile: String,
         author: String!,
+        author_type: String!,
         topic: String!,
         organization: String!,
         organization_id: String!,

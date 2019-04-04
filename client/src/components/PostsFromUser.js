@@ -27,6 +27,9 @@ class PostsFromUser extends Component {
               query: `query postsByUser($user: String){
                 postsByUser(user: $user){
                   author,
+                  authorProfile {
+                    avatarUrl
+                  },
                   topic,
                   organization,
                   organization_id,

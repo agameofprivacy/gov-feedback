@@ -161,6 +161,9 @@ class App extends Component {
         query: `query postsForTopic($topic: String){
           postsForTopic(topic: $topic) {
             author,
+            authorProfile {
+              avatarUrl
+            },
             topic,
             organization,
             organization_id,
@@ -326,6 +329,9 @@ class App extends Component {
         query: `query postsForOrgId($orgId: String){
           postsForOrgId(orgId: $orgId) {
             author,
+            authorProfile {
+              avatarUrl
+            },
             topic,
             organization,
             organization_id,
@@ -556,7 +562,10 @@ class App extends Component {
     console.log("run createPostWithComposer");
     this.createPost(
       {
+        authorProfile: this.state.user_id,
+        author_type: this.state.selectedIdentity,
         author: this.state.username !== "" ? this.state.username : "匿名",
+        user_id: this.state.user_id,
         topic:
           this.state.selectedType === "org"
             ? this.state.composerTag

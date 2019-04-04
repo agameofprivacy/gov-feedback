@@ -9,6 +9,16 @@ ObjectID.prototype.valueOf = function(){
 
 // Create the Organization schema.
 const PostSchema = new Schema({
+  authorProfile: {
+    type: Schema.Types.ObjectId,
+    required: false,
+    unique: false
+  },
+  author_type: {
+    type: String,
+    ref: "PublicProfile",
+    required: true,
+  },
   author: {
       type: String,
       required: true,

@@ -21,8 +21,83 @@ var credentials = require('./credentials');
 
 // this is our MongoDB database
 const dbRoute = credentials.dbRoute;
-const images = require('./images');
 const formidable = require('formidable');
+const {Storage} = require('@google-cloud/storage');
+
+import * as serviceAccont from "./service-account-key.json";
+const storage = new Storage(serviceAccont);
+const PublicProfile = require("./models/PublicProfile");
+const ObjectId = require('mongoose').Types.ObjectId;
+
+const
+  CLOUD_BUCKET = 'gov-feedback-images',
+  UPLOAD_PATH = 'avatars';
+
+  const bucket = storage.bucket(CLOUD_BUCKET);
+
+  function getPublicUrl (lfile, name) {
+    return `https://storage.googleapis.com/${CLOUD_BUCKET}/${UPLOAD_PATH}/${name}.${lfile.name.split('.')[1]}`;
+  }
+  
+  function createFileInStorage(lfile, name) {
+    const options = {
+      destination: bucket.file(`${UPLOAD_PATH}/${name}.${lfile.name.split('.')[1]}`),
+      public: true,
+      resumable: false,
+      metadata: {
+        contentType: lfile.type,
+      }
+    };
+  
+    return new Promise((resolve, reject) => {
+      bucket.upload(lfile.path, options, function (err, file, apiResponse) {
+        console.log('bucket.upload response', err, file, apiResponse);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(getPublicUrl(lfile, name));
+        }
+      });
+    });
+  }
+  
+  function upload(req, res) {
+    if (req.method.toLowerCase() === 'post') {
+      // parse a file upload
+      const form = new formidable.IncomingForm();
+  
+      form.parse(req, function(err, fields, files) {
+        res.writeHead(200, {'content-type': 'text/plain'});
+        res.write('received upload:\n\n');
+  
+        const complete = (err, url) => {
+          console.log("avatar url:", url);
+          if (err) {
+            console.log(err);
+          } else {
+            var query = {"user": new ObjectId(req.query.user_id)};
+            var update = {"avatarUrl": url};
+            var options = { upsert: true, new: true, setDefaultsOnInsert: true };
+        
+            PublicProfile.findOneAndUpdate(query, update, options, function(error, result) {
+                if (error) return;
+                console.log(result);
+            });
+          }
+        };
+
+        console.log("files.upload files: ", files);
+        console.log("req.query.user_id: ", req.query.user_id);
+
+        createFileInStorage(Object.values(files)[0], req.query.user_id)
+          .then((url) => complete(null, url))
+          .catch((err) => complete(err));
+      });
+  
+      return;
+    }  
+  }
+    
 
 // Connect to MongoDB with Mongoose.
 mongoose
@@ -178,17 +253,19 @@ app.get('/', (req, res) => {
 })
 
 app.post('/upload-avatar', (req, res) => {
-  new formidable.IncomingForm().parse(req, (err, fields, files) => {
-    if (err) {
-      console.error('Error', err)
-      throw err
-    }
-    console.log('Fields', fields)
-    console.log('Files', files)
-    Object.values(files).map(file => {
-      console.log("file", file)
-    })
-  })
+  console.log(req);
+  upload(req, res);
+  // new formidable.IncomingForm().parse(req, (err, fields, files) => {
+  //   if (err) {
+  //     console.error('Error', err)
+  //     throw err
+  //   }
+  //   console.log('Fields', fields)
+  //   console.log('Files', files)
+  //   Object.values(files).map(file => {
+  //     console.log("file", file)
+  //   })
+  // })
 })
 
 app.listen(PORT, () => console.log(`SERVER running on PORT ${PORT}`));

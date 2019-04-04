@@ -8,7 +8,8 @@ const Topic = require("./Topic/");
 const OrgTopic = require("./OrgTopic/");
 const TopicOrg = require("./TopicOrg/");
 const Profile = require("./Profile");
+const PublicProfile = require("./PublicProfile");
 
-const typeDefs = [Organization, ContactDetail, Identifier, Post, Topic, OrgTopic, TopicOrg, Profile];
+const typeDefs = [Organization, ContactDetail, Identifier, Post, Topic, OrgTopic, TopicOrg, Profile, PublicProfile];
 
 module.exports = mergeTypes(typeDefs, { all: true });

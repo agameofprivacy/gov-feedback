@@ -51,27 +51,33 @@ module.exports = {
         async createPost(root, {
             input
         }) {
-            // check post author type
-            // if *use identity* find public profile object reference and add to post input before saving
-            switch(input.author_type) {
-                case "custom":
-                case "account":
-                    // 
-                    PublicProfile.findOne({user: input.user_id})
-                    .exec((err, res) => {
-                        if (err) {
-                            console.log(err)
-                        } else {
-                            console.log("res.data", res._id);
-                            input.authorProfile = res._id;
-                            return Post.create(input);
-                        }
-                    })
-                    break;
-                default:
-                    // anonymous and others
-                    return Post.create(input);
-            }
+            return new Promise((resolve, reject) => {
+                // check post author type
+                // if *use identity* find public profile object reference and add to post input before saving
+                switch(input.author_type) {
+                    case "custom":
+                    case "account":
+                        // 
+                        PublicProfile.findOne({user: input.user_id})
+                        .exec((err, res) => {
+                            if (err) {
+                                console.log(err)
+                            } else {
+                                console.log("res.data", res._id);
+                                input.authorProfile = res._id;
+                                Post.create(input).then(result => {
+                                    resolve(result);
+                                })
+                            }
+                        })
+                        break;
+                    default:
+                        // anonymous and others
+                        Post.create(input).then(result => {
+                            resolve(result);
+                        });
+                }
+            })
         }
     }
 }

@@ -11,12 +11,12 @@ ObjectID.prototype.valueOf = function(){
 const PostSchema = new Schema({
   authorProfile: {
     type: Schema.Types.ObjectId,
+    ref: "PublicProfile",
     required: false,
     unique: false
   },
   author_type: {
     type: String,
-    ref: "PublicProfile",
     required: true,
   },
   author: {

@@ -67,6 +67,12 @@
                 border-radius: 50%;
                 background-color: rgb(240,240,240);
                 margin-right: .5em;
+
+                & img {
+                    height: 100%;
+                    width: 100%;
+                    border-radius: 50%;
+                }
             }
         }
     }

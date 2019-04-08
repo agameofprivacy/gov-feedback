@@ -9,7 +9,23 @@ const OrgTopic = require("./OrgTopic/");
 const TopicOrg = require("./TopicOrg/");
 const Profile = require("./Profile");
 const PublicProfile = require("./PublicProfile");
+const Subscription = require("./Subscription");
+const OrgSubscription = require("./OrgSubscription");
+const TopicSubscription = require("./TopicSubscription");
 
-const typeDefs = [Organization, ContactDetail, Identifier, Post, Topic, OrgTopic, TopicOrg, Profile, PublicProfile];
+const typeDefs = [
+    Organization, 
+    ContactDetail, 
+    Identifier, 
+    Post, 
+    Topic, 
+    OrgTopic, 
+    TopicOrg, 
+    Profile, 
+    PublicProfile, 
+    Subscription,
+    OrgSubscription,
+    TopicSubscription
+];
 
 module.exports = mergeTypes(typeDefs, { all: true });

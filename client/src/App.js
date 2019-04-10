@@ -32,6 +32,7 @@ class App extends Component {
     randomIndex: 0,
     selectedType: "org",
     selectedOrgId: undefined,
+    selectedOrgDatabaseId: undefined,
     selectedOrgName: undefined,
     selectedTopicName: "",
     selectedIdentity: "",
@@ -103,6 +104,7 @@ class App extends Component {
     console.log("selected org", org);
     this.setState({
       selectedOrgId: org.identifiers[0].identifier,
+      selectedOrgDatabaseId: org._id,
       selectedOrgName: org.name,
       selectedType: "org",
       selectedTopicName: "",
@@ -119,6 +121,7 @@ class App extends Component {
   setSelectedTopic = name => {
     this.setState({
       selectedOrgId: "",
+      selectedOrgDatabaseId: "",
       selectedOrgName: "",
       selectedType: "topic",
       selectedTopicName: name,
@@ -746,12 +749,15 @@ class App extends Component {
                 posts={this.state.posts}
               />
               <Sidebar
+                key={this.state.selectedType === "org" ? `key${this.state.selectedOrgId}` : `key${this.state.selectedTopicName}`}
                 selectedIdentifier={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
+                selectedOrgDatabaseId={this.state.selectedOrg !== undefined ? this.state.selectedOrg._id : ""}
                 selectedType={this.state.selectedType}
                 setSelectedOrg={this.setSelectedOrg}
                 org={this.state.selectedOrg}
                 topic={this.state.selectedTopic}
                 parallelOrgs={this.state.parallelOrgs}
+                user_id={this.state.user_id}
               />
             </div>
         }

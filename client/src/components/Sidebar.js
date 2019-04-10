@@ -5,11 +5,18 @@ import RelatedOrgs from "./RelatedOrgs";
 import Pills from "./Pills";
 import RadioSelect from "./RadioSelect";
 
+var remote = "https://gov-feedback.appspot.com";
+var local= "http://localhost:3001";
+
+const host = local;
+
 class Sidebar extends Component {
   state = {
     selectedTab: 0,
     selectedFreq: "",
-    selectedChannel: "email"
+    selectedChannel: "email",
+    subscription: "",
+    topicIdentifier: "",
   };
 
   handlePillClick = identifier => {
@@ -24,13 +31,133 @@ class Sidebar extends Component {
     });
   };
 
+  fetchSubscriptionForUser = user => {
+    fetch(`${host}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        query: `query subscriptionForUser($user: String){
+          subscriptionForUser(user: $user) {
+            user
+            organizations {
+              organization{
+                _id
+              }
+              frequency
+            },
+            topics {
+              topic{
+                _id
+                name
+              }
+              frequency
+            }
+            _id
+          }
+        }`,
+        variables: { user }
+      })
+    })
+      .then(r => r.json())
+      .then(sub => {
+        console.log("sub: ", sub);
+        var subscription = sub.data.subscriptionForUser;
+        var subscribedOrgIds = [];
+        var subscribedTopicNames = [];
+        subscription.organizations.forEach((org) => {
+          subscribedOrgIds.push(org.organization.id);
+        })
+        subscription.topics.forEach((topic) => {
+          subscribedTopicNames.push(topic.topic.name);
+        })
+        console.log("this.props.selectedIdentifier", this.props.selectedIdentifier);
+        console.log("subscribedOrgIds", subscribedOrgIds);
+        console.log("subscribedTopicNames", subscribedTopicNames);
+
+        if (subscribedOrgIds.includes(this.props.selectedOrgDatabaseId)){
+          this.setState({
+            subscription: subscription.organizations[subscribedOrgIds.indexOf(this.props.selectedOrgDatabaseId)].frequency,
+            selectedFreq: subscription.organizations[subscribedOrgIds.indexOf(this.props.selectedOrgDatabaseId)].frequency
+          })
+        } else if (subscribedTopicNames.includes(this.props.selectedIdentifier)) {
+          this.setState({
+            subscription: subscription.topics[subscribedTopicNames.indexOf(this.props.selectedIdentifier)].frequency,
+            selectedFreq: subscription.topics[subscribedTopicNames.indexOf(this.props.selectedIdentifier)].frequency,
+            topicIdentifier: subscription.topics[subscribedTopicNames.indexOf(this.props.selectedIdentifier)].topic._id,
+          })
+        }
+        else {
+          this.setState({
+            subscription: "never",
+            selectedFreq: "never"
+          })
+        }
+        
+        // this.setState({ posts: posts.data.postsForTopic });
+      });
+  }
+
   setSelectedTab = index => {
+    if (index === 1 && this.state.subscription === ""){
+      // fetch subscription
+      this.fetchSubscriptionForUser(this.props.user_id);
+    }
     this.setState({ selectedTab: index });
   };
 
+  updateSubscription = (input, callback) => {
+    console.log("update sub");
+    console.log("input", input);
+    fetch(`${host}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        query: `
+          mutation($input: SubscriptionInput){
+            updateSubscription(input: $input) {
+              user
+              topics{
+                frequency
+              }
+              organizations{
+                frequency
+              }
+            }
+          }
+        `,
+        variables: { input }
+      })
+    })
+      .then(r => r.json())
+      .then(response => {
+        callback(response);
+      });
+  };
+
+
   saveSubsciption = value => {
-    if (["every", "daily", "weekly"].includes(value)) {
-      this.setState({ selectedFreq: value });
+    if (["every", "daily", "weekly", "never"].includes(value)) {
+      this.setState({ selectedFreq: value, subscription: value }, () => {
+        console.log(this.state.selectedFreq)
+        var input = {
+          "user": this.props.user_id,
+          "action": this.state.subscription === "never" ? "unsubscribe" : "subscribe",
+          "subscription_type": this.props.selectedType === "org" ? "organization" : "topic",
+          "subscription_target": this.props.selectedType === "org" ? this.props.selectedOrgDatabaseId : this.state.topicIdentifier,
+          "subscription_frequency": this.state.subscription      
+        };
+        this.updateSubscription(input,
+        (r) => {
+          console.log(r);
+        })
+      });
+      
     } else {
       this.setState({ selectedChannel: value });
     }
@@ -92,45 +219,26 @@ class Sidebar extends Component {
         ? []
         : [
             {
-              title: "通知方式",
-              options: [
-                {
-                  title: "電子郵件",
-                  subtitle: "agameofprivacy@gmail.com",
-                  value: "email"
-                }
-              ]
-            },
-            {
               title: "通知頻率",
               options: [
                 {
-                  title: "每次",
-                  subtitle: `每次有人對 ${
-                    this.props.selectedType === "org"
-                      ? this.props.org.name
-                      : this.props.topic.name
-                  } 發布新的回饋`,
+                  title: "不通知",
+                  subtitle: `不收到通知`,
+                  value: "never"
+                },
+                {
+                  title: "即時",
+                  subtitle: `每次有新回饋就通知`,
                   value: "every"
                 },
                 {
-                  title: "每天",
-                  subtitle: `每天收到一個彙整當天 ${
-                    this.props.selectedType === "org"
-                      ? this.props.org.name
-                      : this.props.topic.name
-                  } 回饋
-                    的通知`,
+                  title: "每日",
+                  subtitle: `彙整當天回饋的通知`,
                   value: "daily"
                 },
                 {
                   title: "每週",
-                  subtitle: `每週收到一個彙整當週 ${
-                    this.props.selectedType === "org"
-                      ? this.props.org.name
-                      : this.props.topic.name
-                  } 回饋
-                    的通知`,
+                  subtitle: `彙整當週回饋的通知`,
                   value: "weekly"
                 }
               ]
@@ -184,7 +292,7 @@ class Sidebar extends Component {
           )}
         {this.state.selectedTab === 1 && (
           <div className="section">
-            <p>{`若您想關注${
+            <p>{`若想收到`} <strong>{
               this.props.selectedType === "org"
                 ? this.props.org
                   ? this.props.org.name
@@ -192,10 +300,12 @@ class Sidebar extends Component {
                 : this.props.topic
                 ? this.props.topic.name
                 : ""
-            }，您可調整下面設定。`}</p>
+            }</strong> {`相關通知email，請調整下面設定。`}</p>
             <RadioSelect
+              loaded={this.state.subscription !== ""}
               submitForm={this.saveSubsciption}
               sections={sections}
+              value={this.state.subscription}
             />
           </div>
         )}

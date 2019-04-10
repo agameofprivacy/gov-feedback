@@ -1,6 +1,6 @@
 module.exports = `
     type OrgSubscription{
-        organization: String!,
+        organization: Organization!,
         frequency: String!,
     }
 `

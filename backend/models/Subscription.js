@@ -16,6 +16,7 @@ const SubscriptionSchema = new Schema({
   },
   organizations: [
     {
+      _id: false,
       organization: {
         type: Schema.Types.ObjectId,
         ref: "Organization",
@@ -29,6 +30,7 @@ const SubscriptionSchema = new Schema({
   ],
   topics: [
       {
+        _id: false,
         topic: {
             type: Schema.Types.ObjectId,
             ref: "Topic",

@@ -1,6 +1,6 @@
 module.exports = `
     type TopicSubscription{
-        topic: String!,
+        topic: Topic!,
         frequency: String!,
     }
 `

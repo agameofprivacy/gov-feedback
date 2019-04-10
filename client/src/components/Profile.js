@@ -2,6 +2,7 @@ import React, {Component} from "react"
 import SegmentedControls from "./SegmentedControls";
 import PersonalInfo from "./PersonalInfo";
 import PostsFromUser from "./PostsFromUser";
+import SubscriptionsList from "./SubscriptionsList";
 
 const remote = "https://gov-feedback.appspot.com";
 const local = "http://localhost:3001";
@@ -81,6 +82,12 @@ class Profile extends Component {
                             setSelectedOrg={this.props.setSelectedOrg}
                             setSelectedTopic={this.props.setSelectedTopic}
                         />
+                    }
+                    {
+                       this.state.selected === "1" &&
+                       <SubscriptionsList
+                           user_id={this.props.user_id} 
+                       /> 
                     }
                 </div>
                 <div className="sidebar">

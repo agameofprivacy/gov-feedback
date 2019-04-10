@@ -3,9 +3,6 @@ import FormSectionTitle from "./FormSectionTitle";
 import RadioItem from "./RadioItem";
 
 class RadioSelect extends Component {
-  state = {
-    value: ""
-  };
 
   radioSelected = value => {
     this.setState({ value: value });
@@ -22,7 +19,7 @@ class RadioSelect extends Component {
           <RadioItem
             submitForm={submitForm}
             key={index}
-            selected={option.value === this.state.value}
+            selected={(option.value === this.props.value) || (option.value === "never" && this.props.value === "")}
             item={option}
             radioSelected={this.radioSelected}
             last={index === section.options.length - 1}
@@ -37,7 +34,7 @@ class RadioSelect extends Component {
         </div>
       );
     });
-    return <div className="radio-select">{sectionsArray}</div>;
+    return <div className={"radio-select" + (!this.props.loaded ? " radio-select--disabled" : "")}>{sectionsArray}</div>;
   };
 }
 

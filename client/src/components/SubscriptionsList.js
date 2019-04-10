@@ -41,6 +41,67 @@ class SubscriptionsList extends Component {
     colors;
     identifiers = [];
 
+    handleUnsubscribeClick = (e) => {
+        var index = this.identifiers.indexOf(e.target.getAttribute("value"));
+        console.log("index is: ", index);
+        var type;
+        var input;
+        if (index <= this.state.topicSubs.length - 1) {
+            type = "topic";
+            input = {
+                "user": this.props.user_id,
+                "action": "unsubscribe",
+                "subscription_type": type,
+                "subscription_target": this.state.topicSubs[index].topic._id,
+                "subscription_frequency": "never"
+            };    
+        } else {
+            type = "org";
+            console.log("org: ", this.state.orgSubs[index - this.state.topicSubs.length].organization);
+            input = {
+                "user": this.props.user_id,
+                "action": "unsubscribe",
+                "subscription_type": "organization",
+                "subscription_target": this.state.orgSubs[index - this.state.topicSubs.length].organization._id,
+                "subscription_frequency": "never"
+            };
+        }
+        this.updateSubscription(input,
+        (r) => {
+            console.log("return: ", r);
+            this.fetchSubscriptionForUser(this.props.user_id);
+        })
+  
+    }
+
+    updateSubscription = (input, callback) => {
+        console.log("update sub");
+        console.log("input", input);
+        fetch(`${host}/graphql`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          body: JSON.stringify({
+            query: `
+              mutation($input: SubscriptionInput){
+                updateSubscription(input: $input) {
+                  user
+                }
+              }
+            `,
+            variables: { input }
+          })
+        })
+          .then(r => r.json())
+          .then(response => {
+            callback(response);
+          });
+      };
+
+    
+
     fetchSubscriptionForUser = user => {
         fetch(`${host}/graphql`, {
           method: "POST",
@@ -132,6 +193,16 @@ class SubscriptionsList extends Component {
                         }
                         type="link"
                     />
+                    <div className="subscription-item__box">
+                        <div className="subscription-item__box__status">{this.frequencyDict[sub.frequency]}</div>
+                        <button 
+                            onClick={this.handleUnsubscribeClick} 
+                            className="subscription-item__box__action"
+                            value={sub.topic.name}
+                        >
+                            停止關注
+                        </button>
+                    </div>
                 </div>
             )
         })
@@ -151,7 +222,13 @@ class SubscriptionsList extends Component {
                     />
                     <div className="subscription-item__box">
                         <div className="subscription-item__box__status">{this.frequencyDict[sub.frequency]}</div>
-                        <div className="subscription-item__box__action">停止關注</div>
+                        <button 
+                            onClick={this.handleUnsubscribeClick} 
+                            className="subscription-item__box__action"
+                            value={sub.organization._id}
+                        >
+                            停止關注
+                        </button>
                     </div>
                 </div>
             )

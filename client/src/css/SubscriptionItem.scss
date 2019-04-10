@@ -1,0 +1,40 @@
+.subscription-item {
+    background-color: white;
+    padding: 1.5em 1em 1.5em 1em;
+    border: 1px solid rgb(230,230,230);
+    border-bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    &--last {
+        border-bottom: 1px solid rgb(230,230,230);
+    }
+
+    &__box {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-end;
+
+        &__status {
+            text-align: end;
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: .5em;
+            color: rgb(80,80,80);
+        }
+
+        &__action {
+            cursor: pointer;
+            text-align: end;
+            color: rgb(80,80,80);
+            font-size: 12px;
+
+            &:hover {
+                color: red;
+            }
+        }
+    }
+}

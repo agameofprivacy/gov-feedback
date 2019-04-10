@@ -86,6 +86,8 @@ class Profile extends Component {
                     {
                        this.state.selected === "1" &&
                        <SubscriptionsList
+                           setSelectedOrg={this.props.setSelectedOrg}
+                           setSelectedTopic={this.props.setSelectedTopic}
                            user_id={this.props.user_id} 
                        /> 
                     }

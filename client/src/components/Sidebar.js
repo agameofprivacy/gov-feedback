@@ -68,7 +68,7 @@ class Sidebar extends Component {
         var subscribedOrgIds = [];
         var subscribedTopicNames = [];
         subscription.organizations.forEach((org) => {
-          subscribedOrgIds.push(org.organization.id);
+          subscribedOrgIds.push(org.organization._id);
         })
         subscription.topics.forEach((topic) => {
           subscribedTopicNames.push(topic.topic.name);
@@ -142,7 +142,7 @@ class Sidebar extends Component {
 
 
   saveSubsciption = value => {
-    if (["every", "daily", "weekly", "never"].includes(value)) {
+    if (["asap", "daily", "weekly", "never"].includes(value)) {
       this.setState({ selectedFreq: value, subscription: value }, () => {
         console.log(this.state.selectedFreq)
         var input = {
@@ -229,7 +229,7 @@ class Sidebar extends Component {
                 {
                   title: "即時",
                   subtitle: `每次有新回饋就通知`,
-                  value: "every"
+                  value: "asap"
                 },
                 {
                   title: "每日",

@@ -171,6 +171,9 @@ class App extends Component {
             organization,
             organization_id,
             created,
+            likes{
+              user,
+            }
             content,
             _id
           }
@@ -339,6 +342,9 @@ class App extends Component {
             organization,
             organization_id,
             created,
+            likes{
+              user,
+            }
             content,
             _id            
           }
@@ -747,6 +753,7 @@ class App extends Component {
                 selectedIdentity={this.state.selectedIdentity}
                 setFormState={this.setFormState}
                 posts={this.state.posts}
+                user_id={this.state.user_id}
               />
               <Sidebar
                 key={this.state.selectedType === "org" ? `key${this.state.selectedOrgId}` : `key${this.state.selectedTopicName}`}

@@ -1,5 +1,6 @@
 const Post = require("../../../models/Post");
 const PublicProfile = require("../../../models/PublicProfile");
+const ObjectId = require('mongoose').Types.ObjectId;
 
 module.exports = {
     Query: {
@@ -48,6 +49,46 @@ module.exports = {
         }
     },
     Mutation: {
+        async likePost(root, {
+            input
+        }) {
+            return new Promise((resolve, reject) => {
+                var query = {"_id": new ObjectId(input.post_id)};
+                var options = { upsert: true, new: true, setDefaultsOnInsert: true };
+                var update;
+                switch(input.action) {
+                    case "like":
+                        update = {
+                            $addToSet: {'likes': {
+                                user: new ObjectId(input.user_id)                            }}
+                        };
+                        break;
+                    case "unlike":
+                        update = {
+                            $pull: {'likes': {
+                                user: new ObjectId(input.user_id),
+                            }}
+                        };
+                        break;
+                    default:
+                        break;
+                }
+                Post.findOneAndUpdate(
+                    query,
+                    update,
+                    options,
+                    function(error, result) {
+                        if (error) {
+                            console.log("error", error);
+                            reject(error);
+                        } else {
+                            console.log("result: ", result);
+                            resolve(result);
+                        }
+                    }
+                )
+            })
+        },
         async createPost(root, {
             input
         }) {

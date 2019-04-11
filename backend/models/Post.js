@@ -43,26 +43,23 @@ const PostSchema = new Schema({
     type: String,
     required: true
   },
-  likedBy: [
-    {
-      name: {
-        type: String,
+  replies: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Reply",
         required: true
       }
+  ],
+  likes: [
+    {
+      _id: false,
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+      },
     }
   ],
-  is_forward_of_post_id: {
-    type: String,
-    required: false
-  },
-  is_forward_of_post_with_tag: {
-    type: String,
-    required: false
-  },
-  is_reply_to_post_id: {
-    type: String,
-    required: false
-  }
 });
 
 module.exports = mongoose.model("Post", PostSchema);

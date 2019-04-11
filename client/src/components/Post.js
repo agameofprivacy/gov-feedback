@@ -6,8 +6,14 @@ import "moment/locale/zh-tw";
 var moment = require("moment");
 moment.locale("zh-tw");
 
+var remote = "https://gov-feedback.appspot.com";
+var local= "http://localhost:3001";
+
+const host = local;
+
 class Post extends Component {
   state = {
+    likedByUser: this.props.post.hasOwnProperty("likes") ? (this.props.post.likes.find((e) => e.user === this.props.user_id) === undefined ? false : true) : false,
     activeAction: "",
     content: "",
     forwardOrgIdSelected: "",
@@ -21,15 +27,65 @@ class Post extends Component {
     this.props.setFormState({ content: e.target.value });
   };
 
-  handlePillClick = action => {
-    this.setState({
-      activeAction: this.state.activeAction === action ? "" : action
-    }, function(){
-        if (this.state.activeAction === "forward") {
-            // fetch parallels for orgId this.props.post.organization_id
-            
-        }
+  likePost = (input, callback) => {
+    console.log("like post");
+    console.log("input", input);
+    fetch(`${host}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        query: `
+          mutation($input: LikePostInput){
+            likePost(input: $input) {
+              _id,
+              likes{
+                user,
+              }
+            }
+          }
+        `,
+        variables: { input }
+      })
     })
+      .then(r => r.json())
+      .then(response => {
+        callback(response);
+      });
+  };
+
+
+  handlePillClick = action => {
+    if (action === "like") {
+      console.log("perform like action on post");
+      this.setState({
+        likedByUser: !this.state.likedByUser
+      }, () => {
+        console.log("user_id: ", this.props.user_id);
+        console.log("this.props.post._id", this.props.post._id);
+        
+        this.likePost({
+          "user_id": this.props.user_id,
+          "action": this.state.likedByUser ? "like" : "unlike",
+          "post_id": this.props.post._id    
+        }, (r) => {
+          console.log("response: ", r);
+        })  
+      })
+
+      
+    } else {
+      this.setState({
+        activeAction: this.state.activeAction === action ? "" : action
+      }, function(){
+          if (this.state.activeAction === "forward") {
+              // fetch parallels for orgId this.props.post.organization_id
+              
+          }
+      })
+    }
   };
 
   handleForwardSelect = (identifier, name) => {
@@ -53,7 +109,14 @@ class Post extends Component {
     }
   };
 
+  handleAccessoryClick = (e) => {
+      console.log("action: ", this.state.activeAction);
+      console.log("content: ", this.state.content);
+  }
+
+
   render() {
+    console.log("test", this.props.post.likes.find((e) => {return e.user === this.props.user_id}));
     const { post, color, first, last, forwardables, org } = this.props;
     var actions = ["回覆", "轉發", "檢舉"];
     var actionValues = ["reply", "forward", "report"];
@@ -115,7 +178,11 @@ class Post extends Component {
             <div className="post__header__timestamp">{createdString}</div>
           </div>
           <div className="post__body">
-            <p className="post__body__content">{post.content}</p>
+            <p 
+              className={
+                "post__body__content" + (post.content.length < 12 ? " post__body__content--strong" : "")}>
+              {post.content}
+            </p>
             {post.type !== "reply" && (
               <div className="post__body__author">
                 <div className="post__body__author__image">
@@ -135,7 +202,7 @@ class Post extends Component {
               pills={post.type === "reply" ? actions.splice(1, 2) : actions}
               handlePillClick={this.handlePillClick}
             />
-            <Pill like />
+            <Pill highlighted={this.state.likedByUser} type="like" handlePillClick={this.handlePillClick} like />
           </div>
         </div>
         {this.state.activeAction === "reply" && (
@@ -146,7 +213,7 @@ class Post extends Component {
               className="post__accessory__textarea"
               placeholder="想回覆什麼？"
             />
-            <button className="post__accessory__submit pill pill--action">
+            <button className="post__accessory__submit pill pill--action" onClick={this.handleAccessoryClick}>
               送出
             </button>
           </div>
@@ -155,7 +222,7 @@ class Post extends Component {
           <div className="post__forward post__accessory">
             <p>將此回饋轉發至下面其中一個機關：</p>
             <Pills unset highlighted={[this.state.forwardOrgIdSelected]} type="toggle" handlePillClick={this.handleForwardSelect} pills={forwardablePills} values={forwardableVals} />
-            <button className="post__accessory__submit pill pill--action">
+            <button className="post__accessory__submit pill pill--action" onClick={this.handleAccessoryClick}>
               送出
             </button>
           </div>
@@ -168,7 +235,7 @@ class Post extends Component {
               className="post__accessory__textarea"
               placeholder="這個回饋怎麼了？"
             />
-            <button className="post__accessory__submit pill pill--action">
+            <button className="post__accessory__submit pill pill--action" onClick={this.handleAccessoryClick}>
               送出
             </button>
           </div>

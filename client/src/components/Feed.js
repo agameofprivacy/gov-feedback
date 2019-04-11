@@ -63,6 +63,8 @@ class Feed extends Component {
 
   render() {
 
+    console.log("feed user_id: ", this.props.user_id);
+
     const {
       org,
       parallelOrgs,
@@ -111,6 +113,7 @@ class Feed extends Component {
               }
               key={post._id}
               post={post}
+              user_id={this.props.user_id}
             />
           );
         }.bind(this)

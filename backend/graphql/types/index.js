@@ -12,6 +12,7 @@ const PublicProfile = require("./PublicProfile");
 const Subscription = require("./Subscription");
 const OrgSubscription = require("./OrgSubscription");
 const TopicSubscription = require("./TopicSubscription");
+const Like = require("./Like");
 
 const typeDefs = [
     Organization, 
@@ -25,7 +26,8 @@ const typeDefs = [
     PublicProfile, 
     Subscription,
     OrgSubscription,
-    TopicSubscription
+    TopicSubscription,
+    Like,
 ];
 
 module.exports = mergeTypes(typeDefs, { all: true });

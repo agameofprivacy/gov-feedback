@@ -33,9 +33,10 @@
             font-size: 12px;
             border: none;
             padding-right: 0;
-
+            transition: color .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+            
             &:hover {
-                color: red;
+                color: rgb(188, 0, 0);
             }
         }
     }

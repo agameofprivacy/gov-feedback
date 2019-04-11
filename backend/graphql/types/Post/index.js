@@ -9,6 +9,7 @@ module.exports = `
         organization: String!,
         organization_id: String!,
         created: Float!,
+        likes: [Like],
     }
     type Query {
         posts: [Post]!,
@@ -27,7 +28,13 @@ module.exports = `
         created: Float!,
         content: String!
     }
+    input LikePostInput {
+        user_id: String!
+        action: String!
+        post_id: String!
+    }
     type Mutation {
-        createPost(input: PostInput) : Post
+        createPost(input: PostInput) : Post,
+        likePost(input: LikePostInput) : Post,
     }
 `;

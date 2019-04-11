@@ -49,9 +49,14 @@
         margin-top: 1em;
 
         &__content {
-            margin-bottom: 1em;
+            margin-top: 1.3em;
+            margin-bottom: 1.1em;
             font-weight: 300;
-            font-size: 17px;
+            font-size: 19px;
+
+            &--strong {
+                font-size: 36px;
+            }
         }
 
         &__author {

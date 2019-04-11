@@ -80,20 +80,20 @@
     }
 
     &--action {
-        border-color: rgb(74, 144, 226);
-        color: rgb(74, 144, 226);
+        border-color: #323232;
+        color: #323232;
         background-color: transparent;
 
         &:hover {
             color: white;
-            background-color: rgb(74, 144, 226);
+            background-color: #323232;
         }
     }
 
     &--highlighted {
-        border-color: rgb(74, 144, 226) !important;
+        border-color: #323232 !important;
         color: white !important;
-        background-color: rgb(74, 144, 226) !important;
+        background-color: #323232 !important;
     }
 
     &--new {
@@ -103,7 +103,7 @@
     }
 
     &--like {
-        border-color: rgb(74, 144, 226);
+        border-color: #323232;
         height: 35px;
         padding: 0 9px;
         box-sizing: border-box;
@@ -116,7 +116,7 @@
         }
 
         &:hover {
-            background-color: rgb(74, 144, 226);
+            background-color: #323232;
             color: white;
 
             svg {
@@ -126,10 +126,26 @@
 
         svg {
             display: block;
-            fill: rgb(74, 144, 226);
+            fill: #323232;
             overflow: hidden;
             width: 18px;
             height: 17px;
+        }
+
+        &.pill--highlighted {
+            background-color: #323232;
+
+            svg {
+                display: block;
+                fill: white;
+                overflow: hidden;
+                width: 18px;
+                height: 17px;
+            }    
+
+            &:hover {
+                background-color: #444444;
+            }
         }
     }
 }

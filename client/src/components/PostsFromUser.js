@@ -35,6 +35,9 @@ class PostsFromUser extends Component {
                   organization_id,
                   created,
                   content,
+                  likes {
+                    user,
+                  }
                   _id
                 }
               }`,
@@ -66,6 +69,7 @@ class PostsFromUser extends Component {
               selectedIdentity={this.state.selectedIdentity}
               setFormState={this.setFormState}
               posts={this.state.posts}
+              user_id={this.props.user_id}
             />
         )
     }

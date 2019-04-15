@@ -175,6 +175,10 @@ class App extends Component {
               user,
             }
             content,
+            replies{
+              content,
+              author
+            }
             _id
           }
         }`,
@@ -346,6 +350,10 @@ class App extends Component {
               user,
             }
             content,
+            replies{
+              content,
+              author
+            },
             _id            
           }
         }`,

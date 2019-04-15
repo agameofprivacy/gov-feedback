@@ -13,6 +13,7 @@ const Subscription = require("./Subscription");
 const OrgSubscription = require("./OrgSubscription");
 const TopicSubscription = require("./TopicSubscription");
 const Like = require("./Like");
+const Reply = require("./Reply");
 
 const typeDefs = [
     Organization, 
@@ -28,6 +29,7 @@ const typeDefs = [
     OrgSubscription,
     TopicSubscription,
     Like,
+    Reply,
 ];
 
 module.exports = mergeTypes(typeDefs, { all: true });

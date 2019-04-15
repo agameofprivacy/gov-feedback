@@ -6,6 +6,7 @@ const Topic = require("./Topic/");
 const Profile = require("./Profile/");
 const PublicProfile = require("./PublicProfile");
 const Subscription = require("./Subscription");
+const Reply = require("./Reply/");
 
 const resolvers = [
     Organization, 
@@ -13,7 +14,8 @@ const resolvers = [
     Topic, 
     Profile, 
     PublicProfile,
-    Subscription
+    Subscription,
+    Reply
 ];
 
 module.exports = mergeResolvers(resolvers);

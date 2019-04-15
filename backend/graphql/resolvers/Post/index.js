@@ -1,4 +1,5 @@
 const Post = require("../../../models/Post");
+const Reply = require("../../../models/Reply");
 const PublicProfile = require("../../../models/PublicProfile");
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -8,6 +9,7 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 Post.find({})
                 .populate({ path: 'authorProfile', model: PublicProfile })
+                .populate({ path: 'replies', model: Reply })
                 .limit(10)
                 .exec((err, res) => {
                     err ? reject(err) : resolve(res);
@@ -18,6 +20,7 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 Post.find({organization_id: args.orgId})
                 .populate({ path: 'authorProfile', model: PublicProfile })
+                .populate({ path: 'replies', model: Reply })
                 .sort({'created': -1})
                 .limit(10)
                 .exec((err, res) => {
@@ -29,6 +32,7 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 Post.find({topic: args.topic})
                 .populate({ path: 'authorProfile', model: PublicProfile })
+                .populate({ path: 'replies', model: Reply })
                 .sort({'created': -1})
                 .limit(10)
                 .exec((err, res) => {
@@ -40,6 +44,7 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 Post.find({author: args.user})
                 .populate({ path: 'authorProfile', model: PublicProfile })
+                .populate({ path: 'replies', model: Reply })
                 .sort({'created': -1})
                 .limit(10)
                 .exec((err, res) => {

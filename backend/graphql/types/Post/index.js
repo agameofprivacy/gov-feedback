@@ -9,6 +9,7 @@ module.exports = `
         organization: String!,
         organization_id: String!,
         created: Float!,
+        replies: [Reply],
         likes: [Like],
     }
     type Query {

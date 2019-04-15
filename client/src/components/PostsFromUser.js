@@ -37,7 +37,11 @@ class PostsFromUser extends Component {
                   content,
                   likes {
                     user,
-                  }
+                  },
+                  replies{
+                    content,
+                    author
+                  },      
                   _id
                 }
               }`,

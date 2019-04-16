@@ -153,6 +153,56 @@ class App extends Component {
     })
   }
 
+  updatePost = post_id => {
+    fetch(`${host}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        query: `
+          query fetchPostWith($post_id: String) {
+            fetchPostWith(post_id: $post_id){
+              author,
+              authorProfile {
+                avatarUrl
+              },
+              topic,
+              organization,
+              organization_id,
+              created,
+              likes{
+                user,
+              }
+              content,
+              replies{
+                content,
+                author,
+                _id,
+                created
+              }
+              _id
+            }
+          }
+        `,
+        variables: { post_id }
+      })
+    })
+    .then(r => r.json())
+    .then(result => {
+      let updatedPost = result.data.fetchPostWith;
+      this.state.posts.forEach((post, index) => {
+        if (post._id === updatedPost._id) {
+          var tempPosts = this.state.posts;
+          tempPosts[index] = updatedPost;
+          this.setState({posts: tempPosts});
+        }
+      })
+      console.log("update post result: ", updatedPost);
+    })
+  }
+
   getPostsForTopic = topic => {
     fetch(`${host}/graphql`, {
       method: "POST",
@@ -177,7 +227,9 @@ class App extends Component {
             content,
             replies{
               content,
-              author
+              author,
+              _id,
+              created
             }
             _id
           }
@@ -352,7 +404,9 @@ class App extends Component {
             content,
             replies{
               content,
-              author
+              author,
+              _id,
+              created
             },
             _id            
           }
@@ -762,6 +816,8 @@ class App extends Component {
                 setFormState={this.setFormState}
                 posts={this.state.posts}
                 user_id={this.state.user_id}
+                username={this.state.username}
+                updatePost={this.updatePost}
               />
               <Sidebar
                 key={this.state.selectedType === "org" ? `key${this.state.selectedOrgId}` : `key${this.state.selectedTopicName}`}

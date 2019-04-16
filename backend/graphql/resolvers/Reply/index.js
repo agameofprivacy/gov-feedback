@@ -63,28 +63,36 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 console.log(input);
                 console.log(input.authorProfile);
-
-                Reply.create(input).then(result => {
-                    // update post replies with id of newly created reply
-                    var query = {"_id": new ObjectId(input.toPost)};
-                    var options = { upsert: true, new: true, setDefaultsOnInsert: true };
-                    var update = {
-                        $addToSet: {'replies': new ObjectId(result._id)}
-                    };
-                    Post.findOneAndUpdate(
-                        query,
-                        update,
-                        options,
-                        function(error, postResult) {
-                            if (error) {
-                                console.log("error", error);
-                                reject(error);
-                            } else {
-                                console.log("postResult: ", postResult);
-                                resolve(postResult);
-                            }
-                        }
-                    )
+                PublicProfile.findOne({user: input.authorProfile})
+                .exec((err, res) => {
+                    if (err) {
+                        console.log(err)
+                        reject(err);
+                    } else {
+                        console.log("res.data", res._id);
+                        input.authorProfile = res._id;
+                        Reply.create(input).then(result => {
+                            // update post replies with id of newly created reply
+                            var query = {"_id": new ObjectId(input.toPost)};
+                            var options = { upsert: true, new: true, setDefaultsOnInsert: true };
+                            var update = {
+                                $addToSet: {'replies': new ObjectId(result._id)}
+                            };
+                            Post.findOneAndUpdate(
+                                query,
+                                update,
+                                options,
+                                function(error, postResult) {
+                                    if (error) {
+                                        console.log("error", error);
+                                        reject(error);
+                                    } else {
+                                        console.log("postResult: ", postResult);
+                                        resolve(postResult);
+                                    }
+                                }
+                            )
+                        })                    }
                 })
             })
         }

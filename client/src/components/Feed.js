@@ -114,6 +114,8 @@ class Feed extends Component {
               key={post._id}
               post={post}
               user_id={this.props.user_id}
+              username={this.props.username}
+              updatePost={this.props.updatePost}
             />
           );
         }.bind(this)

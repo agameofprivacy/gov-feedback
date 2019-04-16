@@ -40,7 +40,9 @@ class PostsFromUser extends Component {
                   },
                   replies{
                     content,
-                    author
+                    author,
+                    _id,
+                    created
                   },      
                   _id
                 }

@@ -8,10 +8,9 @@
         border-top: 1px solid rgb(230,230,230);
     }
 
-    &--last {
+    &--last, &--has-replies {
         border-bottom: 1px solid rgb(230,230,230);
     }
-
 
     &--bordered {
         border-top: 1px solid rgb(230,230,230);
@@ -64,6 +63,7 @@
             align-items: center;
             justify-content: flex-start;
             font-size: 15px;
+            font-weight: 500;
             padding: .5em 0 1em 0;
 
             &__image {
@@ -94,15 +94,17 @@
         margin-left: 1em;
         margin-bottom: 1em;
         background-color: white;
-        border: 1px solid rgb(230,230,230);
-        border-top: 0;
+        border: 1px solid rgb(230,230,230) !important;
+        border-top: 0 !important;
         border-radius: 0 0 .5em .5em;
         position: relative;
+        padding: 2em 1.5em 3em 1.5em;
 
         &__textarea {
             width: 80%;
-            margin: 27px 1em;
-            font-size: 20px;
+            margin: 20px .5em;
+            font-size: 19px;
+            font-weight: 300;
             min-height: 50px;
             max-height: 15vh;
             border: none;
@@ -133,6 +135,64 @@
             max-height: 15vh;
             min-height: 50px;
             overflow-y: scroll;    
+        }
+    }
+
+    &__reply {
+        background-color: white;
+        margin-left: 1em;
+        border: 1px solid rgb(230,230,230);
+        border-bottom: 0;
+
+        padding: 2em 1.5em 3em 1.5em;
+
+        &--first {
+            border-top: none;
+        }
+
+        &--last {
+            margin-bottom: 3em;
+            border-bottom: 1px solid rgb(230,230,230);
+        }
+
+        &__header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            font-weight: 500;
+            font-size: 15px;
+            margin-bottom: 1.5em;
+
+            // &__author {
+
+            // }
+
+            // &__created {
+
+            // }
+        }
+
+        &__body {
+            font-size: 19px;
+            font-weight: 300;
+        }
+    
+    }
+}
+
+.replies {
+    &--accessory {
+        
+        .post__reply {
+
+            &--first {
+                border-top: 1px solid rgb(230,230,230);
+                border-radius: .5em .5em 0 0;
+            }
+
+            &--last {
+                border-radius: 0 0 .5em .5em;
+            }
         }
     }
 }

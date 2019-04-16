@@ -17,6 +17,7 @@ module.exports = `
         postsForOrgId(orgId: String): [Post]!,
         postsForTopic(topic: String): [Post]!,
         postsByUser(user: String): [Post]!,
+        fetchPostWith(post_id: String): Post,
     }
     input PostInput {
         user_id: String!,

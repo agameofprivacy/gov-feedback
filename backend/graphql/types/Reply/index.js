@@ -2,10 +2,11 @@ module.exports = `
     type Reply {
         authorProfile: PublicProfile,
         author: String,
-        created: String,
+        created: Float!,
         content: String,
         toPost: Post,
-        likes: [Like]
+        likes: [Like],
+        _id: String,
     }
 
     input ReplyInput {

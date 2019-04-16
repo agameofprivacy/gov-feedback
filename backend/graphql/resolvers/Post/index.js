@@ -51,6 +51,19 @@ module.exports = {
                     err ? reject(err) : resolve(res);
                 })
             })
+        },
+        fetchPostWith: (root, args) => {
+            return new Promise((resolve, reject) => {
+                console.log("find post one");
+                Post.findOne({_id: args.post_id})
+                .populate({ path: 'authorProfile', model: PublicProfile})
+                .populate({ path: "replies", model: Reply})
+                .exec((err, res) => {
+                    console.log("err: ", err)
+                    console.log("res: ", res)
+                    err ? reject(err) : resolve(res);
+                })
+            })
         }
     },
     Mutation: {

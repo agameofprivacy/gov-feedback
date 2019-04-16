@@ -109,9 +109,66 @@ class Post extends Component {
     }
   };
 
+  createReply = (input, callback) => {
+    console.log("input", input);
+
+    fetch(`${host}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        query: `
+        mutation($input: ReplyInput){
+          createReply(input: $input) {
+            author,
+            authorProfile{
+              user
+              avatarUrl
+            },
+            content,
+            likes{
+              user,
+            }
+          }
+        }
+        `,
+        variables: { input }
+      })
+    })
+    .then(r => r.json())
+    .then(response => {
+      callback(response);
+    })
+  }
+
   handleAccessoryClick = (e) => {
       console.log("action: ", this.state.activeAction);
       console.log("content: ", this.state.content);
+
+      switch(this.state.activeAction) {
+        case "reply":
+        console.log("this.props.user_id", this.props.user_id);
+          this.createReply({
+            "authorProfile": this.props.user_id,
+            "author": this.props.username,
+            "created": Number(new Date()),
+            "content": this.state.content,
+            "toPost": this.props.post._id
+          }, (r) => {
+            // append reply to post
+            // call parent's update post function
+            // clear content and deselect action
+            this.props.updatePost(this.props.post._id);
+            this.setState({content: "", activeAction: ""})
+            console.log(r)
+          })
+          break;
+        default:
+          console.log("unknown action");
+          break;
+      }
   }
 
 
@@ -142,6 +199,28 @@ class Post extends Component {
       forwardableVals.push(paralleOrg.identifiers[0].identifier);
     });
 
+    var replies = [];
+    var sorted = this.props.post.replies.sort((a,b) => {return b.created - a.created});
+
+    console.log("sorted", sorted)
+
+    sorted.forEach((reply, index) => {
+      var repliedMoment = moment(reply.created);
+      var repliedString = repliedMoment.fromNow();
+  
+      replies.push(
+        <div key={reply._id} className={"post__reply" + (index === 0 ? " post__reply--first" : "") + (index === this.props.post.replies.length - 1 ? " post__reply--last" : "")}>
+          <div className="post__reply__header">
+            <span className="post__reply__header__author">{reply.author}</span>
+            <span className="post__reply__header__created">{repliedString}</span>
+          </div>
+          <div className="post__reply__body">
+            {reply.content}
+          </div>
+        </div>
+      )
+    })
+
     return (
       <div className="post-container">
         <div
@@ -151,7 +230,8 @@ class Post extends Component {
             (this.state.activeAction !== "" ? " post--accessory" : "") +
             (this.activeAction === "" ? " post--bordered" : "") +
             (first ? " post--first" : "") +
-            (last ? " post--last" : "")
+            (last ? " post--last" : "") +
+            (replies.length > 0 ? " post--has-replies" : "")
           }
         >
           <div className="post__header">
@@ -240,6 +320,13 @@ class Post extends Component {
             </button>
           </div>
         )}
+        {this.props.post.replies.length > 0 &&
+          <div className={"replies" + (
+            this.state.activeAction !== "" ? " replies--accessory" : ""
+          )}>
+            {replies}
+          </div>
+        }
       </div>
     );
   }

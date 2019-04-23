@@ -60,6 +60,11 @@ const PostSchema = new Schema({
       },
     }
   ],
+  isForwardedPostOf: {
+    type: Schema.Types.ObjectId,
+    ref: "Post",
+    required: false,
+  }
 });
 
 module.exports = mongoose.model("Post", PostSchema);

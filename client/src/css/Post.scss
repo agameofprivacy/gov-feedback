@@ -89,6 +89,19 @@
         align-items: flex-start;
     }
 
+    &__strip {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1em;
+        background-color: rgb(50,50,50);
+        color: white;
+        margin-top: 2em;
+        font-size: 13px;
+        line-height: 140%;
+    }
+
     &__accessory {
         min-height: 150px;
         margin-left: 1em;

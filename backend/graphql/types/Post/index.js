@@ -11,6 +11,7 @@ module.exports = `
         created: Float!,
         replies: [Reply],
         likes: [Like],
+        isForwardedPostOf: Post
     }
     type Query {
         posts: [Post]!,
@@ -29,6 +30,7 @@ module.exports = `
         organization_id: String!,
         created: Float!,
         content: String!
+        isForwardedPostOf: String,
     }
     input LikePostInput {
         user_id: String!

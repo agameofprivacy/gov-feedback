@@ -10,6 +10,7 @@ module.exports = {
                 Post.find({})
                 .populate({ path: 'authorProfile', model: PublicProfile })
                 .populate({ path: 'replies', model: Reply })
+                .populate({ path: 'isForwardedPostOf', model: Post, populate: {path: 'authorProfile', model: PublicProfile}, populate: {path: "replies", model: Reply} })
                 .limit(10)
                 .exec((err, res) => {
                     err ? reject(err) : resolve(res);
@@ -21,6 +22,7 @@ module.exports = {
                 Post.find({organization_id: args.orgId})
                 .populate({ path: 'authorProfile', model: PublicProfile })
                 .populate({ path: 'replies', model: Reply })
+                .populate({ path: 'isForwardedPostOf', model: Post, populate: {path: 'authorProfile', model: PublicProfile}, populate: {path: "replies", model: Reply} })
                 .sort({'created': -1})
                 .limit(10)
                 .exec((err, res) => {
@@ -33,6 +35,7 @@ module.exports = {
                 Post.find({topic: args.topic})
                 .populate({ path: 'authorProfile', model: PublicProfile })
                 .populate({ path: 'replies', model: Reply })
+                .populate({ path: 'isForwardedPostOf', model: Post, populate: {path: 'authorProfile', model: PublicProfile}, populate: {path: "replies", model: Reply} })
                 .sort({'created': -1})
                 .limit(10)
                 .exec((err, res) => {
@@ -45,6 +48,7 @@ module.exports = {
                 Post.find({author: args.user})
                 .populate({ path: 'authorProfile', model: PublicProfile })
                 .populate({ path: 'replies', model: Reply })
+                .populate({ path: 'isForwardedPostOf', model: Post, populate: {path: 'authorProfile', model: PublicProfile}, populate: {path: "replies", model: Reply} })
                 .sort({'created': -1})
                 .limit(10)
                 .exec((err, res) => {
@@ -58,6 +62,7 @@ module.exports = {
                 Post.findOne({_id: args.post_id})
                 .populate({ path: 'authorProfile', model: PublicProfile})
                 .populate({ path: "replies", model: Reply})
+                .populate({ path: 'isForwardedPostOf', model: Post, populate: {path: 'authorProfile', model: PublicProfile}, populate: {path: "replies", model: Reply} })
                 .exec((err, res) => {
                     console.log("err: ", err)
                     console.log("res: ", res)

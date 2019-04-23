@@ -13,10 +13,11 @@ const host = local;
 
 class Post extends Component {
   state = {
-    likedByUser: this.props.post.hasOwnProperty("likes") ? (this.props.post.likes.find((e) => e.user === this.props.user_id) === undefined ? false : true) : false,
+    likedByUser: this.props.post.isForwardedPostOf === null ? (this.props.post.hasOwnProperty("likes") ? (this.props.post.likes.find((e) => e.user === this.props.user_id) === undefined ? false : true) : false) : (this.props.post.isForwardedPostOf.hasOwnProperty("likes") ? (this.props.post.isForwardedPostOf.likes.find((e) => e.user === this.props.user_id) === undefined ? false : true) : false),
     activeAction: "",
     content: "",
     forwardOrgIdSelected: "",
+    forwardOrgSelected: "",
     forwardables: this.props.forwardables,
   };
 
@@ -25,6 +26,33 @@ class Post extends Component {
     e.target.style.height = e.target.scrollHeight + "px";
     this.setState({ content: e.target.value });
     this.props.setFormState({ content: e.target.value });
+  };
+
+  createPost = (postInput, callback) => {
+    console.log("create post");
+    console.log("postInput", postInput);
+    fetch(`${host}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        query: `
+          mutation($postInput: PostInput){
+            createPost(input: $postInput) {
+              content
+              organization
+            }
+          }
+        `,
+        variables: { postInput }
+      })
+    })
+      .then(r => r.json())
+      .then(response => {
+        callback(response);
+      });
   };
 
   likePost = (input, callback) => {
@@ -69,7 +97,7 @@ class Post extends Component {
         this.likePost({
           "user_id": this.props.user_id,
           "action": this.state.likedByUser ? "like" : "unlike",
-          "post_id": this.props.post._id    
+          "post_id": this.props.post.isForwardedPostOf === null ? this.props.post._id : this.props.post.isForwardedPostOf._id
         }, (r) => {
           console.log("response: ", r);
         })  
@@ -82,15 +110,15 @@ class Post extends Component {
       }, function(){
           if (this.state.activeAction === "forward") {
               // fetch parallels for orgId this.props.post.organization_id
-              
-          }
+
+          };
       })
     }
   };
 
   handleForwardSelect = (identifier, name) => {
     console.log(name, identifier);
-    this.setState({forwardOrgIdSelected: identifier});
+    this.setState({forwardOrgIdSelected: identifier, forwardOrgSelected: name});
   }
 
   handleTagClick = e => {
@@ -143,6 +171,33 @@ class Post extends Component {
     })
   }
 
+  createReport = (input, callback) => {
+    console.log("input", input);
+
+    fetch(`${host}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        query: `
+        mutation($input: ReportInput){
+          createReport(input: $input) {
+            author,
+            reason
+          }
+        }
+        `,
+        variables: { input }
+      })
+    })
+    .then(r => r.json())
+    .then(response => {
+      callback(response);
+    })
+  }
+
   handleAccessoryClick = (e) => {
       console.log("action: ", this.state.activeAction);
       console.log("content: ", this.state.content);
@@ -155,7 +210,7 @@ class Post extends Component {
             "author": this.props.username,
             "created": Number(new Date()),
             "content": this.state.content,
-            "toPost": this.props.post._id
+            "toPost": this.props.post.isForwardedPostOf === null ? this.props.post._id : this.props.post.isForwardedPostOf._id
           }, (r) => {
             // append reply to post
             // call parent's update post function
@@ -165,6 +220,57 @@ class Post extends Component {
             console.log(r)
           })
           break;
+        case "report":
+          this.createReport({
+            "author": this.props.user_id,
+            "referencedPost": this.props.post._id,
+            "reason": this.state.content,
+            "status": "pending",
+            "created": Number(new Date())
+          }, (r) => {
+            // append reply to post
+            // call parent's update post function
+            // clear content and deselect action
+            // this.props.updatePost(this.props.post._id);
+            this.setState({content: "", activeAction: ""})
+            alert("report submitted");
+            console.log(r)
+          })
+          break;
+        case "forward":
+          console.log(`forwarded: ${this.state.forwardOrgIdSelected}`)
+          var forwardInput = {
+            authorProfile: this.props.user_id,
+            author_type: "account",
+            author: this.props.username,
+            user_id: this.props.user_id,
+            topic:
+              this.props.post.isForwardedPostOf === null ? this.props.post.topic : this.props.post.isForwardedPostOf.topic,
+            content: " ",
+            organization:
+              this.state.forwardOrgSelected,
+            organization_id:
+              this.state.forwardOrgIdSelected,
+            isForwardedPostOf:
+            this.props.post.isForwardedPostOf === null ?this.props.post._id : this.props.post.isForwardedPostOf._id,
+            created: Number(new Date())
+          };
+
+          console.log("forward input", forwardInput)
+          this.createPost(
+            forwardInput,
+            function(r) {
+              console.log("forwarded create post r: ", r);
+              console.log(r.data);
+              this.setState({
+                content: "", 
+                activeAction: "",
+                forwardOrgIdSelected: "",
+                forwardOrgSelected: ""
+              });
+            }.bind(this)
+          );
+          break;
         default:
           console.log("unknown action");
           break;
@@ -173,7 +279,6 @@ class Post extends Component {
 
 
   render() {
-    console.log("test", this.props.post.likes.find((e) => {return e.user === this.props.user_id}));
     const { post, color, first, last, forwardables, org } = this.props;
     var actions = ["回覆", "轉發", "檢舉"];
     var actionValues = ["reply", "forward", "report"];
@@ -183,8 +288,16 @@ class Post extends Component {
         actionValues.splice(1, 1);
     }
 
-    var createdMoment = moment(post.created);
+    var createdMoment = moment(post.isForwardedPostOf === null ?post.created : post.isForwardedPostOf.created);
     var createdString = createdMoment.fromNow();
+
+    var forwardedMoment;
+    var forwardedString;
+    
+    if (post.isForwardedPostOf !== null) {
+      forwardedMoment = moment(post.created);
+      forwardedString = forwardedMoment.fromNow();
+    }
 
     var forwardablePills = [];
     var forwardableVals = [];
@@ -200,7 +313,15 @@ class Post extends Component {
     });
 
     var replies = [];
-    var sorted = this.props.post.replies.sort((a,b) => {return b.created - a.created});
+    if (this.props.post.isForwardedPostOf !== null) {
+      console.log("this.props.post", this.props.post);
+    }
+    var toSort = this.props.post.isForwardedPostOf === null ? this.props.post.replies : this.props.post.isForwardedPostOf.replies;
+    console.log("toSort", toSort);
+    var sorted = toSort.sort((a,b) => {
+      console.log("a", a);
+      return b.created - a.created
+    });
 
     console.log("sorted", sorted)
 
@@ -209,7 +330,7 @@ class Post extends Component {
       var repliedString = repliedMoment.fromNow();
   
       replies.push(
-        <div key={reply._id} className={"post__reply" + (index === 0 ? " post__reply--first" : "") + (index === this.props.post.replies.length - 1 ? " post__reply--last" : "")}>
+        <div key={reply._id} className={"post__reply" + (index === 0 ? " post__reply--first" : "") + (index === sorted.length - 1 ? " post__reply--last" : "")}>
           <div className="post__reply__header">
             <span className="post__reply__header__author">{reply.author}</span>
             <span className="post__reply__header__created">{repliedString}</span>
@@ -221,12 +342,21 @@ class Post extends Component {
       )
     })
 
+    var postToUse = post.isForwardedPostOf === null ? post : post.isForwardedPostOf;
+
     return (
       <div className="post-container">
+        { post.isForwardedPostOf !== null &&
+          <div className={"post__strip"}>
+            <span>
+            {forwardedString} {post.isForwardedPostOf.author} 由 <strong>{post.isForwardedPostOf.organization}</strong> 轉發至 <strong>{post.organization}</strong>
+            </span>
+          </div>
+        }
         <div
           className={
             "post" +
-            (post.type === "reply" ? " post--indented" : "") +
+            (postToUse.type === "reply" ? " post--indented" : "") +
             (this.state.activeAction !== "" ? " post--accessory" : "") +
             (this.activeAction === "" ? " post--bordered" : "") +
             (first ? " post--first" : "") +
@@ -235,33 +365,33 @@ class Post extends Component {
           }
         >
           <div className="post__header">
-            {post.topic !== "" && (
+            {postToUse.topic !== "" && (
               <Pill
                 handleClick={this.handleTagClick}
                 color={color}
                 label={
                   this.props.tagType === "topic"
-                    ? post.topic
-                    : post.organization
+                    ? postToUse.topic
+                    : postToUse.organization
                 }
                 value={
                   this.props.tagType === "org"
-                    ? post.organization_id
+                    ? postToUse.organization_id
                     : undefined
                 }
                 type="link"
               />
             )}
-            {post.type === "reply" && (
-              <div className="post__header__author">{post.author}</div>
+            {postToUse.type === "reply" && (
+              <div className="post__header__author">{postToUse.author}</div>
             )}
             <div className="post__header__timestamp">{createdString}</div>
           </div>
           <div className="post__body">
             <p 
               className={
-                "post__body__content" + (post.content.length < 12 ? " post__body__content--strong" : "")}>
-              {post.content}
+                "post__body__content" + (postToUse.content.length < 12 ? " post__body__content--strong" : "")}>
+              {postToUse.content}
             </p>
             {post.type !== "reply" && (
               <div className="post__body__author">
@@ -279,7 +409,7 @@ class Post extends Component {
               highlighted={[this.state.activeAction]}
               actions
               values={actionValues}
-              pills={post.type === "reply" ? actions.splice(1, 2) : actions}
+              pills={postToUse.type === "reply" ? actions.splice(1, 2) : actions}
               handlePillClick={this.handlePillClick}
             />
             <Pill highlighted={this.state.likedByUser} type="like" handlePillClick={this.handlePillClick} like />
@@ -320,7 +450,7 @@ class Post extends Component {
             </button>
           </div>
         )}
-        {this.props.post.replies.length > 0 &&
+        {postToUse.replies.length > 0 &&
           <div className={"replies" + (
             this.state.activeAction !== "" ? " replies--accessory" : ""
           )}>

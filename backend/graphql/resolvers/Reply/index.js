@@ -9,7 +9,7 @@ module.exports = {
             return new Promise((resolve, reject) => {
                 Reply.find({"authorProfile.user": args.ID})
                 .populate({ path: 'authorProfile', model: PublicProfile })
-                .limit(10)
+                .limit(20)
                 .exec((err, res) => {
                     err ? reject(err) : resolve(res);
                 });
@@ -71,28 +71,38 @@ module.exports = {
                     } else {
                         console.log("res.data", res._id);
                         input.authorProfile = res._id;
-                        Reply.create(input).then(result => {
-                            // update post replies with id of newly created reply
-                            var query = {"_id": new ObjectId(input.toPost)};
-                            var options = { upsert: true, new: true, setDefaultsOnInsert: true };
-                            var update = {
-                                $addToSet: {'replies': new ObjectId(result._id)}
-                            };
-                            Post.findOneAndUpdate(
-                                query,
-                                update,
-                                options,
-                                function(error, postResult) {
-                                    if (error) {
-                                        console.log("error", error);
-                                        reject(error);
-                                    } else {
-                                        console.log("postResult: ", postResult);
-                                        resolve(postResult);
-                                    }
-                                }
-                            )
-                        })                    }
+                        Post.findById(input.toPost).then((result) => {
+                            console.log("post found: ", result);
+                            if (result.replies.length >= 10) {
+                                // no more replies allowed
+                                reject("max_replies");
+                            } else {
+                                // create and add reply
+                                Reply.create(input).then(result => {
+                                    // update post replies with id of newly created reply
+                                    var query = {"_id": new ObjectId(input.toPost)};
+                                    var options = { upsert: true, new: true, setDefaultsOnInsert: true };
+                                    var update = {
+                                        $addToSet: {'replies': new ObjectId(result._id)}
+                                    };
+                                    Post.findOneAndUpdate(
+                                        query,
+                                        update,
+                                        options,
+                                        function(error, postResult) {
+                                            if (error) {
+                                                console.log("error", error);
+                                                reject(error);
+                                            } else {
+                                                console.log("postResult: ", postResult);
+                                                resolve(postResult);
+                                            }
+                                        }
+                                    )
+                                })    
+                            }
+                        })
+                    }
                 })
             })
         }

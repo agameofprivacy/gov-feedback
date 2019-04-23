@@ -43,7 +43,25 @@ class PostsFromUser extends Component {
                     author,
                     _id,
                     created
-                  },      
+                  },
+                  isForwardedPostOf {
+                    content,
+                    author,
+                    organization,
+                    organization_id,
+                    topic,
+                    created,
+                    authorProfile {
+                      avatarUrl
+                    },
+                    replies{
+                      content,
+                      author,
+                      _id,
+                      created
+                    },
+                    _id 
+                  },
                   _id
                 }
               }`,

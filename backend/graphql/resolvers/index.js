@@ -4,9 +4,10 @@ const Organization = require("./Organization/");
 const Post = require("./Post/");
 const Topic = require("./Topic/");
 const Profile = require("./Profile/");
-const PublicProfile = require("./PublicProfile");
-const Subscription = require("./Subscription");
+const PublicProfile = require("./PublicProfile/");
+const Subscription = require("./Subscription/");
 const Reply = require("./Reply/");
+const Report = require("./Report/");
 
 const resolvers = [
     Organization, 
@@ -15,7 +16,8 @@ const resolvers = [
     Profile, 
     PublicProfile,
     Subscription,
-    Reply
+    Reply,
+    Report
 ];
 
 module.exports = mergeResolvers(resolvers);

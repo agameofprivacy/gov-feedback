@@ -85,6 +85,13 @@ class Post extends Component {
   };
 
 
+  handleOrgLinkClick = e => {
+    this.props.handleOrgClick([
+      e.target.getAttribute("value"),
+      e.target.innerText
+    ]);
+  }
+
   handlePillClick = action => {
     if (action === "like") {
       console.log("perform like action on post");
@@ -349,7 +356,7 @@ class Post extends Component {
         { post.isForwardedPostOf !== null &&
           <div className={"post__strip"}>
             <span>
-            {forwardedString} {post.isForwardedPostOf.author} 由 <strong>{post.isForwardedPostOf.organization}</strong> 轉發至 <strong>{post.organization}</strong>
+            {forwardedString} {post.isForwardedPostOf.author} 由<a className="post__strip__link" onClick={this.handleOrgLinkClick} value={post.isForwardedPostOf.organization_id}>{post.isForwardedPostOf.organization}</a>轉發至<a className="post__strip__link" onClick={this.handleOrgLinkClick} value={post.organization_id}>{post.organization}</a>
             </span>
           </div>
         }

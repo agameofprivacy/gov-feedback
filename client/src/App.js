@@ -53,6 +53,7 @@ class App extends Component {
     gender: "",
     residence: "",
     email: "",
+    hasAdditionalPosts: true,
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -112,10 +113,16 @@ class App extends Component {
       composerValue: "",
       showsProfilePage: false,
       isLoading: true,
+      hasAdditionalPosts: false,
+    }, () => {
+      clearInterval(this.state.intervalId);
+      console.log("this.state.posts", this.state.posts);
+      var dateVal = this.state.posts !== undefined && (this.state.posts.length > 0 && this.state.hasAdditionalPosts) ? this.state.posts[this.state.posts.length - 1].created : Number(new Date());
+      console.log("dateVal", dateVal);
+      console.log("now", Number(new Date()));
+      this.getPostsForOrgId(org.identifiers[0].identifier, dateVal, false)
+      this.getOrgWithOrgId(org.identifiers[0].identifier);
     });
-    clearInterval(this.state.intervalId);
-    this.getPostsForOrgId(org.identifiers[0].identifier);
-    this.getOrgWithOrgId(org.identifiers[0].identifier);
   };
 
   setSelectedTopic = name => {
@@ -129,10 +136,12 @@ class App extends Component {
       composerValue: "",
       showsProfilePage: false,
       isLoading: true,
+      hasAdditionalPosts: false,
+    }, () => {
+      clearInterval(this.state.intervalId);
+      this.getPostsForTopic(name);
+      this.topicWithName(name);
     });
-    clearInterval(this.state.intervalId);
-    this.getPostsForTopic(name);
-    this.topicWithName(name);
   };
 
   showLoginModal = () => {
@@ -416,7 +425,7 @@ class App extends Component {
       });
   };
 
-  getPostsForOrgId = orgId => {
+  getPostsForOrgId = (orgId, date, append) => {
     fetch(`${host}/graphql`, {
       method: "POST",
       headers: {
@@ -424,8 +433,8 @@ class App extends Component {
         Accept: "application/json"
       },
       body: JSON.stringify({
-        query: `query postsForOrgId($orgId: String){
-          postsForOrgId(orgId: $orgId) {
+        query: `query postsForOrgId($orgId: String, $date: Float){
+          postsForOrgId(orgId: $orgId, date: $date) {
             author,
             authorProfile {
               avatarUrl
@@ -465,15 +474,21 @@ class App extends Component {
             _id            
           }
         }`,
-        variables: { orgId }
+        variables: { orgId, date }
       })
     })
       .then(r => r.json())
       .then(posts => {
         console.log(posts);
-        this.setState({ posts: posts.data.postsForOrgId, isLoading: false }, () => {
-          window.scrollTo(0, 0)
-        });
+        if (append) {
+          this.setState({ posts: this.state.posts.concat(posts.data.postsForOrgId), isLoading: false, hasAdditionalPosts: posts.data.postsForOrgId.length === 10 }, () => {
+            console.log("posts appended", posts.data.postsForOrgId);
+          });
+        } else {  
+          this.setState({ posts: posts.data.postsForOrgId, isLoading: false, hasAdditionalPosts: posts.data.postsForOrgId.length === 10 }, () => {
+            window.scrollTo(0, 0)
+          });
+        }
       });
   };
 
@@ -711,7 +726,9 @@ class App extends Component {
         console.log(r.data);
         this.resetComposer();
         if (this.state.selectedType === "org") {
-          this.getPostsForOrgId(this.state.selectedOrgId);
+          var dateVal = this.state.posts !== undefined && (this.state.posts.length > 0 || this.state.hasAdditionalPosts) ? this.state.posts[this.state.posts.length - 1].created : Number(new Date());
+          console.log("dateVal", dateVal);
+          this.getPostsForOrgId(this.state.selectedOrgId, dateVal, false)
         } else {
           this.getPostsForTopic(this.state.selectedTopicName);
         }
@@ -872,6 +889,8 @@ class App extends Component {
                 user_id={this.state.user_id}
                 username={this.state.username}
                 updatePost={this.updatePost}
+                hasAdditionalPosts={this.state.hasAdditionalPosts}
+                getPostsForOrgId={this.getPostsForOrgId}
               />
               <Sidebar
                 key={this.state.selectedType === "org" ? `key${this.state.selectedOrgId}` : `key${this.state.selectedTopicName}`}

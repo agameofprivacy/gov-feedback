@@ -19,7 +19,7 @@ module.exports = {
         },
         postsForOrgId: (root, args) => {
             return new Promise((resolve, reject) => {
-                Post.find({organization_id: args.orgId})
+                Post.find({organization_id: args.orgId, created: {$lt: args.date}})
                 .populate({ path: 'authorProfile', model: PublicProfile })
                 .populate({ path: 'replies', model: Reply })
                 .populate({ path: 'isForwardedPostOf', model: Post, populate: {path: 'authorProfile', model: PublicProfile}, populate: {path: "replies", model: Reply} })
@@ -32,7 +32,7 @@ module.exports = {
         },
         postsForTopic: (root, args) => {
             return new Promise((resolve, reject) => {
-                Post.find({topic: args.topic})
+                Post.find({topic: args.topic, created: {$lte: args.date}})
                 .populate({ path: 'authorProfile', model: PublicProfile })
                 .populate({ path: 'replies', model: Reply })
                 .populate({ path: 'isForwardedPostOf', model: Post, populate: {path: 'authorProfile', model: PublicProfile}, populate: {path: "replies", model: Reply} })
@@ -45,7 +45,7 @@ module.exports = {
         },
         postsByUser: (root, args) => {
             return new Promise((resolve, reject) => {
-                Post.find({author: args.user})
+                Post.find({author: args.user, created: {$lte: args.date}})
                 .populate({ path: 'authorProfile', model: PublicProfile })
                 .populate({ path: 'replies', model: Reply })
                 .populate({ path: 'isForwardedPostOf', model: Post, populate: {path: 'authorProfile', model: PublicProfile}, populate: {path: "replies", model: Reply} })

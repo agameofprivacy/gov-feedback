@@ -43,6 +43,12 @@ class Feed extends Component {
     this.props.setSelectedTopic(name);
   };
 
+  handleLoadMorePostsClick = e => {
+    var lastCreated = this.props.posts[this.props.posts.length - 1].created;
+    console.log("last post created", this.props.posts[this.props.posts.length - 1].created);
+    this.props.getPostsForOrgId(this.props.selectedOrgId, lastCreated, true)
+  }
+
   componentDidUpdate = (prevProps) => {
     if ((
             prevProps.hasOwnProperty("selectedOrgId") && 
@@ -77,7 +83,8 @@ class Feed extends Component {
       selectedIdentity,
       reset,
       composerTag,
-      showsComposer
+      showsComposer,
+      hasAdditionalPosts,
     } = this.props;
 
     var postsArray = [];
@@ -139,6 +146,15 @@ class Feed extends Component {
           />
         }
         {posts !== undefined && posts.length > 0 && postsArray}
+        {hasAdditionalPosts &&
+          <div
+            className="feed__action"
+          >
+            <a className="feed__action__button" onClick={this.handleLoadMorePostsClick}>
+              顯示更多回饋
+            </a>
+          </div>
+        }
         {posts !== undefined && posts.length === 0 && (
           <EmptyState title={"尚無回饋"} />
         )}

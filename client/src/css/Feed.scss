@@ -7,4 +7,24 @@
         margin: 0 10px 10px 10px;
         min-width: 260px;
     }
+
+    &__action {
+        color: #323232;
+        font-weight: 400;
+        text-align: center;
+        padding: 1em;
+        cursor: pointer;
+        margin-top: 1em;
+
+        &__button {
+            cursor: pointer;
+            padding-bottom: 10px;
+            padding-top: 10px;
+            transition: border-bottom .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+
+            &:hover {
+                border-bottom: 3px solid #323232;
+            }
+        }
+    }
 }

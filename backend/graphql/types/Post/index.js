@@ -15,9 +15,9 @@ module.exports = `
     }
     type Query {
         posts: [Post]!,
-        postsForOrgId(orgId: String): [Post]!,
-        postsForTopic(topic: String): [Post]!,
-        postsByUser(user: String): [Post]!,
+        postsForOrgId(orgId: String, date: Float): [Post]!,
+        postsForTopic(topic: String, date: Float): [Post]!,
+        postsByUser(user: String, date: Float): [Post]!,
         fetchPostWith(post_id: String): Post,
     }
     input PostInput {

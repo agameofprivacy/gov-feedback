@@ -139,7 +139,8 @@ class App extends Component {
       hasAdditionalPosts: false,
     }, () => {
       clearInterval(this.state.intervalId);
-      this.getPostsForTopic(name);
+      var dateVal = this.state.posts !== undefined && (this.state.posts.length > 0 && this.state.hasAdditionalPosts) ? this.state.posts[this.state.posts.length - 1].created : Number(new Date());
+      this.getPostsForTopic(name, dateVal, false);
       this.topicWithName(name);
     });
   };
@@ -230,7 +231,7 @@ class App extends Component {
     })
   }
 
-  getPostsForTopic = topic => {
+  getPostsForTopic = (topic, date, append) => {
     fetch(`${host}/graphql`, {
       method: "POST",
       headers: {
@@ -238,8 +239,8 @@ class App extends Component {
         Accept: "application/json"
       },
       body: JSON.stringify({
-        query: `query postsForTopic($topic: String){
-          postsForTopic(topic: $topic) {
+        query: `query postsForTopic($topic: String, $date: Float){
+          postsForTopic(topic: $topic, date: $date) {
             author,
             authorProfile {
               avatarUrl
@@ -279,13 +280,21 @@ class App extends Component {
             _id
           }
         }`,
-        variables: { topic }
+        variables: { topic, date }
       })
     })
       .then(r => r.json())
       .then(posts => {
         console.log(posts);
-        this.setState({ posts: posts.data.postsForTopic });
+        if (append) {
+          this.setState({ posts: this.state.posts.concat(posts.data.postsForTopic), isLoading: false, hasAdditionalPosts: posts.data.postsForTopic.length === 10 }, () => {
+            console.log("posts appended", posts.data.postsForTopic);
+          });
+        } else {
+          this.setState({ posts: posts.data.postsForTopic, isLoading: false, hasAdditionalPosts: posts.data.postsForTopic.length === 10  }, () => {
+            window.scrollTo(0, 0)
+          });
+        }
       });
   };
 
@@ -730,7 +739,7 @@ class App extends Component {
           console.log("dateVal", dateVal);
           this.getPostsForOrgId(this.state.selectedOrgId, dateVal, false)
         } else {
-          this.getPostsForTopic(this.state.selectedTopicName);
+          this.getPostsForTopic(this.state.selectedTopicName, dateVal, false);
         }
       }.bind(this)
     );

@@ -9,14 +9,16 @@ const host = local;
 class PostsFromUser extends Component {
 
     state = {
-        posts: []
+        posts: [],
+        hasAdditionalPosts: true,
     }
 
     componentDidMount = () => {
-        this.fetchPostsByUser(this.props.username);
+        var dateVal = this.state.posts !== undefined && (this.state.posts.length > 0 && this.state.hasAdditionalPosts) ? this.state.posts[this.state.posts.length - 1].created : Number(new Date());
+        this.fetchPostsByUser(this.props.username, dateVal, false);
     }
 
-    fetchPostsByUser = user => {
+    fetchPostsByUser = (user, date, append) => {
         fetch(`${host}/graphql`, {
             method: "POST",
             headers: {
@@ -24,8 +26,8 @@ class PostsFromUser extends Component {
               Accept: "application/json"
             },
             body: JSON.stringify({
-              query: `query postsByUser($user: String){
-                postsByUser(user: $user){
+              query: `query postsByUser($user: String, $date: Float){
+                postsByUser(user: $user, date: $date){
                   author,
                   authorProfile {
                     avatarUrl
@@ -65,13 +67,21 @@ class PostsFromUser extends Component {
                   _id
                 }
               }`,
-              variables: { user }
+              variables: { user, date }
             })
           })
             .then(r => r.json())
             .then(posts => {
               console.log(posts);
-              this.setState({ posts: posts.data.postsByUser });
+              if (append) {
+                this.setState({ posts: this.state.posts.concat(posts.data.postsByUser), isLoading: false, hasAdditionalPosts: posts.data.postsByUser.length === 10 }, () => {
+                  console.log("posts appended", posts.data.postsByUser);
+                });
+              } else {
+                this.setState({ posts: posts.data.postsByUser, isLoading: false, hasAdditionalPosts: posts.data.postsByUser.length === 10 }, () => {
+                  window.scrollTo(0, 0)
+                });
+              }
             });
     }
 

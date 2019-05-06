@@ -67,34 +67,43 @@ class Sidebar extends Component {
         var subscription = sub.data.subscriptionForUser;
         var subscribedOrgIds = [];
         var subscribedTopicNames = [];
-        subscription.organizations.forEach((org) => {
-          subscribedOrgIds.push(org.organization._id);
-        })
-        subscription.topics.forEach((topic) => {
-          subscribedTopicNames.push(topic.topic.name);
-        })
-        console.log("this.props.selectedIdentifier", this.props.selectedIdentifier);
-        console.log("subscribedOrgIds", subscribedOrgIds);
-        console.log("subscribedTopicNames", subscribedTopicNames);
-
-        if (subscribedOrgIds.includes(this.props.selectedOrgDatabaseId)){
-          this.setState({
-            subscription: subscription.organizations[subscribedOrgIds.indexOf(this.props.selectedOrgDatabaseId)].frequency,
-            selectedFreq: subscription.organizations[subscribedOrgIds.indexOf(this.props.selectedOrgDatabaseId)].frequency
+        if (subscription) {
+          subscription.organizations.forEach((org) => {
+            subscribedOrgIds.push(org.organization._id);
           })
-        } else if (subscribedTopicNames.includes(this.props.selectedIdentifier)) {
-          this.setState({
-            subscription: subscription.topics[subscribedTopicNames.indexOf(this.props.selectedIdentifier)].frequency,
-            selectedFreq: subscription.topics[subscribedTopicNames.indexOf(this.props.selectedIdentifier)].frequency,
-            topicIdentifier: subscription.topics[subscribedTopicNames.indexOf(this.props.selectedIdentifier)].topic._id,
+          subscription.topics.forEach((topic) => {
+            subscribedTopicNames.push(topic.topic.name);
           })
-        }
-        else {
+          console.log("this.props.selectedIdentifier", this.props.selectedIdentifier);
+          console.log("subscribedOrgIds", subscribedOrgIds);
+          console.log("subscribedTopicNames", subscribedTopicNames);
+  
+          if (subscribedOrgIds.includes(this.props.selectedOrgDatabaseId)){
+            this.setState({
+              subscription: subscription.organizations[subscribedOrgIds.indexOf(this.props.selectedOrgDatabaseId)].frequency,
+              selectedFreq: subscription.organizations[subscribedOrgIds.indexOf(this.props.selectedOrgDatabaseId)].frequency
+            })
+          } else if (subscribedTopicNames.includes(this.props.selectedIdentifier)) {
+            this.setState({
+              subscription: subscription.topics[subscribedTopicNames.indexOf(this.props.selectedIdentifier)].frequency,
+              selectedFreq: subscription.topics[subscribedTopicNames.indexOf(this.props.selectedIdentifier)].frequency,
+              topicIdentifier: subscription.topics[subscribedTopicNames.indexOf(this.props.selectedIdentifier)].topic._id,
+            })
+          }
+          else {
+            this.setState({
+              subscription: "never",
+              selectedFreq: "never"
+            })
+          }
+        } else {
+          // subscription doesn't exist
           this.setState({
             subscription: "never",
             selectedFreq: "never"
           })
         }
+        
         
         // this.setState({ posts: posts.data.postsForTopic });
       });

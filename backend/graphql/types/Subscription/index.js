@@ -7,7 +7,7 @@ type Subscription {
     topics: [TopicSubscription]!
 }
 type Query {
-    subscriptionForUser(user: String): Subscription!,
+    subscriptionForUser(user: String): Subscription,
 }
 input SubscriptionInput {
     user: String!,

@@ -31,11 +31,7 @@ class Feed extends Component {
     console.log(identifier[0], identifier[1]);
     this.props.setSelectedOrg({
       name: identifier[1],
-      identifiers: [
-        {
-          identifier: identifier[0]
-        }
-      ]
+      _id: identifier[0]
     });
   };
 

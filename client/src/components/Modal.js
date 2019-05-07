@@ -126,7 +126,7 @@ class Modal extends Component {
                 />
               )}
               {type === "identity-select" && !this.state.identiyConfirmed && (
-                <RadioSelect submitForm={this.submitForm} sections={data} />
+                <RadioSelect loaded={true} submitForm={this.submitForm} sections={data} />
               )}
               {type === "identity-select" && this.state.identiyConfirmed && (
                 <ConfirmFeedback

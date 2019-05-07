@@ -358,7 +358,7 @@ Post.watch().on('change', data => {
       })
       // update Organization
 
-      Organization.findOne({"identifiers.identifier": organization_id})
+      Organization.findOne({"_id": organization_id})
       .exec((err, res) => {
         if (err) { console.log(err); }
         else {

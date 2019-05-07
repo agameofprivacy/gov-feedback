@@ -311,12 +311,12 @@ class Post extends Component {
 
     if (org && org.hasOwnProperty("parent") && org.parent !== null) {
       forwardablePills.push(org.parent.name);
-      forwardableVals.push(org.parent.identifiers[0].identifier);
+      forwardableVals.push(org.parent._id);
     }
 
     forwardables.forEach(paralleOrg => {
       forwardablePills.push(paralleOrg.name);
-      forwardableVals.push(paralleOrg.identifiers[0].identifier);
+      forwardableVals.push(paralleOrg._id);
     });
 
     var replies = [];

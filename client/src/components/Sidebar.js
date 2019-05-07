@@ -23,11 +23,7 @@ class Sidebar extends Component {
     console.log(identifier[0], identifier[1]);
     this.props.setSelectedOrg({
       name: identifier[1],
-      identifiers: [
-        {
-          identifier: identifier[0]
-        }
-      ]
+      _id: identifier[0]
     });
   };
 
@@ -182,7 +178,7 @@ class Sidebar extends Component {
         entries: [
           {
             name: org.parent.name,
-            identifier: org.parent.identifiers[0].identifier
+            identifier: org.parent._id
           }
         ]
       });
@@ -193,7 +189,7 @@ class Sidebar extends Component {
       parallelOrgs.forEach(parallelOrg => {
         entries.push({
           name: parallelOrg.name,
-          identifier: parallelOrg.identifiers[0].identifier
+          identifier: parallelOrg._id
         });
       });
       collections.push({

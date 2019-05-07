@@ -104,7 +104,7 @@ class App extends Component {
   setSelectedOrg = org => {
     console.log("selected org", org);
     this.setState({
-      selectedOrgId: org.identifiers[0].identifier,
+      selectedOrgId: org._id,
       selectedOrgDatabaseId: org._id,
       selectedOrgName: org.name,
       selectedType: "org",
@@ -120,8 +120,8 @@ class App extends Component {
       var dateVal = this.state.posts !== undefined && (this.state.posts.length > 0 && this.state.hasAdditionalPosts) ? this.state.posts[this.state.posts.length - 1].created : Number(new Date());
       console.log("dateVal", dateVal);
       console.log("now", Number(new Date()));
-      this.getPostsForOrgId(org.identifiers[0].identifier, dateVal, false)
-      this.getOrgWithOrgId(org.identifiers[0].identifier);
+      this.getPostsForOrgId(org._id, dateVal, false)
+      this.getOrgWithOrgId(org._id);
     });
   };
 
@@ -275,6 +275,9 @@ class App extends Component {
                 _id,
                 created
               },
+              likes{
+                user
+              }
               _id
             },
             _id
@@ -478,6 +481,9 @@ class App extends Component {
                 _id,
                 created
               },
+              likes{
+                user
+              }
               _id
             },
             _id            
@@ -551,7 +557,7 @@ class App extends Component {
                 orgs = orgs.data.organizationsWithParentId.filter(
                   function(org) {
                     return (
-                      org.identifiers[0].identifier !== this.state.selectedOrgId
+                      org._id !== this.state.selectedOrgId
                     );
                   }.bind(this)
                 );

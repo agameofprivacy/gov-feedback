@@ -66,12 +66,12 @@ class SubscriptionsList extends Component {
                 "subscription_frequency": "never"
             };
         }
+
         this.updateSubscription(input,
         (r) => {
             console.log("return: ", r);
             this.fetchSubscriptionForUser(this.props.user_id);
         })
-  
     }
 
     updateSubscription = (input, callback) => {

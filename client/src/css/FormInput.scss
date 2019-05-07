@@ -1,0 +1,38 @@
+.form-input {
+    margin-bottom: 2em;
+
+    &__label {
+        width: 100%;
+        font-size: 15px;
+        color: rgb(80,80,80);
+        text-transform: uppercase;
+        font-weight: 400;
+    }
+
+    &__input {
+        display: block;
+        width: 100%;
+
+        &--text {
+            max-width: 350px;
+            margin-top: 4px;
+            margin-bottom: 10px;
+            color: rgb(80,80,80);
+            border: none;
+            border-bottom: 1px solid rgb(150,150,150);
+            padding: .5em 0;
+            font-size: 1.3em;
+            outline: none;
+            min-width: 200px;
+
+            &::placeholder {
+                font-size: .9em;
+                font-weight: 400;
+                color: rgb(190,190,190);
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+    }
+}

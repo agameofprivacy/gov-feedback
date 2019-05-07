@@ -1,0 +1,35 @@
+.segmented-controls {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 2em;
+    align-items: center;
+    border-bottom: 2px solid #EFEFF1;
+
+    &__segment {
+        position: relative;
+        top: 2px;
+        flex: 1;
+        max-width: 100px;
+        text-align: center;
+        font-size: 18px;
+        padding: 1em .5em;
+        cursor: pointer;
+        color: rgb(50,50,50);
+        border-bottom: 2px solid #EFEFF1;
+        transition: border-color .15s cubic-bezier(0.4,0.0,0.2,1);
+
+        &:hover {
+            border-bottom: 2px solid rgb(220,220,220);
+        }
+
+        &--selected {
+            border-bottom: 2px solid rgb(50,50,50);
+
+            &:hover {
+                border-bottom: 2px solid rgb(50,50,50);
+            }
+        }
+
+    }
+
+}

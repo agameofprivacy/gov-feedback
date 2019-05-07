@@ -1,0 +1,28 @@
+.key-value {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 13px;
+    border-bottom: 1px solid rgb(240, 240, 240);
+
+    &--last {
+        border-bottom: none;
+    }
+
+    &--hugged {
+        padding: 0 1em 13px;
+    }
+
+    &__key {
+        font-size: 13px;
+        font-weight: 400;
+        text-align: start;
+        margin: 14px 0 6px 0;
+    }
+
+    &__value {
+        font-size: 15px;
+        font-weight: 300;
+        text-align: start;
+    }
+}

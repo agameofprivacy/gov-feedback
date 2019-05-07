@@ -1,0 +1,39 @@
+.pills {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    margin-right: -1em;
+    margin-left: -1em;
+    padding-left: 1em;
+    padding-bottom: 1em;
+
+    -ms-overflow-style: none;  // IE 10+
+    overflow-x: -moz-scrollbars-none;  // Firefox
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    & .pill-container {
+        padding-right: 10px;
+    }
+
+    & .pill-container:last-child {
+        padding-right: 1em;
+    }
+
+    & .pill {
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    &--wrap {
+        flex-wrap: wrap;
+
+        & .pill {
+            margin-bottom: 12px;
+        }
+    }
+}

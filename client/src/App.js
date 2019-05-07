@@ -275,6 +275,9 @@ class App extends Component {
                 _id,
                 created
               },
+              likes{
+                user
+              }
               _id
             },
             _id
@@ -478,6 +481,9 @@ class App extends Component {
                 _id,
                 created
               },
+              likes{
+                user
+              }
               _id
             },
             _id            

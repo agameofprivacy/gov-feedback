@@ -62,6 +62,9 @@ class PostsFromUser extends Component {
                       _id,
                       created
                     },
+                    likes{
+                      user
+                    }
                     _id 
                   },
                   _id
@@ -101,8 +104,9 @@ class PostsFromUser extends Component {
               selectedOrgId={this.state.selectedOrgId}
               selectedTopicName={this.state.selectedTopicName}
               selectedIdentity={this.state.selectedIdentity}
-              setFormState={this.setFormState}
+              setFormState={this.props.setFormState}
               posts={this.state.posts}
+              username={this.props.username}
               user_id={this.props.user_id}
             />
         )

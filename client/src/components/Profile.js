@@ -82,6 +82,7 @@ class Profile extends Component {
                             setSelectedOrg={this.props.setSelectedOrg}
                             setSelectedTopic={this.props.setSelectedTopic}
                             user_id={this.props.user_id}
+                            setFormState={this.props.setFormState}
                         />
                     }
                     {

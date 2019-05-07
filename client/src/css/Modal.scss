@@ -64,6 +64,7 @@
             &__action {
                 width: 40px;
                 height: 40px;
+                padding: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -73,10 +74,25 @@
                 margin-left: -0.5em;
                 cursor: pointer;
 
+                & svg path:first-child {
+                    transition: fill .15s cubic-bezier(0.4, 0.0, 0.2, 1), transform .15s cubic-bezier(0.4, 0.0, 0.1, 1);
+                }
+
+                &:hover {
+                    fill: transparent;
+                    transform: scale(1.05);
+                    
+                    & svg path:first-child {
+                        fill: black !important;
+                    }
+                }
+
                 & svg {
                     width: 20px;
                     height: 20px;
                     border: none;
+
+
                 }
 
             }
@@ -89,25 +105,34 @@
         &__body {
             font-size: 15px;
             font-weight: 300;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
         }
 
         &__footer {
             position: absolute;
             bottom: 1em;
-            right: 1em;
+            right: 0;
             height: 50px;
             display: flex;
+            width: 100%;
+            justify-content: flex-end;
 
             &__action {
                 padding: 10px 10px;
-                margin-left: 10px;
+                margin-left: 1em;
+                margin-right: 1em;
                 cursor: pointer;
                 border: none;
                 background: none;
                 outline: none;
                 display: block;
                 border-radius: 3px;
+                white-space: nowrap;
+                transition: background-color .15s cubic-bezier(0.4, 0.0, 0.2, 1), color .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+
+                &--start {
+                    margin-right: auto;
+                }
 
                 &--primary {
                     color: rgb(74, 144, 226);
@@ -116,6 +141,17 @@
                     &:hover {
                         background-color: rgb(74, 144, 226);
                         color: white;
+                    }
+                }
+
+                &--disabled {
+                    color: rgb(150,150,150);
+                    background-color: rgb(245, 245, 245);
+                    cursor: not-allowed;
+
+                    &:hover {
+                        color: rgb(150,150,150);
+                        background-color: rgb(245, 245, 245);    
                     }
                 }
 

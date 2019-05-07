@@ -24,7 +24,7 @@ class RelatedOrgs extends Component {
                 value={entry.identifier}
                 key={index}
                 className={
-                  "pill section__collections-container__entry" +
+                  "pill pill--selectable section__collections-container__entry" +
                   (collection.label === "上級機關"
                     ? " pill--primary"
                     : " pill--secondary")

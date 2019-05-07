@@ -5,7 +5,7 @@ class SearchBox extends Component {
   state = {
     query: "",
     isFetchingOrgs: false,
-    isFetchingTopics: false
+    isFetchingTopics: false,
   };
 
   handleClick = e => {
@@ -25,6 +25,24 @@ class SearchBox extends Component {
     }
   };
 
+  showLoginModal = () => {
+    console.log("show")
+    this.props.showLoginModal();
+  }
+
+  showProfilePage = () => {
+    console.log("show profile screen")
+    this.props.showProfilePage();
+  }
+
+  logout = () => {
+    fetch(`/logout`, {method: "GET"}).then(r => {
+      if (r.status === 200) {
+        this.props.setFormState({username: "", showsProfilePage: false});
+      }
+    })
+  }
+
   render() {
     const { query } = this.state;
     const {
@@ -32,7 +50,8 @@ class SearchBox extends Component {
       topicResults,
       dark,
       showsClose,
-      dismissSearchbox
+      dismissSearchbox,
+      showsAccount
     } = this.props;
 
     var orgItems = [];
@@ -48,7 +67,7 @@ class SearchBox extends Component {
               type="org"
               onMouseDown={this.handleClick}
               className={
-                "dropdown__item" + (dark ? " dropdown__item--dark" : "")
+                "dropdown__item dropdown__item--hoverable" + (dark ? " dropdown__item--dark dropdown__item--dark--hoverable" : "")
               }
             >
               {result.name}
@@ -95,7 +114,7 @@ class SearchBox extends Component {
               type="topic"
               onMouseDown={this.handleClick}
               className={
-                "dropdown__item" + (dark ? " dropdown__item--dark" : "")
+                "dropdown__item dropdown__item--hoverable" + (dark ? " dropdown__item--dark dropdown__item--dark--hoverable" : "")
               }
             >
               {result.name}
@@ -205,22 +224,49 @@ class SearchBox extends Component {
             <IconButton type="close" />
           </button>
         )}
-        {orgResults !== null &&
-          orgResults.data !== null &&
-          topicResults !== null &&
-          topicResults.data !== null &&
-          query !== "" && (
-            <ul className={"dropdown raised" + (dark ? " dropdown--dark" : "")}>
+        { (showsAccount || query !== "") &&
+          <ul className={"dropdown raised" + (dark ? " dropdown--dark" : "")}>
+            { showsAccount && 
               <li className="dropdown__section">
-                <h4 className="dropdown__section__title">政府機關</h4>
-                <ul className="dropdown__list">{orgItems}</ul>
+                <h4 className={ "dropdown__section__title" + (dark ? "  dropdown__section__title--dark" : "")}>{this.props.username === "" ? "我的回饋平台" : `${this.props.username}`}</h4>
+                <ul className="dropdown__list">
+                { this.props.username !== "" &&
+                  <li
+                    className={"dropdown__item dropdown__item--hoverable" + (dark ? " dropdown__item--dark dropdown__item--dark--hoverable" : "")}
+                    onMouseDown={ this.showProfilePage }
+                  >
+                    我的回饋平台
+                  </li>
+                }
+                <li
+                  className={"dropdown__item dropdown__item--hoverable" + (dark ? " dropdown__item--dark dropdown__item--dark--hoverable" : "")}
+                  onMouseDown={ this.props.username === "" ? this.showLoginModal : this.logout }
+                >
+                  { this.props.username === "" ? "登入" : "登出" }
+                </li>
+                </ul>                
               </li>
-              <li className="dropdown__section">
-                <h4 className="dropdown__section__title">議題</h4>
-                <ul className="dropdown__list">{topicItems}</ul>
-              </li>
-            </ul>
-          )}
+            }
+            {orgResults !== null &&
+              orgResults.data !== null &&
+              query !== "" && (
+                  <li className="dropdown__section">
+                    <h4 className={ "dropdown__section__title" + (dark ? "  dropdown__section__title--dark" : "")}>政府機關</h4>
+                    <ul className="dropdown__list">{orgItems}</ul>
+                  </li>
+              )}
+              {
+                topicResults !== null &&
+                topicResults.data !== null &&
+                query !== "" && (
+                  <li className="dropdown__section">
+                  <h4 className={ "dropdown__section__title" + (dark ? "  dropdown__section__title--dark" : "")}>議題</h4>
+                  <ul className="dropdown__list">{topicItems}</ul>
+                </li>
+                )}
+          </ul>
+        }
+
         {orgResults !== null &&
           orgResults.errors !== undefined &&
           orgResults.errors !== null && (

@@ -7,8 +7,15 @@ import Feed from "./components/Feed";
 import Sidebar from "./components/Sidebar";
 import Modal from "./components/Modal";
 import Footer from "./components/Footer";
+import LoginModal from "./components/LoginModal";
+import Loader from "./components/Loader";
+import Profile from "./components/Profile";
+import ProfileModal from "./components/ProfileModal";
 
-const host = "https://gov-feedback.appspot.com";
+var remote = "https://gov-feedback.appspot.com";
+var local= "http://localhost:3001";
+
+const host = local;
 
 class App extends Component {
   // initialize our state
@@ -25,6 +32,7 @@ class App extends Component {
     randomIndex: 0,
     selectedType: "org",
     selectedOrgId: undefined,
+    selectedOrgDatabaseId: undefined,
     selectedOrgName: undefined,
     selectedTopicName: "",
     selectedIdentity: "",
@@ -32,9 +40,20 @@ class App extends Component {
     composerValue: "",
     modalType: "",
     showsModal: false,
+    showsProfileModal: false,
+    showsLoginModal: false,
+    showsProfilePage: true,
     content: "",
     reset: false,
-    parallelOrgs: []
+    parallelOrgs: [],
+    isLoading: false,
+    username: "",
+    user_id: "",
+    birthday: "",
+    gender: "",
+    residence: "",
+    email: "",
+    hasAdditionalPosts: true,
   };
 
   // when component mounts, first thing it does is fetch all existing data in our db
@@ -85,31 +104,66 @@ class App extends Component {
   setSelectedOrg = org => {
     console.log("selected org", org);
     this.setState({
-      selectedOrgId: org.identifiers[0].identifier,
+      selectedOrgId: org._id,
+      selectedOrgDatabaseId: org._id,
       selectedOrgName: org.name,
       selectedType: "org",
       selectedTopicName: "",
       composerTag: "",
-      composerValue: ""
+      composerValue: "",
+      showsProfilePage: false,
+      isLoading: true,
+      hasAdditionalPosts: false,
+    }, () => {
+      clearInterval(this.state.intervalId);
+      console.log("this.state.posts", this.state.posts);
+      var dateVal = this.state.posts !== undefined && (this.state.posts.length > 0 && this.state.hasAdditionalPosts) ? this.state.posts[this.state.posts.length - 1].created : Number(new Date());
+      console.log("dateVal", dateVal);
+      console.log("now", Number(new Date()));
+      this.getPostsForOrgId(org._id, dateVal, false)
+      this.getOrgWithOrgId(org._id);
     });
-    this.getPostsForOrgId(org.identifiers[0].identifier);
-    this.getOrgWithOrgId(org.identifiers[0].identifier);
   };
 
   setSelectedTopic = name => {
     this.setState({
       selectedOrgId: "",
+      selectedOrgDatabaseId: "",
       selectedOrgName: "",
       selectedType: "topic",
       selectedTopicName: name,
       composerTag: "",
-      composerValue: ""
+      composerValue: "",
+      showsProfilePage: false,
+      isLoading: true,
+      hasAdditionalPosts: false,
+    }, () => {
+      clearInterval(this.state.intervalId);
+      var dateVal = this.state.posts !== undefined && (this.state.posts.length > 0 && this.state.hasAdditionalPosts) ? this.state.posts[this.state.posts.length - 1].created : Number(new Date());
+      this.getPostsForTopic(name, dateVal, false);
+      this.topicWithName(name);
     });
-    this.getPostsForTopic(name);
-    this.topicWithName(name);
   };
 
-  getPostsForTopic = topic => {
+  showLoginModal = () => {
+    this.setState({
+      showsLoginModal: true,
+    })
+  }
+
+  showProfilePage = () => {
+    this.setState({
+      showsProfilePage: true,
+    })
+  }
+
+  showProfileModal = () => {
+    this.setState({
+      showsProfileModal: true,
+    })
+  }
+
+  updatePost = post_id => {
     fetch(`${host}/graphql`, {
       method: "POST",
       headers: {
@@ -117,24 +171,133 @@ class App extends Component {
         Accept: "application/json"
       },
       body: JSON.stringify({
-        query: `query postsForTopic($topic: String){
-          postsForTopic(topic: $topic) {
+        query: `
+          query fetchPostWith($post_id: String) {
+            fetchPostWith(post_id: $post_id){
+              author,
+              authorProfile {
+                avatarUrl
+              },
+              topic,
+              organization,
+              organization_id,
+              created,
+              likes{
+                user,
+              }
+              content,
+              replies{
+                content,
+                author,
+                _id,
+                created
+              },
+              isForwardedPostOf {
+                content,
+                author,
+                organization,
+                organization_id,
+                topic,
+                created,
+                authorProfile {
+                  avatarUrl
+                },
+                replies{
+                  content,
+                  author,
+                  _id,
+                  created
+                },  
+                _id
+              },
+              _id
+            }
+          }
+        `,
+        variables: { post_id }
+      })
+    })
+    .then(r => r.json())
+    .then(result => {
+      let updatedPost = result.data.fetchPostWith;
+      this.state.posts.forEach((post, index) => {
+        if (post._id === updatedPost._id) {
+          var tempPosts = this.state.posts;
+          tempPosts[index] = updatedPost;
+          this.setState({posts: tempPosts});
+        }
+      })
+      console.log("update post result: ", updatedPost);
+    })
+  }
+
+  getPostsForTopic = (topic, date, append) => {
+    fetch(`${host}/graphql`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        query: `query postsForTopic($topic: String, $date: Float){
+          postsForTopic(topic: $topic, date: $date) {
             author,
+            authorProfile {
+              avatarUrl
+            },
             topic,
             organization,
             organization_id,
             created,
+            likes{
+              user,
+            }
             content,
+            replies{
+              content,
+              author,
+              _id,
+              created
+            },
+            isForwardedPostOf {
+              content,
+              author,
+              organization,
+              organization_id,
+              topic,
+              created,
+              authorProfile {
+                avatarUrl
+              },
+              replies{
+                content,
+                author,
+                _id,
+                created
+              },
+              likes{
+                user
+              }
+              _id
+            },
             _id
           }
         }`,
-        variables: { topic }
+        variables: { topic, date }
       })
     })
       .then(r => r.json())
       .then(posts => {
         console.log(posts);
-        this.setState({ posts: posts.data.postsForTopic });
+        if (append) {
+          this.setState({ posts: this.state.posts.concat(posts.data.postsForTopic), isLoading: false, hasAdditionalPosts: posts.data.postsForTopic.length === 10 }, () => {
+            console.log("posts appended", posts.data.postsForTopic);
+          });
+        } else {
+          this.setState({ posts: posts.data.postsForTopic, isLoading: false, hasAdditionalPosts: posts.data.postsForTopic.length === 10  }, () => {
+            window.scrollTo(0, 0)
+          });
+        }
       });
   };
 
@@ -167,7 +330,9 @@ class App extends Component {
       .then(r => r.json())
       .then(result => {
         console.log(result);
-        this.setState({ selectedTopic: result.data.topicWithName });
+        this.setState({ selectedTopic: result.data.topicWithName, isLoading: false }, () => {
+          window.scrollTo(0, 0)
+        });
       });
   };
 
@@ -272,7 +437,7 @@ class App extends Component {
       });
   };
 
-  getPostsForOrgId = orgId => {
+  getPostsForOrgId = (orgId, date, append) => {
     fetch(`${host}/graphql`, {
       method: "POST",
       headers: {
@@ -280,24 +445,65 @@ class App extends Component {
         Accept: "application/json"
       },
       body: JSON.stringify({
-        query: `query postsForOrgId($orgId: String){
-          postsForOrgId(orgId: $orgId) {
+        query: `query postsForOrgId($orgId: String, $date: Float){
+          postsForOrgId(orgId: $orgId, date: $date) {
             author,
+            authorProfile {
+              avatarUrl
+            },
             topic,
             organization,
             organization_id,
             created,
+            likes{
+              user,
+            }
             content,
+            replies{
+              content,
+              author,
+              _id,
+              created
+            },
+            isForwardedPostOf {
+              content,
+              author,
+              organization,
+              organization_id,
+              topic,
+              created,
+              authorProfile {
+                avatarUrl
+              },
+              replies{
+                content,
+                author,
+                _id,
+                created
+              },
+              likes{
+                user
+              }
+              _id
+            },
             _id            
           }
         }`,
-        variables: { orgId }
+        variables: { orgId, date }
       })
     })
       .then(r => r.json())
       .then(posts => {
         console.log(posts);
-        this.setState({ posts: posts.data.postsForOrgId });
+        if (append) {
+          this.setState({ posts: this.state.posts.concat(posts.data.postsForOrgId), isLoading: false, hasAdditionalPosts: posts.data.postsForOrgId.length === 10 }, () => {
+            console.log("posts appended", posts.data.postsForOrgId);
+          });
+        } else {  
+          this.setState({ posts: posts.data.postsForOrgId, isLoading: false, hasAdditionalPosts: posts.data.postsForOrgId.length === 10 }, () => {
+            window.scrollTo(0, 0)
+          });
+        }
       });
   };
 
@@ -351,15 +557,19 @@ class App extends Component {
                 orgs = orgs.data.organizationsWithParentId.filter(
                   function(org) {
                     return (
-                      org.identifiers[0].identifier !== this.state.selectedOrgId
+                      org._id !== this.state.selectedOrgId
                     );
                   }.bind(this)
                 );
-                this.setState({ parallelOrgs: orgs });
+                this.setState({ parallelOrgs: orgs, isLoading: false }, () => {
+                  window.scrollTo(0, 0)
+                });
               }.bind(this)
             );
           } else {
-            this.setState({ parallelOrgs: [] });
+            this.setState({ parallelOrgs: [], isLoading: false }, () => {
+              window.scrollTo(0, 0)
+            });
           }
         });
       });
@@ -507,7 +717,10 @@ class App extends Component {
     console.log("run createPostWithComposer");
     this.createPost(
       {
-        author: "Eddie Chen",
+        authorProfile: this.state.user_id,
+        author_type: this.state.selectedIdentity,
+        author: this.state.username !== "" ? this.state.username : "匿名",
+        user_id: this.state.user_id,
         topic:
           this.state.selectedType === "org"
             ? this.state.composerTag
@@ -528,9 +741,11 @@ class App extends Component {
         console.log(r.data);
         this.resetComposer();
         if (this.state.selectedType === "org") {
-          this.getPostsForOrgId(this.state.selectedOrgId);
+          var dateVal = this.state.posts !== undefined && (this.state.posts.length > 0 || this.state.hasAdditionalPosts) ? this.state.posts[this.state.posts.length - 1].created : Number(new Date());
+          console.log("dateVal", dateVal);
+          this.getPostsForOrgId(this.state.selectedOrgId, dateVal, false)
         } else {
-          this.getPostsForTopic(this.state.selectedTopicName);
+          this.getPostsForTopic(this.state.selectedTopicName, dateVal, false);
         }
       }.bind(this)
     );
@@ -628,49 +843,99 @@ class App extends Component {
             />
           )}
 
+          {this.state.showsLoginModal && (
+            <LoginModal setFormState={this.setFormState} />
+          )}
+
+          {this.state.showsProfileModal && (
+            <ProfileModal 
+              user_id={this.state.user_id} 
+              birthday={this.state.birthday}
+              gender={this.state.gender}
+              residence={this.state.residence}
+              email={this.state.email}
+              setFormState={this.setFormState} 
+            />
+          )}
+
           <NavBar
             {...this.props}
             setSelectedOrg={this.setSelectedOrg}
             setSelectedTopic={this.setSelectedTopic}
+            showLoginModal={this.showLoginModal}
+            showProfilePage={this.showProfilePage}
+            showsProfilePage={this.state.showsProfilePage}
             queryOrgs={this.getOrgsFromDb}
             queryTopics={this.getTopicsFromDb}
             orgResults={this.state.orgResults}
             topicResults={this.state.topicResults}
+            setFormState={this.setFormState}
             title={
               this.state.selectedType === "org"
                 ? this.state.selectedOrgName
                 : this.state.selectedTopicName
             }
+            username={this.state.username}
             dark
           />
-          <div className="container">
-            <Feed
-              key={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
-              parallelOrgs={this.state.parallelOrgs}
-              composerTag={this.state.composerTag}
-              org={this.state.selectedOrg}
+          {
+            this.state.isLoading &&
+            <Loader />
+          }
+          {
+            !this.state.isLoading && !this.state.showsProfilePage &&
+            <div className="container">
+              <Feed
+                showsComposer={true}
+                key={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
+                parallelOrgs={this.state.parallelOrgs}
+                composerTag={this.state.composerTag}
+                org={this.state.selectedOrg}
+                setSelectedOrg={this.setSelectedOrg}
+                setSelectedTopic={this.setSelectedTopic}
+                selectedType={this.state.selectedType}
+                reset={this.state.reset}
+                selectedOrgName={this.state.selectedOrgName}
+                selectedOrgId={this.state.selectedOrgId}
+                selectedTopicName={this.state.selectedTopicName}
+                selectedIdentity={this.state.selectedIdentity}
+                setFormState={this.setFormState}
+                posts={this.state.posts}
+                user_id={this.state.user_id}
+                username={this.state.username}
+                updatePost={this.updatePost}
+                hasAdditionalPosts={this.state.hasAdditionalPosts}
+                getPostsForOrgId={this.getPostsForOrgId}
+              />
+              <Sidebar
+                key={this.state.selectedType === "org" ? `key${this.state.selectedOrgId}` : `key${this.state.selectedTopicName}`}
+                selectedIdentifier={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
+                selectedOrgDatabaseId={this.state.selectedOrg !== undefined ? this.state.selectedOrg._id : ""}
+                selectedType={this.state.selectedType}
+                setSelectedOrg={this.setSelectedOrg}
+                org={this.state.selectedOrg}
+                topic={this.state.selectedTopic}
+                parallelOrgs={this.state.parallelOrgs}
+                user_id={this.state.user_id}
+              />
+            </div>
+        }
+        { !this.state.isLoading && this.state.showsProfilePage &&
+            <Profile 
+              user_id={this.state.user_id}
+              username={this.state.username} 
+              birthday={this.state.birthday}
+              gender={this.state.gender}
+              residence={this.state.residence}
+              email={this.state.email}
               setSelectedOrg={this.setSelectedOrg}
               setSelectedTopic={this.setSelectedTopic}
-              selectedType={this.state.selectedType}
-              reset={this.state.reset}
-              selectedOrgName={this.state.selectedOrgName}
-              selectedOrgId={this.state.selectedOrgId}
-              selectedTopicName={this.state.selectedTopicName}
-              selectedIdentity={this.state.selectedIdentity}
+              showProfileModal={this.showProfileModal}
               setFormState={this.setFormState}
-              posts={this.state.posts}
             />
-            <Sidebar
-              selectedIdentifier={this.state.selectedType === "org" ? this.state.selectedOrgId : this.state.selectedTopicName}
-              selectedType={this.state.selectedType}
-              setSelectedOrg={this.setSelectedOrg}
-              org={this.state.selectedOrg}
-              topic={this.state.selectedTopic}
-              parallelOrgs={this.state.parallelOrgs}
-            />
+        }
+            <Footer />
           </div>
-          <Footer />
-        </div>
       );
     }
   }

@@ -1,5 +1,6 @@
 module.exports = `
     type Topic {
+        _id: String!,
         name: String!,
         popularityWeek: Float,
         popularityAll: Float,

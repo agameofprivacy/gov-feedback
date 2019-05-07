@@ -31,6 +31,7 @@ class Landing extends Component {
           />
           <AgencyPrompt randomOrgs={randomOrgs} randomIndex={randomIndex} />
           <SearchBox
+            showsAccount={false}
             setSelectedOrg={setSelectedOrg}
             setSelectedTopic={setSelectedTopic}
             query={query}

@@ -1,19 +1,103 @@
 const express = require("express");
 const expressGraphQL = require("express-graphql");
 const mongoose = require("mongoose");
+
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const session = require("express-session");
+
+const flash=require("connect-flash");
 
 const schema = require("./graphql/");
 const Topic = require("./models/Topic");
 const Organization = require("./models/Organization");
-
+const User = require("./models/User");
 const app = express();
 const PORT = process.env.PORT || "4000";
 var credentials = require('./credentials');
 
 // this is our MongoDB database
 const dbRoute = credentials.dbRoute;
+const formidable = require('formidable');
+const {Storage} = require('@google-cloud/storage');
+
+import * as serviceAccont from "./service-account-key.json";
+const storage = new Storage(serviceAccont);
+const PublicProfile = require("./models/PublicProfile");
+const ObjectId = require('mongoose').Types.ObjectId;
+
+const
+  CLOUD_BUCKET = 'gov-feedback-images',
+  UPLOAD_PATH = 'avatars';
+
+  const bucket = storage.bucket(CLOUD_BUCKET);
+
+  function getPublicUrl (lfile, name) {
+    return `https://storage.googleapis.com/${CLOUD_BUCKET}/${UPLOAD_PATH}/${name}.${lfile.name.split('.')[1]}`;
+  }
+  
+  function createFileInStorage(lfile, name) {
+    const options = {
+      destination: bucket.file(`${UPLOAD_PATH}/${name}.${lfile.name.split('.')[1]}`),
+      public: true,
+      resumable: false,
+      metadata: {
+        contentType: lfile.type,
+      }
+    };
+  
+    return new Promise((resolve, reject) => {
+      bucket.upload(lfile.path, options, function (err, file, apiResponse) {
+        console.log('bucket.upload response', err, file, apiResponse);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(getPublicUrl(lfile, name));
+        }
+      });
+    });
+  }
+  
+  function upload(req, res) {
+    if (req.method.toLowerCase() === 'post') {
+      // parse a file upload
+      const form = new formidable.IncomingForm();
+  
+      form.parse(req, function(err, fields, files) {
+        res.writeHead(200, {'content-type': 'text/plain'});
+        res.write('received upload:\n\n');
+  
+        const complete = (err, url) => {
+          console.log("avatar url:", url);
+          if (err) {
+            console.log(err);
+          } else {
+            var query = {"user": new ObjectId(req.query.user_id)};
+            var update = {"avatarUrl": url};
+            var options = { upsert: true, new: true, setDefaultsOnInsert: true };
+        
+            PublicProfile.findOneAndUpdate(query, update, options, function(error, result) {
+                if (error) return;
+                console.log(result);
+            });
+          }
+        };
+
+        console.log("files.upload files: ", files);
+        console.log("req.query.user_id: ", req.query.user_id);
+
+        createFileInStorage(Object.values(files)[0], req.query.user_id)
+          .then((url) => complete(null, url))
+          .catch((err) => complete(err));
+      });
+  
+      return;
+    }  
+  }
+    
 
 // Connect to MongoDB with Mongoose.
 mongoose
@@ -22,7 +106,7 @@ mongoose
     {
       dbName: 'gov-feedback',
       useCreateIndex: true,
-      useNewUrlParser: false,
+      useNewUrlParser: true,
       keepAlive: 1,
       connectTimeoutMS: 30000,
       readConcern: {level: "majority"},
@@ -31,15 +115,158 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
 
+  var host;
+  var remote = "https://gov-feedback-web.appspot.com";
+  var local= "http://localhost:3000";
+  host = local;
+
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', host);
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+    if ('OPTIONS' == req.method) {
+      res.sendStatus(200);
+    } else {
+      next();
+    }
+    });
+    
+
 app.use(
   "/graphql",
   cors(),
-  bodyParser.json(),
   expressGraphQL({
     schema,
     graphiql: true
   })
 );
+
+passport.use('local-login', new LocalStrategy({passReqToCallback: true}, (req, username, password, done) => {
+  console.log(req);
+  User.findOne({"local.username": username}, (err, user) => {
+    console.log("user hello", user);
+    
+    if (err) {
+      return done(err);
+    }
+    if (!user) {
+      return done(null, false, req.flash('loginMessage', "No user found."));
+    }
+    if (!user.validPassword(password)) {
+      console.log("wrong password")
+      return done(null, false, req.flash('loginMessage', "Oops! Wrong password."));
+    }
+    console.log("local-login bye");
+    return done(null, {
+      id:user.id,
+      username: user.local.username
+    });
+  })
+}))
+
+passport.use('local-signup', new LocalStrategy({passReqToCallback: true}, (req, username, password, done) => {
+  process.nextTick(() => {
+    User.findOne({"local.username": username}, (err, user) => {
+      if (err) {
+        console.log(err);
+        return done(err);
+      }
+
+      if (user) {
+        return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+      } else {
+        // if there's no user with the email
+        // create the user
+
+        var newUser = new User();
+        newUser.local.username = username;
+        newUser.local.password = newUser.generateHash(password);
+
+        newUser.save((err) => {
+          if (err) throw err;
+          return done(null, newUser);
+        })
+      }
+    })
+  })
+}))
+
+
+passport.serializeUser((user, done) => {
+  console.log("user bye", user);
+  done(null, {
+    id:user.id,
+    username: user.username
+  });
+})
+
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    console.log("found user", user);
+    done(err, user);
+  })
+})
+
+app.use(
+  bodyParser.urlencoded({ extended: false }),
+  bodyParser.json(),
+)
+app.use(session({ 
+  secret: 'ilovescotchscotchyscotchscotch', 
+  resave: true, 
+  saveUninitialized: true ,
+  cookie: {
+    secure: true
+  }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+app.post('/login', passport.authenticate('local-login', {
+  failureRedirect: '/error',
+  failureFlash: true
+}), function(req, res){
+  console.log("called back")
+  console.log("isAuthenticated: ", req.isAuthenticated());
+  res.json({"user": req.user});
+  // req.logout();
+  // req.logout();
+  // console.log("isAuthenticated: ", req.isAuthenticated());
+  // res.redirect('/');
+
+  // res.send();
+});
+
+app.post('/signup', passport.authenticate('local-signup', {
+  successRedirect: '/',
+  failureRedirect: '/error',
+  failureFlash: true
+}));
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.sendStatus(200);
+});
+
+app.get('/', (req, res) => {
+  res.sendStatus(200);
+})
+
+app.post('/upload-avatar', (req, res) => {
+  console.log(req);
+  upload(req, res);
+  // new formidable.IncomingForm().parse(req, (err, fields, files) => {
+  //   if (err) {
+  //     console.error('Error', err)
+  //     throw err
+  //   }
+  //   console.log('Fields', fields)
+  //   console.log('Files', files)
+  //   Object.values(files).map(file => {
+  //     console.log("file", file)
+  //   })
+  // })
+})
 
 app.listen(PORT, () => console.log(`SERVER running on PORT ${PORT}`));
 
@@ -131,7 +358,7 @@ Post.watch().on('change', data => {
       })
       // update Organization
 
-      Organization.findOne({"identifiers.identifier": organization_id})
+      Organization.findOne({"_id": organization_id})
       .exec((err, res) => {
         if (err) { console.log(err); }
         else {

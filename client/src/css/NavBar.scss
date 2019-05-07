@@ -36,8 +36,10 @@
         border: none;
         flex-shrink: 0;
         padding: 0;
+        margin-right: 1em;
         cursor: pointer;
         background: transparent;
+        outline: none;
 
         & svg {
             width: 28px;
@@ -54,6 +56,37 @@
                 fill: rgb(220,220,220);
             }
         }
+    }
+
+    &__menu {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-content: center;
+        
+        &__flex-start {
+            justify-self: flex-start;
+        }
+
+        &__input {
+            color: white;
+            margin-right: 1em;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgb(180, 180, 180);
+            padding-bottom: 3px;
+            min-width: 220px;
+        }
+
+        &__button {
+            white-space: nowrap;
+            margin-right: .5em;
+        }
+
+        &__button:last-child {
+            margin-right: 0;
+        }
+
     }
 
     & > div {

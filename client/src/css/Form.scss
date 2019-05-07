@@ -1,0 +1,67 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    
+    &__section {
+        width: 100%;
+        font-size: 17px;
+        border-spacing: 0;
+        border: 1px solid rgb(240,240,240);
+        margin-bottom: 1.5em;
+        border-collapse: collapse;
+
+        &__row {
+            border: 1px solid rgb(240,240,240);
+            height: 40px;
+
+            & td {
+                border: 1px solid rgb(240,240,240);
+            }
+
+            &__error {
+                font-size: 13px;
+                font-style: italic;
+                position: relative;
+                top: 1px;
+                color: #EA3223;
+            }
+
+            &__key{
+                padding: 1em;
+                background-color: rgb(248,248,248);
+            }
+
+            &__input {
+                padding: 0;
+                height: 40px;
+
+                & input {
+                    border: none;
+                    box-sizing: border-box;
+                    border: 15px solid transparent;
+
+                    &[type=text], &[type=date], &[type=email]{
+                        height: 100%;
+                        width: 100%;
+                        font-size: 17px;
+                    }
+
+                    &[type=radio]:first-child {
+                        margin-left: 1em;
+                    }
+
+                    &[type=radio] {
+                        vertical-align: 2px;
+                    }
+                }
+
+                & label {
+                    padding-right: 1em;
+                    padding-left: .5em;
+                }
+                
+            }
+
+        }
+    }
+}

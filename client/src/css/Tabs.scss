@@ -13,6 +13,7 @@
         text-align: center;
         padding: 14px;
         background-color: rgb(230,230,230);
+        transition: background-color .15s cubic-bezier(0.4, 0.0, 0.2, 1), color .15s cubic-bezier(0.4, 0.0, 0.2, 1);
 
         &:hover {
             background-color: rgb(235,235,235);

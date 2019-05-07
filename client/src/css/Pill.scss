@@ -6,6 +6,17 @@
     padding: 8px 9px;
     outline: none;
     cursor: pointer;
+    transition: background-color .15s cubic-bezier(0.4, 0.0, 0.2, 1), color .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+
+    &--selectable {
+        transition: transform .15s cubic-bezier(0.4, 0.0, 0.2, 1), filter .15s cubic-bezier(0.4, 0.0, 0.2, 1), box-shadow .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+        
+        &:hover {
+            transform: scale(1.02);
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+            filter: brightness(115%);
+        }
+    }
 
     &--filled {
         border: none;
@@ -27,12 +38,29 @@
         border-color: rgb(50, 50, 50);
         background-color: rgb(50, 50, 50);
         color: white;
+
+        &--dark {
+            border-color: white;
+            background-color: transparent;
+            color: white;
+
+            &:hover {
+                color: rgb(50,50,50);
+                background-color: white;    
+            }
+        }
     }
 
     &--secondary {
         border-color: rgb(118,118,118);
         background-color: rgb(118,118,118);
         color: white;
+
+        &--dark {
+            border-color: rgb(118,118,118);
+            background-color: rgb(118,118,118);
+            color: white;
+        }
     }
 
     &--unset {
@@ -52,20 +80,20 @@
     }
 
     &--action {
-        border-color: rgb(74, 144, 226);
-        color: rgb(74, 144, 226);
+        border-color: #323232;
+        color: #323232;
         background-color: transparent;
 
         &:hover {
             color: white;
-            background-color: rgb(74, 144, 226);
+            background-color: #323232;
         }
     }
 
     &--highlighted {
-        border-color: rgb(74, 144, 226) !important;
+        border-color: #323232 !important;
         color: white !important;
-        background-color: rgb(74, 144, 226) !important;
+        background-color: #323232 !important;
     }
 
     &--new {
@@ -75,7 +103,7 @@
     }
 
     &--like {
-        border-color: rgb(74, 144, 226);
+        border-color: #323232;
         height: 35px;
         padding: 0 9px;
         box-sizing: border-box;
@@ -83,8 +111,12 @@
         align-items: center;
         justify-content: center;
 
+        & svg {
+            transition: fill .15s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
         &:hover {
-            background-color: rgb(74, 144, 226);
+            background-color: #323232;
             color: white;
 
             svg {
@@ -94,10 +126,26 @@
 
         svg {
             display: block;
-            fill: rgb(74, 144, 226);
+            fill: #323232;
             overflow: hidden;
             width: 18px;
             height: 17px;
+        }
+
+        &.pill--highlighted {
+            background-color: #323232;
+
+            svg {
+                display: block;
+                fill: white;
+                overflow: hidden;
+                width: 18px;
+                height: 17px;
+            }    
+
+            &:hover {
+                background-color: #444444;
+            }
         }
     }
 }

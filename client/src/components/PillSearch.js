@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import Pills from "./Pills";
 
-const host = "https://gov-feedback.appspot.com";
+const remote = "https://gov-feedback.appspot.com";
+const local = "http://localhost:3001";
+
+const host = local;
 
 class PillSearch extends Component {
   state = {
@@ -89,16 +92,18 @@ class PillSearch extends Component {
     })
       .then(r => r.json())
       .then(result => {
-        var topicStrings = [];
-        result.data.topics.forEach(topic => {
-          topicStrings.push(topic.name);
-        });
-        if (!topicStrings.includes(name) && name !== "") {
-          topicStrings.push(name);
-        }
-        if (name === this.state.query) {
-          this.setState({ topics: topicStrings });
-          console.log("topics", this.state.topics);
+        if (result !== null) {
+          var topicStrings = [];
+          result.data.topics.forEach(topic => {
+            topicStrings.push(topic.name);
+          });
+          if (!topicStrings.includes(name) && name !== "") {
+            topicStrings.push(name);
+          }
+          if (name === this.state.query) {
+            this.setState({ topics: topicStrings });
+            console.log("topics", this.state.topics);
+          }
         }
       });
   };

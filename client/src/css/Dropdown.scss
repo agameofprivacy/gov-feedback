@@ -3,13 +3,15 @@
     background: rgba(255,255,255,0.98);
     border: 1px solid rgb(220,220,220);
     width: inherit;
+    min-width: 300px;
     margin-top: -1px;
     margin-right: 12px;
     -webkit-padding-start: 0em;
     padding-left: 0em;
-    font-size: 1.2em;
+    font-size: 1em;
     box-sizing: border-box;
     position: absolute;
+    padding-bottom: 1em;
 
     &__section {
 
@@ -18,7 +20,12 @@
             border-bottom: 1px solid rgb(220,220,220);
             margin-top: 0;
             margin-bottom: 0;
-            font-size: 17px;
+            font-size: 15px;
+            font-weight: 400;
+
+            &--dark {
+                border-color: rgb(80,80,80);
+            }
         }
     }
 
@@ -34,20 +41,29 @@
     }
 
     &__item {
-        border-bottom: 0.5px solid rgb(220,220,220);
+        border-bottom: 0.5px solid rgb(234, 234, 234);
         padding: 0.75em 2em 0.75em 1.5em;
-        cursor: pointer;
+        transition: background-color .15s cubic-bezier(0.4, 0.0, 0.2, 1);
         
-        &:hover {
-            background-color: rgb(230,230,230);
+        &--hoverable {
+            cursor: pointer;
+
+            &:hover {
+                background-color: rgb(234,234,234);
+            }
         }
 
         &--dark {
-            border-color: #767676;
-            background-color: rgb(30, 30,30);
+            border-color: #333333;
+            background-color: rgb(30, 30, 30);
 
-            &:hover{
-                background-color: rgb(50, 50, 50);
+
+            &--hoverable {
+                cursor: pointer;
+
+                &:hover{
+                    background-color: #333333;
+                }
             }
 
             &:nth-last-child(1) {

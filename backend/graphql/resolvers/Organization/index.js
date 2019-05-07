@@ -14,9 +14,10 @@ module.exports = {
             });
         },
         organizationWithId: (root, args) => {
+            console.log("orgId:", args.orgId);
             return new Promise((resolve, reject) => {
                 Organization.findOne({
-                    "identifiers.identifier": args.orgId
+                    "_id": args.orgId
                 })
                 .populate("parent")
                 .exec((err, res) => {
